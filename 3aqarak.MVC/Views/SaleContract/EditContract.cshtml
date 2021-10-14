@@ -1,0 +1,522 @@
+﻿@model _3aqarak.MVC.ViewModels.SaleContractViewModel
+
+@{
+    ViewBag.Title = "EditContract";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        .preLabel {
+            float: right;
+            color: grey;
+        }
+
+        .cke_text_editor {
+            width: 100%;
+        }
+
+        input[type="date"] {
+            color: grey
+        }
+
+        span[class="text-danger"] {
+            float: right;
+        }
+    </style>
+}
+<div class="card">
+    <div class="card-header text-right">
+
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("index","SaleContract")" style="color:#0098f0">عقود التمليك </a></li>
+                <li class="breadcrumb-item active" aria-current="page"> عقد تمليك  </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+
+        <form>
+            @Html.AntiForgeryToken();
+            <!-- #contValue #previewDeposit  -->
+
+            <div class="card">
+                <div class="card-body">
+                    @if (!ViewBag.IsInstallable)
+                    {
+                    <div class="row">
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                    </div>        
+                    <div class="row">
+                                <div class="form-group col">
+                                    <label class="preLabel">قيمة العقد<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" min="0" id="contValue" value="@Model.TotalAmount" required="">
+                                </div>
+
+                                <div class="form-group col">
+                                    <label class="preLabel">عربون المعاينة</label>
+                                    <input type="number" class="form-control" min="0" id="previewDeposit" value="@Model.ReservDeposit" disabled>
+                                </div>
+
+                            </div> <!--card-body-->
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="form-group col ">
+                                <label class="preLabel">تاريخ أول قسط <abbr class="req">*</abbr></label>
+                                @if (Model.DateOfFirstInstall.HasValue)
+                                {
+                                    <input type="date" class="form-control" id="firstPaymentDate" value="@Model.DateOfFirstInstall.Value.ToString("yyyy-MM-dd")" style="color:grey" required="">
+
+                                }
+
+                            </div>
+                            <div class="form-group col">
+                                <label class="preLabel">تاريخ القسط القادم </label>
+                                @if (Model.DateOfNextInstall.HasValue)
+                                {
+                                    <input type="date" class="form-control" id="nextPaymentDate" value="@Model.DateOfNextInstall.Value.ToString("yyyy-MM-dd")" style="color:grey" required="">
+
+                                }
+                            </div>
+                            <div class="form-group col">
+                                <label class="preLabel">تاريخ اخر قسط </label>
+                                @if (Model.DateOfLastInstall.HasValue)
+                                {
+                                    <input type="date" class="form-control" id="lastPaymentDate" value="@Model.DateOfLastInstall.Value.ToString("yyyy-MM-dd")" style="color:grey" required="">
+                                }
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label class="preLabel">قيمة القسط </label>
+                                @if (Model.DefaultInstallValue.HasValue)
+                                {
+                                    <input type="number" class="form-control" value="@Model.DefaultInstallValue.Value" min="0" id="installValue" required="">
+
+                                }
+                            </div>
+
+                            <div class="form-group col">
+                                <label class="preLabel">قيمة القسط القادم </label>
+                                @if (Model.NextInstallValue.HasValue)
+                                {
+                                    <input type="number" class="form-control" value="@Model.NextInstallValue.Value" min="0" id="remainValue" required="">
+
+                                }
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label class="preLabel"> اسس الدفع<abbr class="req">*</abbr></label>
+                                <select class="form-control " data-style="btn btn-link" id="paymentMethods">
+                                    <option> </option>
+                                    @foreach (var item in Model.Basis)
+                                    {
+                                        if (int.Parse(item.Value) == Model.FK_SalesHeaders_PaymentBasis_Id.Value)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+
+                                        }
+                                    }
+
+                                </select>
+                                <span class="text-danger" id="paymentMethodsErr"> </span>
+                            </div>
+                            <div class="form-group col">
+                                <label class="preLabel">قيمة العقد<abbr class="req">*</abbr></label>
+                                <input type="number" class="form-control" min="0" id="contValue" value="@Model.TotalAmount" required="">
+                            </div>
+
+                            <div class="form-group col">
+                                <label class="preLabel">عربون المعاينة</label>
+                                <input type="number" class="form-control" min="0" id="previewDeposit" value="@Model.ReservDeposit" disabled>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col">
+                                <label class="preLabel"> المبلغ المدفوع<abbr class="req">*</abbr></label>
+                                <input type="number" class="form-control" id="PaidAmount" min="0" value="@Model.PaidAmount">
+                            </div>
+
+                            <div class="form-group col">
+                                <label class="preLabel">المبلغ المتبقي </label>
+                                <input type="number" class="form-control" id="DueAmount" min="0" value="@Model.DueAmount" disabled>
+                            </div>
+                        </div>
+                    }
+                    <!-- hussainy-->
+                    <br />
+                    <div class="form-group">
+                        <div class="show-img ">
+                            <input type="button" class="btn btn-block" data-toggle="modal" data-target="#myModal" value=" تحميل صــور عقد البيع " />
+                        </div>
+                    </div>
+                    
+                    @if (Model.ContractUrl != null)
+                    {
+                        <div class="container-fluid text-center">
+                            <iframe id="contractPDF" src="@Url.Action("GetPDF",new { id=Model.PK_SalesHeaders_Id})" style="width:600px; height:500px;" frameborder="0"></iframe>
+                        </div>
+                    }
+                    <!--end hussainy-->
+                </div>	 <!-- card-->
+            </div>  <!-- row-->
+            <!--  <div class="card">
+    <div class="card-body" style="background-color:#1d253b"> -->
+            <div class="row">
+                <!-- #date  #day-->
+                <div class="form-group col">
+                    <label class="preLabel">إنه في يوم :<abbr class="req">*</abbr></label>
+                    <input type="text" class="form-control" id="day" disabled="" value="">
+                </div>
+                <div class="form-group col">
+                    <label class="preLabel">الموافق :<abbr class="req">*</abbr></label>
+                    <input type="text" class="form-control" id="date" disabled="" value="">
+                </div>
+
+                <!--  </div>  --><!--card-body-->
+                <!--  </div>  --> <!-- row-->
+            </div>	 <!-- row-->
+            <!-- #name1 #address1 #idNum1 #name2 #address2 #idNum2 -->
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group ">
+                        <span style="font-size:20px; color:#D68910 ; float:right ">  طرف أول بائع </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label class="preLabel"> السيد : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="name1" value="@Model.SellerName" disabled="">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> و المقيم : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="address1" value="@Model.SellerAddress" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> و يحمل بطاقة رقم :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="idNum1" value="@Model.SellerId" required>
+                    </div>
+                </div>
+                <!--End OF First Column-->
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group ">
+                        <span style="font-size:20px; color:#D68910; float:right ">  طرف ثاني مشتري </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> السيد : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="name2" value="@Model.BuyerName" disabled="">
+                    </div>
+                </div>
+            <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> و المقيم : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="address2" value="@Model.BuyerAddress" required>
+                    </div>
+                </div>
+            <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> و يحمل بطاقة رقم :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="idNum2" value="@Model.BuyerId" required>
+                    </div>
+                </div>
+
+                </div> <!-- End OF Second Column-->
+
+ <!-- End OF Row-->
+            <!-- #buyerCode #sellerCode #ArdCode  #editor1-->
+            <div class="row">
+
+                <!-- <label> كود المشتري </label> -->
+                <input type="hidden" class="form-control" id="buyerCode" value="@Model.FK_SalesHeaders_Clients_BuyerId">
+
+                <!-- <label> كود البائع </label> -->
+                <input type="hidden" class="form-control" id="sellerCode" value="@Model.FK_SalesHeaders_Clients_SellerId">
+
+                <!-- <label> كود العرض </label> -->
+                <input type="hidden" class="form-control" id="ArdCode" value="@Model.AvailableUnits_Id">
+
+                <!-- <label> فئه العرض </label> -->
+                <input type="hidden" class="form-control" id="ArdCat" value="@Model.AvailableCat">
+
+                <!-- <label> كود الطلب </label> -->
+                <input type="hidden" class="form-control" id="TalabCode" value="@Model.DemandUnits_Id">
+
+                <!-- <label> فئه الطلب </label> -->
+                <input type="hidden" class="form-control" id="TalabCode" value="@Model.DemandCat">
+
+                @Html.HiddenFor(m => m.PK_SalesHeaders_Id, new { id = "id" })
+
+
+
+
+            </div> <!-- End of row-->
+
+            <br>
+
+            <span style="font-size:20px; color:#D68910; float:right ;">  أقر الطرفان بكامل أهليتهما القانونية للتعاقد و التصرف و اتفقا علي ما يأتي :  </span> <br> <br> <br>
+
+            <textarea name="text_editor" id="editor1" style="visibility: hidden; display: none;">@Model.DetailContent</textarea>
+            <span class="text-danger" id="editor1Err"> </span>
+            <br> <br>
+            <button class="btn btn-default" type="submit" id="Save"> حفظ </button>
+        </form>
+        <!-- hussainy-->
+        <!-- Image Modal -->
+        <div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog .modal-dialog-centered" role="document">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">اختر الصور</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <div class="jumbotron">
+                                <form action="/SaleContract/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                            </div>
+
+                            <span class="alert alert-warning">  PDF لابد من رفع ملف </span>
+                            <span class="alert alert-info">مساحة الملف لا تزيد عن 15 ميجابايتس</span>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end hussainy-->
+    </div>  <!-- End of body-->
+
+</div>
+@section scripts{
+    <script>
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 15, // MB
+            maxFiles: 1,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 1,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+
+                })
+            },
+            success: function (file, response) {
+
+                if (response.valid) {
+                    $("#myModal").modal("hide");
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+                        Dropzone.forElement('#dropzoneJsForm').removeAllFiles(true);
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+
+        if ("@ViewBag.IsInstallable" === "True") {
+            document.getElementById('firstPaymentDate').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+            document.getElementById('nextPaymentDate').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+            document.getElementById('lastPaymentDate').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        }
+        CKEDITOR.replace('text_editor');
+        CKEDITOR.config.height = '350px';
+        $("document").ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            $("input").focus(function () {
+                $(this).css("border-color", "#e6f5ff")
+            });
+            $("input").blur(function () {
+                $(this).css("border-color", "#2b3553")
+            });
+
+            var weekday = new Array(7);
+            weekday[0] = "الأحد";
+            weekday[1] = "الأثنين";
+            weekday[2] = "الثلاثاء";
+            weekday[3] = "الأربعاء";
+            weekday[4] = "الخميس";
+            weekday[5] = "الجمعة";
+            weekday[6] = "السبت";
+
+            var d = new Date();
+            var n = weekday[d.getDay()];
+            $("#day").attr("value", n);
+           
+            var TodayDate = new Date();
+
+            var day = TodayDate.getDate();
+            var month = TodayDate.getMonth() + 1;
+            var year = TodayDate.getFullYear();
+
+             //calculate the remaing amount accourding to total amount and paid 
+            $("#contValue").change(function () {
+                var PaidAmount = $("#PaidAmount").val() != null ? Number($("#PaidAmount").val()) : 0;
+                var ReservDeposit = $("#previewDeposit").val() != null ? Number($("#previewDeposit").val()) : 0;
+                var TotalAmount = $("#contValue").val() != null ? Number($("#contValue").val()) : 0;
+                if (PaidAmount > TotalAmount - ReservDeposit) {
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify("المبلغ الكلي لابد من أن يتساوا مع مجموع المبلغ الكلي والعربون", "error", function () { });
+                    $(this).focus();
+                }
+                else {
+                    $("#DueAmount").val(TotalAmount - (PaidAmount + ReservDeposit));
+                }
+            });
+            $("#contValue").blur(function () {
+                var PaidAmount = $("#PaidAmount").val() != null ? Number($("#PaidAmount").val()) : 0;
+                var ReservDeposit = $("#previewDeposit").val() != null ? Number($("#previewDeposit").val()) : 0;
+                var TotalAmount = $("#contValue").val() != null ? Number($("#contValue").val()) : 0;
+                if (PaidAmount > TotalAmount - ReservDeposit) {
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify("المبلغ الكلي لابد من أن يتساوا مع مجموع المبلغ الكلي والعربون", "error", function () { });
+                    $(this).focus();
+                }
+                else {
+                    $("#DueAmount").val(TotalAmount - (PaidAmount + ReservDeposit));
+                }
+            });
+            $("#PaidAmount").change(function () {
+                var PaidAmount = $("#PaidAmount").val() != null ? Number($("#PaidAmount").val()) : 0;
+                var ReservDeposit = $("#previewDeposit").val() != null ? Number($("#previewDeposit").val()) : 0;
+                var TotalAmount = $("#contValue").val() != null ? Number($("#contValue").val()) : 0;
+                if (PaidAmount > TotalAmount - ReservDeposit) {
+                    alertify.set('notifier', 'position', 'top-right');
+                    alertify.notify("المبلغ الكلي لابد من أن يتساوا مع مجموع المبلغ الكلي والعربون", "error", function () { });
+                    $(this).focus();
+                }
+                else {
+                    $("#DueAmount").val(TotalAmount - (PaidAmount + ReservDeposit));
+                }
+            });
+            $("#PaidAmount").blur(function () {
+                var PaidAmount = $("#PaidAmount").val() != null ? Number($("#PaidAmount").val()) : 0;
+                var ReservDeposit = $("#previewDeposit").val() != null ? Number($("#previewDeposit").val()) : 0;
+                var TotalAmount = $("#contValue").val() != null ? Number($("#contValue").val()) : 0;
+                if (PaidAmount > TotalAmount - ReservDeposit) {
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify("المبلغ الكلي لابد من أن يتساوا مع مجموع المبلغ الكلي والعربون", "error", function () { });
+                    $(this).focus();
+                }
+                else {
+                    $("#DueAmount").val(TotalAmount - (PaidAmount + ReservDeposit));
+                }
+            });
+            //end calculation
+
+            var today = year + "/" + month + "/" + day;
+            $("#date").attr("value", today);
+            var myForm = $("form");
+            myForm.on("submit", function (e) {
+                e.preventDefault();
+                if ( CKEDITOR.instances.editor1.getData()=="" ) {
+                    $('#editor1Err').html('لابد من ملئ هذا الحقل ');
+                    return false;
+                }
+                else{
+                    $('#editor1Err').html('');
+                }
+                var algoForm = {
+                    PK_SalesHeaders_Id:$("#id").val(),
+                    TotalAmount: $("#contValue").val(),
+                    ReservDeposit: $("#previewDeposit").val(),
+                    FK_SalesHeaders_Clients_SellerId: $("#sellerCode").val(),
+                    SellerAddress: $("#address1").val(),
+                    SellerId: $("#idNum1").val(),
+                    FK_SalesHeaders_Clients_BuyerId: $("#buyerCode").val(),
+                    BuyerAddress: $("#address2").val(),
+                    BuyerId: $("#idNum2").val(),
+                    AvailableUnits_Id: $("#ArdCode").val(),
+                    DemandUnits_Id: $("#TalabCode").val(),
+                    DemandCat: $("#TalabCat").val(),
+                    AvailableCat: $("#ArdCat").val(),
+                    DueAmount: $("#DueAmount").val(),
+                    PaidAmount: $("#PaidAmount").val(),
+                    IsInstallable: false,
+                    DetailContent:CKEDITOR.instances.editor1.getData(),
+                }
+                if ("@ViewBag.IsInstallable" === "True") {
+                    algoForm.IsInstallable = true;
+                    algoForm.DateOfFirstInstall = $("#firstPaymentDate").val();
+                    algoForm.DateOfNextInstall = $("#nextPaymentDate").val();
+                    algoForm.DefaultInstallValue = $("#installValue").val();
+                    algoForm.NextInstallValue = $("#remainValue").val();
+                    algoForm.DateOfLastInstall = $("#lastPaymentDate").val();
+                    algoForm.FK_SalesHeaders_PaymentBasis_Id = $("#paymentMethods").val();
+                    algoForm.DueAmount= $("#DueAmount").val();
+                    algoForm.PaidAmount= $("#PaidAmount").val();
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '/salecontract/Updatecontract',
+                    data: {
+                        __RequestVerificationToken: token,
+                        contractVM: algoForm,
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+                            debugger;
+                            alertify.alert("تم الحفظ بنجاح", function () {
+                                location.href = "@Url.Action("index","saleContract")";
+                            });
+                        }
+                        else {
+                            debugger;
+                            alertify.alert(response.message, function () { });
+                        }
+                    },
+                    error: function () {
+                        alertify.alert(" error sending data");
+                    },
+
+                })
+            });
+
+        });
+    </script>
+
+
+}
+

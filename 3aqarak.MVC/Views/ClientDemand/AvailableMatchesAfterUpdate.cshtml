@@ -1,0 +1,337 @@
+﻿@model _3aqarak.MVC.ViewModels.DemandAvailableMatchViewModel
+@{
+    ViewBag.Title = "AvailableMatchesAfterUpdate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        #excludeAvailables {
+            border: solid 1px black;
+            border-radius: 5px;
+            margin-top: 3%;
+        }
+    </style>
+}
+
+<div class="card">
+
+    <div class="card-body">
+
+        <form>
+            <div class="form-group ">
+                <label for="text" style="float:right"> العروض المطابقة للطلب رقم:</label>
+                <input type="text" class="form-control" readonly value="@Model.Demand.PK_DemandUnits_Id">
+            </div>
+            <div class="form-group ">
+                <label for="text" style="float:right"> للعمــــيل</label>
+                <input type="text" class="form-control" readonly value="@Model.Buyer.Name">
+            </div>
+        </form>
+        @if (Model.availables == null || Model.availables.Count == 0)
+        {
+            <div class="alert alert-danger text-right" role="alert">
+                لايوجد بيانات لاستعراضها !
+            </div>
+        }
+        else
+        {
+            <table class="table text-right table-hover " id="matchTable">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">اسم المـالك </th>
+                        <th> رقــم العرض</th>
+                        <th> التفاصـــــيل</th>
+                        <th> تاريـــخ المعاينه</th>
+                        <th> بيانات الاتصال</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.availables)
+                    {
+                        <tr>
+                            <td class="text-center">@item.FK_AvaliableUnits_Clients_ClientId</td>
+                            <td class="text-center">@item.SellerName</td>
+                            <td>@item.PK_AvailableUnits_Id</td>
+                            <td class="td-actions text-right">
+                                <button type="button" title="التفاصيــل " rel="tooltip" class="btn btn-default btn-sm btn-icon edit" data-id="@item.PK_AvailableUnits_Id">
+                                    <i class="tim-icons icon-notes"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <input type="datetime-local" class="form-control date" autocomplete="off" required>
+                                <span class="text-danger dateErr"></span>
+
+                            </td>
+                            <td>
+                                <button class="btn btn-default call" id="search-button" data-id="@item.FK_AvaliableUnits_Clients_ClientId" data-offer="@item.PK_AvailableUnits_Id" data-catId="@_3aqarak.MVC.Helpers.Categories.Apartements" data-type="sale"> الاتصـــال بالبائع </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default openDatesModal" data-toggle="modal" data-target="#dates" data-id="@item.PK_AvailableUnits_Id">
+                                    اوقات الحجز
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        <div id="excludeAvailables">
+            @if (Model.SameClientAvailable != null)
+            {
+                <div class="form-group">
+                    <label class="control-label text-right">عروض تم استثناءها من الترشيحات لانها لنفس العميل</label>
+                    <p>العرض رقم:@Model.SameClientAvailable.PK_AvailableUnits_Id </p>
+                </div>
+            }
+            @if (Model.ExcludedavailablesForPreviws != null && Model.ExcludedavailablesForPreviws.Count > 0)
+            {
+                <div class="form-group">
+                    <label class="control-label text-right">عروض تم ترشيحها للعميل من قبل وتم تحديد ميعاد معاينه لها</label>
+                    <ul>
+                        @foreach (var item in Model.ExcludedavailablesForPreviws)
+                        {
+                            <li>@item.PK_AvailableUnits_Id</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+        <button type="button" class="btn btn-default" id="preview">حجز معاينة</button>
+        <button class="btn btn-default call" id="search-button" data-id="@Model.Demand.FK_DemandUnits_Clients_ClientId" data-offer="@Model.Demand.PK_DemandUnits_Id" data-catId="@_3aqarak.MVC.Helpers.Categories.Apartements" data-type="demand"> اتصال بالمشتري </button>
+        <!--Modal Matches-->
+        <div class="modal fade" id="matches" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Contacts-->
+        <div class="modal fade" id="calls" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal dates-->
+        <div class="modal fade" id="dates" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="My-Dates-Modal-Body">
+                        <div class="text-center">
+                            <h4 id="dateOfReservation">المواعيد المحجوزه مسبقا</h4>
+                            <button type="button" class="btn btn-success btn-sm" data-id="" data-catId="@_3aqarak.MVC.Helpers.Categories.Apartements" id="reservationDates">بحث</button>
+                            <input type="date" class="form-control-sm " value="@DateTime.Now.ToString("yyyy-MM-dd")" id="mydate" />
+                        </div>
+                        <div id="datesBody">
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+        var stopProcessing = false;
+        var dTable = $("#matchTable").DataTable({
+            select: {
+                style: "multi",
+            },
+            stateSave: true,
+            "bFilter": false,
+            "bLengthChange": false,
+        });
+
+        $("#preview").click(function () {
+
+            var selectedData = dTable.rows({ selected: true }).data();
+            var selected = dTable.rows({ selected: true }).nodes();
+            if (selected.length < 1) {
+                alertify.set('notifier', 'position', 'top-left');
+                alertify.notify('لم يتم  اختيار اي عرض!', 'error', 3, function () { });
+                return false;
+            }
+
+            var availableList = [];
+            $.each(selectedData, function (index, value) {
+                availableList.push(value[2]);
+            });
+
+            var dateList = [];
+
+            $.each(selected, function (index, value) {
+                var date = $(this).find(".date").val();
+                if (date === "" || date === null) {
+                    $(this).find(".dateErr").html("لابد من تحديد تاريخ ووقت المعاينه!");
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify('لم يتم  تحديد تاريخ ووقت احد المعاينات!', 'error', 3, function () { });
+                    stopProcessing = true;
+                }
+                else {
+                    $(this).find(".dateErr").html("");
+                    stopProcessing = false;
+                }
+                if (!stopProcessing) {
+                    dateList.push(date);
+                };
+
+            });
+            if (stopProcessing) {
+                dateList.length=0;
+                return false;
+            };
+
+            location.href = "/Clientdemand/SelectAvailables?availableIds=" + availableList + "&demandId=" + "@Model.Demand.PK_DemandUnits_Id" + "&buyerId=" + "@Model.Buyer.PK_Client_Id" + "&dates=" + dateList;
+
+        });
+
+        $(".openDatesModal").click(function () {
+            $("#reservationDates").attr("data-id", $(this).attr("data-id"));
+        });
+        $("#reservationDates").click(function () {
+
+            $(this).attr("data-id");
+            var id = $(this).attr("data-id");
+            var cat = $(this).attr("data-catId");
+            var date = $("#mydate").val();
+            if (date == "") {
+                $("#datesBody").html("لابد من اختيار تاريخ");
+            }
+            $.ajax({
+                type: "get",
+                url: "/Preview/getDatesRelated/",
+                data: { id: id, date: date, catId: cat },
+                success: function (datesList) {
+                    if (datesList.length === 0) {
+                        $("#datesBody").html("لا يوجد مواعيد لعرضها");
+                    }
+                    else {
+                        $("#datesBody").empty();
+                        $.each(datesList, function (i, value) {
+                            $("#datesBody").append('<ul class="list-unstyled datesUL"><li>'+value+'</li ></ul >');
+                        });
+                    }
+                },
+                error: function () {
+                    $("#datesBody").html("لا يوجد مواعيد لعرضها");
+                }
+            });
+        });
+        $(".edit").click(function () {
+            var id = $(this).attr("data-id");
+            $.ajax({
+                "url":"/ClientSales/SaleDetails/",
+                accept: "applicaton/html",
+                type: "post",
+                dataType: "html",
+                data: {
+                    saleId:id,
+                    demandId: "@Model.Demand.PK_DemandUnits_Id",
+                },
+                success: function (response) {
+                    $("#matches").find(".modal-body").html(response);
+                    $("#matches").modal("show");
+                },
+                error: function () {
+                    alertify.alert("حدث خطا في حفظ البيانات!")
+                }
+
+            });
+        });
+
+        $(".call").click(function () {
+            var btn = $(this);
+            $.ajax({
+                "url": "/ClientCalls/GeClientContact/",
+                accept: "applicaton/html",
+                type: "post",
+                dataType: "html",
+                data: {
+                    clientId: $(btn).attr("data-id"),
+                    offerId: $(btn).attr("data-offer"),
+                    OfferType: $(btn).attr("data-type"),
+                    catId:$(btn).attr("data-catId"),
+                },
+                success: function (response) {
+                    $("#calls").find(".modal-body").html(response);
+                    $("#calls").modal("show");
+                },
+                error: function () {
+                    alertify.alert("حدث خطا في حفظ البيانات!")
+                }
+
+            });
+
+
+        });
+
+    });
+
+
+    </script>
+
+}
+
+

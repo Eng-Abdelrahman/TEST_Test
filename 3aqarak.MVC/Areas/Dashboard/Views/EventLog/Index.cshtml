@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item active " aria-current="page">نشاطات الموظفين</li>
+
+    </ol>
+</nav>
+<div class="card">
+    @Html.AntiForgeryToken()
+    <div class="card-header">
+        <h4 class="title text-right">أستعراض جميع نشاطات الموظفين على الموقع</h4>
+    </div>
+    <div class="card-body">
+        <!--************************************start Search input****************************************************-->
+        <div class="row">
+            <div class="col" data-step="4" data-intro="للبحث من بداية تاريخ معين">
+                <label for="from">من تاريخ</label>
+                <input type="date" id="from" class="form-control" />
+            </div>
+
+            <div class="col "  data-step="5" data-intro="للبحث إلى نهاية تاريخ معين">
+                <label for="to">الى تاريخ</label>
+                <input type="date" id="to" class="form-control" />
+            </div>
+            @*<div class="col">
+                <label for="to">نوع حساب العقد </label>
+                <select id="type" required class="form-control">
+                    <option value="false" selected>لم يتم حسابه</option>
+                    <option value="true">تم حسابه</option>
+                    @Html.DropDownList("Users", (SelectList)ViewBag.Depts, new { id = "deptId", @class = "form-control" })
+                </select>
+            </div>*@
+            <div class="col"  data-step="6" data-intro="للبحث عن عملية معينة تمت في البرنامج">
+                <label for="to">نوع العملية </label>
+                <select id="Event" required class="form-control">
+                    <option value="All" selected>All Events</option>
+                    <option value="0">Insert</option>
+                    <option value="1">Delete</option>
+                    <option value="2">Update</option>
+                </select>
+
+            </div>
+            <div class="col">
+
+                <input id="FindByID" type="button" value="بحث" data-step="7" data-intro="لبدء البحث عن المدخلات التي تم إدخالها" class="btn btn-default " style="margin:31px 1px;" />
+            </div>
+        </div>
+        <!--**************************************End search input **************************************************-->
+        <table class="table text-right table-hover" data-step="1" data-intro="هذة الصفحه مسؤوله عن عرض جميع نشاطات الموظفين خلال عمر البرنامج">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>إسم الموظف </th>
+                    <th>الجدول المقام عليه النشاط </th>
+                    <th>نوع النشاط</th>
+                    <th>تاريخ النشاط</th>
+                    <th>ملاحظات</th>
+                </tr>
+            </thead>
+
+        </table>
+
+    </div>
+</div>
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+
+            table = $("table").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+
+                "ajax": {
+                    "url": "/dashboard/EventLog/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.fromDate = $("#from").val();
+                        d.toDate = $("#to").val();
+                        d.Event = $("#Event").val();
+                        //d.User = $("#type").val();
+                    },
+                },
+
+                "columns": [
+                     { "data": "PK_Event_Id", "name": "PK_Event_Id", "autoWidth": true },
+                    { "data": "UserName", "name": "UserName", "autoWidth": true },
+                    { "data": "TableName", "name": "TableName", "autoWidth": true },
+                    { "data": "EventType", "name": "EventType", "autoWidth": true },
+                    { "data": "DateString", "name": "DateString", "autoWidth": true },
+                    { "data": "Description", "name": "Description", "autoWidth": true },
+
+                ]
+            });
+              $("#FindByID").click(function () {            
+                table.draw();
+            });
+
+        });
+        $(document).ajaxComplete(function () {
+           
+            $("input[aria-controls='DataTables_Table_0']").attr({ "data-step": "2", "data-intro": "يمكن من هنا البحث عن موظف معين" });
+             $("select[aria-controls='DataTables_Table_0']").attr({ "data-step": "3", "data-intro": "يمكن من هنا تحديد عدد السجلات المعروضه" });
+              $("#DataTables_Table_0_paginate").attr({ "data-step": "8", "data-intro": "تستخدم هذه للتنقل بين الصفحات إن كانة كثيرة" });
+        });
+    </script>
+}
+

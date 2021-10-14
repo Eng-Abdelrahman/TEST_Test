@@ -1,0 +1,193 @@
+﻿@model List<_3aqarak.MVC.ViewModels.PostsViewModel>
+
+@{
+    ViewBag.Title = "Posts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@{
+    ViewBag.Title = "العملاء";
+}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","home")">الرئيسية</a></li>
+        <li class="breadcrumb-item active " aria-current="page"> رسائل العملاء</li>
+
+    </ol>
+</nav>
+<div class="card" data-step="1" data-intro="هذه الصفحه مخصصه لعرض الرسائل المرسله من موقع الشركه لطلب عقار معين معلن عنه في الموقه ويتم من هنا عمل معاينه لهذا العميل">
+    @Html.AntiForgeryToken()
+    <div class="card-header">
+        <h4 class="title text-right">أستعراض رسائل العملاء</h4>
+    </div>
+    <div class="card-body">
+        <div class="col" data-step="2" data-intro="ومن هنا يتم البحث عن رسائل معينه بالتاريخ في  فتره معينة">
+
+            <div class="form-group">
+                <label class="preLabel" for="dateFrom">  التاريخ من :  </label>
+                <input type="date" class="form-control" id="dateFrom" placeholder=" التاريخ من " style="text-align:right">
+            </div>
+            <br />
+            <div class="form-group">
+                <label class="preLabel" for="dateTo"> التاريخ إلي :  </label>
+                <input type="date" class="form-control" id="dateTo" placeholder="  التاريخ إلي " style="text-align:right">
+            </div>
+
+            <div class=" text-center mt-auto">
+                <button class="btn btn-default " id="search_btn"> بحث </button>
+
+                <h3 class="mt-3"> اختر التاريخ للبحث</h3>
+            </div>
+        </div> <!-- End of column -->
+
+        <table class="table text-right table-hover table-responsive-lg " style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>الاسم الكامل </th>
+                    <th>االموبايل </th>
+                    <th>تقاصيل الرساله</th>
+                    <th>عمل معاينه</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<div id="DetailsModal" class="modal fade " role="dialog">
+    <div class="modal-dialog .modal-dialog-centered modal-lg" role="document">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">تفاصيل العرض</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+
+            table = $("table").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+
+                "ajax": {
+                    "url": "/post/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.fromDate = $("#dateFrom").val();
+                        d.toDate = $("#dateTo").val();
+                    }
+                },
+
+                "columns": [
+                    { "data": "PK_PostId", "name": "PK_PostId", "autoWidth": true },
+                    { "data": "Name", "name": "Name", "autoWidth": true },
+                    { "data": "Mobile", "name": "Mobile", "autoWidth": true },
+                    {
+                        "render": function (data, type, full, meta) { return ' <button type="button" title="تفاصيل الرساله " rel="tooltip" class="btn btn-link details "   data-id="' + full.PK_PostId + '">تفاصيل الرساله</button>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return ' <button type="button" title="عمل معاينه " rel="tooltip" class="btn btn-link preview " data-id="' + full.PK_PostId + '">عمل معاينه</button>'; }
+                    },
+                ]
+            });
+
+            $("#search_btn").click(function () {
+                table.draw();
+            });
+
+            $(document).on("click", ".preview", function () {
+                var id = $(this).attr("data-id");
+                $.ajax({
+                    "url": "/post/setPreview/",
+                    type: "post",
+                    data: {
+                        postId: id,
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+                            alertify.alert(response.message, function () {
+                                if (response.cat ===@_3aqarak.MVC.Helpers.Categories.Apartements) {
+                                    location.href = "/clientSales/DemandMatchesAfterAdd/";
+                                };
+                                if (response.cat ===@_3aqarak.MVC.Helpers.Categories.Lands) {
+                                    location.href = "/AvailableLands/LandDemandMatchesAfterAdd/";
+                                };
+                                if (response.cat ===@_3aqarak.MVC.Helpers.Categories.Shops) {
+                                    location.href = "/ShopAvailable/ShopDemandsMatchesAfterAdd/";
+                                };
+                                if (response.cat === @_3aqarak.MVC.Helpers.Categories.Villas) {
+                                    location.href = "/VillasAvailable/DemandMatchesAfterAdd/";
+                                };
+
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+
+                            });
+                        };
+
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+            });
+
+
+            $(document).on("click", ".details", function () {
+                var id = $(this).attr("data-id");
+                $.ajax({
+                    "url": "/post/postDetails/",
+                    accept: "applicaton/html",
+                    type: "get",
+                    dataType: "html",
+                    data: {
+                        postId: id,
+                    },
+                    success: function (response) {
+                        $("#DetailsModal").find(".modal-body").html(response);
+                        $("#DetailsModal").modal("show");
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+            });
+        });
+
+          $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();                    
+                 });
+            });
+    </script>
+}
+
+
+
+

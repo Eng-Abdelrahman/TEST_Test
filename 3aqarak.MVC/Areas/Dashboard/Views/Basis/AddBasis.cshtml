@@ -1,0 +1,122 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.BasisViewModel
+
+@{
+    ViewBag.Title = "AddBasis";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            font-size: 20px;
+        }
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item  " aria-current="page"><a href="@Url.Action("basis","basis")">اسس الدفع</a></li>
+        <li class="breadcrumb-item active " aria-current="page">اضافة </li>
+
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">أضافة </h4>
+    </div>
+    <div class="card-body">
+
+
+        <form id="addBasis-form">
+            @Html.AntiForgeryToken()
+            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+            <div class="form-group  ">
+                <label for="first" class="text-right"> النــوع:<abbr class="req">*</abbr></label>
+                <input type="text" class="form-control" id="name" placeholder="النــوع" name="Name" required>
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger " })
+            </div>
+
+
+            <div class="form-group  ">
+                <label for="first" class="text-right"> عدد الايام:<abbr class="req">*</abbr></label>
+                <input type="text" class="form-control" id="days" placeholder="عدد الايام" name="NoOfDays" required>
+                @Html.ValidationMessageFor(m => m.NoOfDays, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group" style="margin-top:5%">
+                <button id="save" type="submit" class="btn btn-default animation-on-hover " style="float:right">حفـــــظ</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $(document).ready(function () {
+
+            $("#addBasis-form").submit(function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return false;
+                }
+                var finParam = {
+                    Name: $("#name").val(),
+                    NoOfDays: $("#days").val(),
+                };
+                $.ajax({
+                    url: "/dashboard/basis/Savebasis",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        basisVM:finParam,
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (result) {
+                            alertify.alert("تم الحفظ بنجاح", function () {
+                                location.href = "@Url.Action("basis", "basis", new { area = "dashboard" })";
+                            });
+                        }
+                        else {
+                            alertify.alert("لم يتم الحفظ بنجاح!", function () {
+                            });
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

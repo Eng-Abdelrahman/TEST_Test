@@ -1,0 +1,205 @@
+﻿@model List<_3aqarak.MVC.Areas.Dashboard.ViewModels.ClientViewModel>
+@{
+    ViewBag.Title = "العملاء";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item active " aria-current="page">العملاء</li>
+
+    </ol>
+</nav>
+<div class="card">
+    @Html.AntiForgeryToken()
+    <div class="card-header">
+        <h4 class="title text-right">أستعراض جميع العملاء</h4>
+    </div>
+    <div class="card-body">
+
+        <table class="table text-right table-hover" data-step="1" data-intro="هذة الصفحه مسؤوله عن عرض جميع العملاء المدخلين وإضافة عملاء جديد أو تعديلهم أو حذفهم وأيضا إستيراد عملاء جدد">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>الاسم الكامل </th>
+                    <th>التليفون </th>
+                    <th>التليفون2 </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+
+        </table>
+        <button id="add" class="btn btn-default animation-on-hover" type="button" data-step="4" data-intro="يمكن من هنا إضافة عميل جديد">اضافة عميل</button>
+
+        <button class="catbtn" data-toggle="modal" data-target="#myModal" href="" data-step="5" data-intro="يمكن من هنا إستيراد عملاء من ملف Excel">إستيراد عملاء</button>
+
+
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div id="myModal" class="modal fade " role="dialog">
+    <div class="modal-dialog .modal-dialog-centered" role="document">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Choose Excel File</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+
+                    <div class="jumbotron">
+                        <form action="/Import/Upload" class="dropzone" id="dropzoneJsForm" method="post" enctype="multipart/form-data"></form>
+                        <button id="act-on-upload" class="btn btn-block">حمل الملف</button>
+                    </div>
+                    <span class="alert alert-primary">الملف لابد من أن يكون فقط .xls,.xlsx</span><br /><br />
+                    <span class="alert alert-warning">يتم تحميل ملف واحد فقط  </span>
+                    <span class="alert alert-info">مساحة الملف لا تزيد عن 3 ميجابايتس  </span>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End upload Excel File-->
+
+@section scripts{
+    <script>
+
+        Dropzone.options.dropzoneJsForm = {
+            
+            maxFilesize: 3, // MB
+            maxFiles: 1,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 1,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+
+                        dropzoneJsForm.processQueue();
+                    
+
+                })
+            },
+            successmultiple: function (file, response) {
+                if (response.valid) {
+                        location.href = "/Import/GetClientUploadFile/";
+         
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+
+            table = $("table").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+
+                "ajax": {
+                    "url": "/dashboard/Client/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    //"data": function (d) {
+                    //    d.grdId = $("#grade").find(':selected').val();
+                    //    d.semId = $("#semester").find(':selected').val();
+                    //}
+                },
+
+                "columns": [
+                    { "data": "PK_Client_Id", "name": "PK_Client_Id", "autoWidth": true },
+                    { "data": "Name", "name": "Name", "autoWidth": true },
+                    { "data": "Mobile", "name": "Mobile", "autoWidth": true },
+                    { "data": "Mobile2", "name": "Mobile2", "autoWidth": true },
+                    {
+                        "render": function (data, type, full, meta) { return ' <button type="button" title="تعديل " data-step="6" data-intro="يمكن من هنا تعديل أياً من العملاء" rel="tooltip" class="btn btn-success btn-sm btn-icon edit"data-id="' + full.PK_Client_Id + '"><i class="tim-icons icon-notes"></i></button>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) {
+                            return '<button type="button" title="حذف " rel="tooltip" data-step="7" data-intro="يمكن من هنا حذف أياً من العملاء" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_Client_Id + '"><i class="tim-icons icon-simple-remove"></i></button>';
+                        }
+
+                    },
+
+                ]
+            });
+
+            //$("#GetLessons").click(function () {
+            //    table.draw();
+            //});
+            $("#add").click(function () {
+                location.href = "@Url.Action("AddClient","Client",new {area="dashboard"})";
+            });
+            $("table").on("click", ".edit", function () {
+                debugger;
+                id = $(this).attr("data-id");
+                location.href = "/dashboard/client/EditClient/" + id;
+            });
+
+            $("table").on("click", ".delete", function () {
+
+                var clientId = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد حذف هذا العميل؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/dashboard/client/DeleteClient",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: clientId,
+                                 },
+
+                                 success: function (result) {
+                                     if (result.result) {
+                                         alertify.alert("تم حذف العميل بنجاح !", function () {
+                                             button.parents("tr").remove();
+                                         });
+                                     }
+                                     else {
+                                         alertify.alert("لم يتم حذف العميل بنجاح!", function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+            })
+
+        });
+        $(document).ajaxComplete(function () {
+           
+            $("input[aria-controls='DataTables_Table_0']").attr({ "data-step": "2", "data-intro": "يمكن من هنا البحث عن عميل" });
+            $("select[aria-controls='DataTables_Table_0']").attr({ "data-step": "3", "data-intro": "يمكن من هنا تحديد عدد العملاء المعروضين" });
+             $("#DataTables_Table_0_paginate").attr({ "data-step": "8", "data-intro": "تستخدم هذه للتنقل بين الصفحات إن كانة كثيرة" });
+        });
+    </script>
+}
+
+
+
+

@@ -1,0 +1,198 @@
+﻿@model _3aqarak.MVC.ViewModels.ProfitViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            font-size: 20px;
+        }
+    </style>
+}
+<div class="card">
+    <div class="card-header text-right">
+
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("index","home")">الصفحة الرئيسية </a></li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <form @Url.Action("index", "Profit") method="post">
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            <div class="row" data-step="2" data-intro=" ومن هنا يمكنك تحديد تواريخ الحسابات :-">
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class="form-group col" data-step="3" data-intro=" تحديد بداية تاريخ معين ">
+                    <label class="prelabel" for="from">من تاريخ</label>
+                    <input type="date" class="form-control" id="from" name="from" />
+                </div>
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class="form-group col" data-step="4" data-intro=" تحديد نهاية تاريخ معين ">
+                    <label class="prelabel" for="to">الى تاريخ</label>
+                    <input type="date" id="to" class="form-control" name="to" />
+
+                </div>
+
+                <div class="form-group col" style="margin-top:3%">
+                    @*<input type="button" class="btn btn-default"  id="getContracts" value="عرض العقود"  />*@
+                    <button class="btn btn-default" id="getReport" data-step="6" data-intro=" البدء في عملية البحث "> عــــــرض</button>
+                </div>
+            </div>
+
+        </form>
+        <span class="preLabel" style="font-size:20px ; color:#5493e4">مصروفات و إيرادات الفترة :</span> <br><br>
+
+        <div class="form-row">
+            <div class="form-group col ">
+                <label class="preLabel">إجمالي إيرادات</label>
+                <input type="text" class="form-control" id="totalRevenue" value="@Model.IncomeSummary" style="background-color:white ; border :1px solid #DDD" disabled="">
+                <a id="firstbtn" role="button" class="btn btn-default" style="color:white"> تفاصيل</a>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col ">
+                <label class="preLabel">إجمالي مصروفات</label>
+                <input type="text" class="form-control" id="totalExpenses" value="@Model.ExpensesSummary" style="background-color:white ; border :1px solid #DDD" disabled="">
+                <a id="secondbtn" role="button" class="btn btn-default" style="color:white"> تفاصيل</a>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col ">
+                <label class="preLabel">إجمالي العجز / الفائض</label>
+                <input type="text" class="form-control" id="total" value="@Model.ProfitSummary" style="background-color:white ; border :1px solid #DDD" disabled="">
+            </div>
+        </div>
+
+        <div class="myDiv" id="FirstTable">
+            @if ((Model.IncomeList!=null&&Model.IncomeList.Any()) || Model.CompCommissionsDetails!=null&&Model.CompCommissionsDetails.Any())
+            {
+                <table class="table table-hover table-striped table-bordered">
+
+                    <tr>
+                        <th>البيـــان</th>
+                        <th>اسم الموظف</th>
+                        <th>القيــمه</th>
+                        <th>التاريخ</th>
+                    </tr>
+
+                    <tbody>
+                        @foreach (var item in Model.IncomeList)
+                        {
+                            <tr>
+                                <td>@item.Description</td>
+                                <td>@item.Name</td>
+                                <td>@item.Amount</td>
+                                <td>@item.StringDate</td>
+                            </tr>
+
+                        }
+                        @foreach (var item in Model.CompCommissionsDetails)
+                        {
+                            <tr>
+                                <td>@item.Description</td>
+                                <td>@item.Name</td>
+                                <td>@item.Amount</td>
+                                <td>@item.StringDate</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-default text-right" role="alert">
+                    لايوجد بيانات لاستعراضهم !
+                </div>
+            }
+
+        </div>
+        <div id="SecondTable">
+            <div class="row">
+                <div class="col myDiv">
+                    @if (Model.ExpensesList!=null&&Model.ExpensesList.Any() ||Model.EmpCommissionsDetails!=null&&Model.EmpCommissionsDetails.Any())
+                    {
+                        <table class="table table-hover table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>البيـــان</th>
+                                    <th>اسم الموظف</th>
+                                    <th>القيــمه</th>
+                                    <th>التاريخ</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ExpensesList)
+                                {
+                                    <tr>
+                                        <td>@item.Description</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Amount</td>
+                                        <td>@item.StringDate</td>
+                                    </tr>
+                                }
+                                @foreach (var item in Model.EmpCommissionsDetails)
+                                {
+                                    <tr>
+                                        <td>@item.Description</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Amount</td>
+                                        <td>@item.StringDate</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="alert alert-default text-right" role="alert">
+                            لايوجد بيانات لاستعراضهم !
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- End of body-->
+
+@section scripts{
+    <script>
+        document.getElementById('from').max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        document.getElementById('to').max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];  
+        $(document).ready(function () {
+            $("#FirstTable").hide();
+            $("#SecondTable").hide();
+            $("#secondbtn").on("click", function () {
+                $("#SecondTable").toggle();
+            });
+            $("#firstbtn").on("click", function () {
+                $("#FirstTable").toggle();
+            });
+            $("#getReport").click(function () {
+                  var from=$("#")
+            });
+        });
+    </script>
+}

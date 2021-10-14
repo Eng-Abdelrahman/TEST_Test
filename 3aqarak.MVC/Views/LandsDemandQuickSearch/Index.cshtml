@@ -1,0 +1,416 @@
+﻿@model _3aqarak.MVC.ViewModels.LandsDemandsViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = (_3aqarak.BLL.Dto.UserDto)Session["User"];
+}
+
+<!---->
+@section styles{
+    <style>
+        td.details-control {
+            background: url('../../Assets/Img/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('../../Assets/Img/details_close.png') no-repeat center center;
+        }
+    </style>
+}
+<div class="card">
+    @Html.AntiForgeryToken()
+    <div class="card-header">
+        <div class="card-header text-right">
+            <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#">Library</a></li> -->
+                    <li class="breadcrumb-item active" aria-current="page"> أستعراض جميع طلبات الأراضي المتاحه  </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!--****************************************************************-->
+    <!--***********************************End***************************************************-->
+    <!--************************************Start New one *************************************************-->
+    <div class="card">
+        @*<div class="card-header">
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/">Library</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data</li>
+                    </ol>
+                </nav>
+
+            </div>*@
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col">
+                    <h4 class="text-right">المنطقة من</h4>
+                    @Html.DropDownList("regionss", Model.RegionsTo as SelectList, "All", new { @class = "form-control", }) <br />
+                    <h4 class="text-right">المنطقة إلى</h4>
+                    @Html.DropDownList("regionssTo", Model.RegionsTo as SelectList, "All", new { @class = "form-control", })
+                </div>
+
+
+                <!-- End of column -->
+                <div class="col">
+                    <div class="form-group">
+                        <label class="preLabel" for="spaceFrom">المساحة من  :</label>
+                        <input type="number" class="form-control" id="spaceFrom" placeholder="المساحة من ">
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label class="preLabel" for="spaceTo"> المساحة إلي :  </label>
+                        <input type="number" class="form-control" id="spaceTo" placeholder="  المساحة إلي">
+                    </div>
+                </div> <!-- End of column -->
+
+                <div class="col">
+
+                    <div class="form-group">
+                        <label class="preLabel" for="priceFrom">  السعر من : </label>
+                        <input type="number" class="form-control" id="priceFrom" placeholder=" السعر من">
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label class="preLabel" for="priceTo">  السعر إلي :   </label>
+                        <input type="number" class="form-control" id="priceTo" placeholder="  السعر إلي">
+                    </div>
+
+
+                </div> <!-- End of column -->
+                <div class="col">
+
+                    <div class="form-group">
+                        <label class="preLabel" for="dateFrom">  التاريخ من :  </label>
+                        <input type="date" class="form-control" id="dateFrom" placeholder=" التاريخ من ">
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label class="preLabel" for="dateTo"> التاريخ إلي :  </label>
+                        <input type="date" class="form-control" id="dateTo" placeholder="  التاريخ إلي ">
+                    </div>
+
+
+                </div> <!-- End of column -->
+
+            </div> <!-- End of Row -->
+            <div class="row">
+                <div class="col">
+                    <label class="preLabel">رقم العرض</label>
+                    <input type="number" placeholder="All" id="Demand" class="form-control" /> <br />
+                </div>
+            </div>
+        </div>
+    </div> <!-- End of container-->
+    <div class=" text-center mt-auto">
+        <button class="btn btn-default " id="search_btn"> بحث </button>
+
+        <h3 class="mt-3"> اختر التاريخ و منطقة البحث</h3>
+    </div>
+    <div class="container-fluid">
+        <table id="data-table" class="table text-right table-hover ">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="text-center">#</th>
+                    <th colspan="2">المنطقة</th>
+                    <th colspan="2">المساحة</th>
+                    <th colspan="2">السعر</th>
+                    <th rowspan="2">نوع الإستخدام</th>
+                    @{
+
+                        if (@user.IsAdmin)
+                        {
+                            <th rowspan="2">حذف</th>
+                        }
+                        else { }
+                    }
+                    @*<th rowspan="2">حذف</th>*@
+                    <th rowspan="2">المزيد</th>
+                </tr>
+                <tr>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
+
+                </tr>
+            </thead>
+
+        </table>
+
+
+    </div>
+    @*<div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog .modal-dialog-centered modal-lg" role="document">
+
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">تفاصيل العرض</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+    <!--********************************************End thw new one ***********************************************-->
+    <div id="myModal" class="modal fade " role="dialog">
+        <div class="modal-dialog .modal-dialog-centered modal-lg" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">تفاصيل العرض</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+            $(document).ready(function () {
+
+            //SET THE DATE TIME PICKER TO TODAY DATE
+            var now = new Date();
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+           // $('.pdate').val(today);
+            // END SET DATE
+
+            $("#search_btn").click(function () {
+                table.draw();
+            });
+
+            function format(full) {
+                // `d` is the original data object for the row
+                var checkIsAdmine = "@user.IsAdmin";
+                if (checkIsAdmine == "True") {
+                    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;width:100%;">' +
+                        '<tr>' +
+                        '<td align="right">' + '<button type="button" title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon unitDetails" data-toggle="modal" data-id="' + full.PK_LandsDemands_Id + '"><i class="tim-icons icon-notes"></i></button>' + '</td>' +
+                        //'<td align="right">' + '<button type="button" title="حذف " rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_LandsDemands_Id + '"><i class="tim-icons icon-simple-remove"></i></button>' + '</td>' +
+                        '<td align="right">' + '<a  class="filter" href="/LandsDemands/GetInstantMatches/' + full.PK_LandsDemands_Id + '">الترشيحات</a>' + '</td>' +
+                        //'<td align="right">' + '<a  class=" btn btn-default " href = "/AvailableQuickSearch/DemandAvailable?demandId=' + full.PK_AvailableUnits_Id + '" >بحث عن طلبات عميل معين بالاسم او الهاتف</a>' + '</td>' +
+                        '<td align="right">' + '<a  class=" btn btn-default " href = "/LandsDemandQuickSearch/LandAvailableDemand?DemandId=' + full.PK_LandsDemands_Id + '&BuyerId=' + full.FK_LandsDemands_Clients_ClientId + '" >بحث عن طلبات عميل معين بالاسم او الهاتف</a>' + '</td>' +
+                        '</tr>' +
+                        '</table>';
+
+
+                }
+                else {
+                    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;width:100%;">' +
+                        '<tr>' +
+                        '<td align="right">' + '<button type="button" title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon unitDetails" data-toggle="modal" data-id="' + full.PK_LandsDemands_Id + '"><i class="tim-icons icon-notes"></i></button>' + '</td>' +
+                        '<td align="right">' + '<a  class="filter" href="/LandsDemands/GetInstantMatches/' + full.PK_LandsDemands_Id + '">الترشيحات</a>' + '</td>' +
+                        //'<td align="right">' + '<a  class=" btn btn-default " href = "/AvailableQuickSearch/DemandAvailable?demandId=' + full.PK_AvailableUnits_Id + '" >بحث عن طلبات عميل معين بالاسم او الهاتف</a>' + '</td>' +
+                        '<td align="right">' + '<a  class=" btn btn-default " href = "/LandsDemandQuickSearch/LandAvailableDemand?DemandId=' + full.PK_LandsDemands_Id + '&BuyerId=' + full.FK_LandsDemands_Clients_ClientId + '" >بحث عن طلبات عميل معين بالاسم او الهاتف</a>' + '</td>' +
+                        '</tr>' +
+                        '</table>';
+                }
+
+
+
+
+            }
+        var checkIsAdmine = "@user.IsAdmin";
+                if (checkIsAdmine == "True") {
+                    table = $("table").DataTable({
+
+                        "language": {
+                            "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                        },
+                        "processing": true,
+                        "serverSide": true,
+                        "filter": false,
+                        "bFilter": false,
+                        "orderMulti": false,
+                        "pageLength": 5,
+                        "ajax": {
+                            "url": "/LandsDemandQuickSearch/LoadData",
+                            "type": "post",
+                            "datatype": "json",
+                            "data": function (d) {
+                        @*#areaFrom #areaTo #spaceFrom #spaceTo #priceFrom #priceTo #dateFrom #dateTo #search_btn  #data-table   *@
+                                d.regionFrom = $("#regionss").val();
+                                d.regionTo = $("#regionssTo").val();
+                                d.fromDate = $("#dateFrom").val();
+                                d.toDate = $("#dateTo").val();
+                                d.SpaceFrom = $("#spaceFrom").val();
+                                d.SpaceTo = $("#spaceTo").val();
+                                d.PriceFrom = $("#priceFrom").val();
+                                d.PriceTo = $("#priceTo").val();
+                                d.Demand = $("#Demand").val();
+                            },
+                        },
+                        "columns":
+                            [
+
+                                { "data": "PK_LandsDemands_Id", "name": "PK_LandsDemands_Id", "autoWidth": true },
+                                { "data": "RegionNameFrom", "name": "RegionNameFrom", "autowidth": true },
+                                { "data": "RegionNameTo", "name": "RegionNameTo", "autowidth": true },
+
+                                { "data": "MinSpace", "name": "MinSpace", "autowidth": true },
+                                { "data": "MaxSpace", "name": "MaxSpace", "autowidth": true },
+
+                                { "data": "MinPrice", "name": "MinPrice", "autowidth": true },
+                                { "data": "MaxPrice", "name": "MaxPrice", "autowidth": true },
+
+                                { "data": "TypeName", "name": "TypeName", "autowidth": true },
+                                {
+                                    "render": function (data, type, full, meta) {
+                                        var checkIsAdmine = "@user.IsAdmin";
+                                        if (checkIsAdmine == "True") {
+                                            return '<button type="button" title="حذف " rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_LandsDemands_Id + '"><i class="tim-icons icon-simple-remove"></i></button>';
+                                        }
+                                        else { return '' }
+                                    }
+                                },
+                                {
+
+                                    "className": 'details-control',
+                                    "orderable": false,
+                                    "data": null,
+                                    "defaultContent": ''
+
+                                },
+                            ],
+
+                    });
+                }
+                else {
+                     table = $("table").DataTable({
+
+                        "language": {
+                            "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                        },
+                        "processing": true,
+                        "serverSide": true,
+                        "filter": false,
+                        "bFilter": false,
+                        "orderMulti": false,
+                        "pageLength": 5,
+                        "ajax": {
+                            "url": "/LandsDemandQuickSearch/LoadData",
+                            "type": "post",
+                            "datatype": "json",
+                            "data": function (d) {
+                        @*#areaFrom #areaTo #spaceFrom #spaceTo #priceFrom #priceTo #dateFrom #dateTo #search_btn  #data-table   *@
+                                d.regionFrom = $("#regionss").val();
+                                d.regionTo = $("#regionssTo").val();
+                                d.fromDate = $("#dateFrom").val();
+                                d.toDate = $("#dateTo").val();
+                                d.SpaceFrom = $("#spaceFrom").val();
+                                d.SpaceTo = $("#spaceTo").val();
+                                d.PriceFrom = $("#priceFrom").val();
+                                d.PriceTo = $("#priceTo").val();
+                                  d.Demand = $("#Demand").val();
+                            },
+                        },
+                        "columns":
+                            [
+
+                                { "data": "PK_LandsDemands_Id", "name": "PK_LandsDemands_Id", "autoWidth": true },
+                                { "data": "RegionNameFrom", "name": "RegionNameFrom", "autowidth": true },
+                                { "data": "RegionNameTo", "name": "RegionNameTo", "autowidth": true },
+
+                                { "data": "MinSpace", "name": "MinSpace", "autowidth": true },
+                                { "data": "MaxSpace", "name": "MaxSpace", "autowidth": true },
+
+                                { "data": "MinPrice", "name": "MinPrice", "autowidth": true },
+                                { "data": "MaxPrice", "name": "MaxPrice", "autowidth": true },
+
+                                { "data": "TypeName", "name": "TypeName", "autowidth": true },
+
+                                {
+
+                                    "className": 'details-control',
+                                    "orderable": false,
+                                    "data": null,
+                                    "defaultContent": ''
+
+                                },
+                            ],
+
+                    });
+                };
+            //add Child rows here ****************************************************
+            $('table tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+
+
+             $("table").on("click", ".delete", function () {
+
+                var Id = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد حذف هذا العرض؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/LandsDemands/DeleteLandDemand",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: Id,
+                                 },
+
+                                 success: function (result) {
+                                     if (result.valid) {
+                                         alertify.alert(result.message, function () {
+                                             button.parents("tr").remove();
+                                         });
+                                     }
+                                     else {
+                                         alertify.alert(result.message, function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+            })
+
+            $(document).on("click", ".unitDetails", function () {
+                var demandId = $(this).attr("data-id");
+                location.href = "/LandsDemands/EditeLandDemand/" + demandId;
+            });
+        });
+    </script>
+}

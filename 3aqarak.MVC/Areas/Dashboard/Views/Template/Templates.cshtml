@@ -1,0 +1,169 @@
+﻿
+@{
+    ViewBag.Title = "Templates";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item active " aria-current="page">صيغ  العقود</li>
+
+    </ol>
+</nav>
+<div class="card">
+    @Html.AntiForgeryToken()
+    <div class="card-header">
+        <h4 class="title text-right">أستعراض</h4>
+    </div>
+    <div class="card-body">        
+       
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 " data-step="2" data-intro="لإختيار نوع صيغة العقد التي تريد البحث عنها ">
+                    @Html.Label("نوع العمليه", new { @class = "control-label" })
+                    @Html.DropDownList("Trans", null, new { id = "trans", @class = "form-control" })
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 " data-step="3" data-intro="لإختيار فئة صيغة العقد التي تريد البحث عنها ">
+                    @Html.Label("الفئــه", new { @class = "control-label" })
+                    @Html.DropDownList("Cats", null, new { id = "cats", @class = "form-control" })
+
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">
+                    <input id="getTemps" type="button" value="عرض العقود" class="btn btn-default "  data-step="4" data-intro="لبدء البحث عن المدخلات التي أدخلتها "/>
+                </div>
+            </div>
+            <table class="table text-right table-hover " data-step="1" data-intro="هذة الصفحه مسؤوله عن عرض جميع صيف العقود المدخله وإضافة صيغه جديده أو تعديلها أو حذفها">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th>عرض الصيغة </th>   
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+            <button id="add" class="btn btn-default animation-on-hover" type="button" data-step="5" data-intro="يمكن من هنا إضافة صيغة عقد جديدة">اضافة </button>      
+
+    </div>
+</div>
+@section scripts{
+    <script>       
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var catName = $("#cats").find(':selected').val();
+        var transName = $("#trans").find(':selected').val();
+        $(document).ready(function () {
+
+            table = $("table").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+                "bFilter": false,
+
+                "ajax": {
+                    "url": "/dashboard/Template/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {                       
+                        d.catId = $("#cats").find(':selected').val();
+                        d.transId = $("#trans").find(':selected').val();
+                    }
+                },
+
+                "columns": [
+                    { "data": "PK_StatContract_Id", "name": "PK_StatContract_Id", "autoWidth": true },
+                    {
+                        "render": function (data, type, full, meta) { return '<label>' + $("#cats").find(':selected').text() + " " + $("#trans").find(':selected').text() + '</label>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return ' <button type="button" data-step="9" data-intro="يمكن من هنا تعديل أياً من صيغ العقود"  title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon edit"data-id="' + full.PK_StatContract_Id + '"><i class="tim-icons icon-notes"></i></button>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) {
+                            return '<button type="button" title="حذف " data-step="10" data-intro="يمكن من هنا حذف أياً من صيغ العقود"  rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_StatContract_Id + '"><i class="tim-icons icon-simple-remove"></i></button>';
+                        }
+
+                    },
+
+                ]
+            });
+            $("#getTemps").click(function () {
+                catName = $("#cats").find(':selected').text();
+                transName = $("#trans").find(':selected').text();
+                table.draw();
+            });
+
+            $("#add").click(function () {
+                var catId = $("#cats").val();
+                var transId = $("#trans").val();
+                location.href = "@Url.Action("AddTemplate","Template",new {area="dashboard"})";
+            });
+            $("table").on("click", ".edit", function () {              
+                Id = $(this).attr("data-id");
+                location.href = "/dashboard/Template/editTemplate/" + Id;
+            });
+
+            $("table").on("click", ".delete", function () {
+
+                var accessId = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد حذف ذلك السجل؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/dashboard/Template/DeleteTemplate",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: accessId,
+                                 },
+
+                                 success: function (result) {
+                                     if (result) {
+                                         alertify.alert("تم حذف السجل بنجاح !", function () {
+                                             button.parents("tr").remove();
+                                         });
+                                     }
+                                     else {
+                                         alertify.alert("لم يتم حذف السجل بنجاح!", function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+            })
+
+        });
+         $(document).ajaxComplete(function () {
+           
+            $("input[aria-controls='DataTables_Table_0']").attr({ "data-step": "6", "data-intro": "يمكن من هنا البحث عن صيغة عقد معينه" });
+             $("select[aria-controls='DataTables_Table_0']").attr({ "data-step": "7", "data-intro": "يمكن من هنا تحديد عدد السجلات المعروضه" });
+              $("#DataTables_Table_0_paginate").attr({ "data-step": "8", "data-intro": "تستخدم هذه للتنقل بين الصفحات إن كانة كثيرة" });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

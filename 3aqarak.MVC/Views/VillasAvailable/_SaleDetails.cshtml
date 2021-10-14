@@ -1,0 +1,434 @@
+﻿
+@model _3aqarak.MVC.ViewModels.VillsAvailableViewModel
+
+
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item active" aria-current="page">تعديل عرض بيع لعميل </li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="AddClientsaleForm">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.PK_VillasAvailables_Id, new { id = "id" })
+                        @Html.HiddenFor(m => m.FK_VillasAvailables_Categories_Id, new { id = "cats" })
+                        @Html.HiddenFor(m => m.FK_VillasAvailables_Clients_ClientId, new { id = "clientId" })
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                        @*<div class="form-group  ">
+            <label for="first" class="text-right"> موظف السيلز:<abbr class="req">*</abbr></label>
+            <input type="text" value="@ViewBag.salesName" class="form-control" id="tele" placeholder="السيلز" name="FK_VillasAvailables_Users_SalesId" required readonly>
+            @Html.ValidationMessageFor(m => m.FK_VillasAvailables_Users_SalesId, "", new { @class = "text-danger " })
+        </div>*@
+
+
+
+
+                        <div class="row">
+                            @*<div class="col">
+                <label>القسم<abbr class="req">*</abbr></label>
+                <input type="text" class="form-control" id="transValue" value="@Model.Type" data-id="@Model.FK_VillasAvailables_Transactions_Id" readonly>
+            </div>*@
+
+                            <div class="col">
+                                <label>منطقة العقار<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_VillasAvailables_Regions_Id, Model.Regions, "اختر المنطقة", new { @class = "form-control", id = "Regions", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_Regions_Id, "", new { @class = "text-danger", id = "regError" })
+                            </div>
+                            <div class="col">
+                                <label>فئه العقار<abbr class="req">*</abbr></label>
+                                <input type="text" class="form-control" value="فيلات" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>مساحة الفيلا<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" placeholder="المساحة" min="0" value="@Model.Space" id="space" required readonly>
+                                    @Html.ValidationMessageFor(m => m.Space, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>عدد الغرف<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" placeholder="عدد الغرف" min="0" value="@Model.Rooms" id="rooms" required readonly>
+                                    @Html.ValidationMessageFor(m => m.Rooms, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label> الحمامات<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" placeholder="عدد الحمامات" min="0" value="@Model.BathRooms" id="baths" required readonly>
+                                    @Html.ValidationMessageFor(m => m.BathRooms, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>التشطيب<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_VillasAvailables_Finishings_Id, Model.Finishings, "اختر نوع التشطيب", new { @class = "form-control", id = "finishing", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_Finishings_Id, "", new { @class = "text-danger", id = "finishError" })
+                            </div>
+
+
+                            <div class="col">
+                                <label>الاطــــلاله</label>
+                                @Html.DropDownListFor(m => m.FK_VillasAvailables_View_Id, Model.Views, new { @class = "form-control", id = "view", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_View_Id, "", new { @class = "text-danger", id = "viewError" })
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>مساحة الأرض<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" placeholder="محيط الفيلا" min="0" value="@Model.AreaSpace" id="AreaSpace" required readonly>
+                                    @Html.ValidationMessageFor(m => m.AreaSpace, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>السعــر المطــلوب<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control sty form-control" id="price" min="0" placeholder="السعر المطلوب" value="@Model.Price" required readonly>
+                                    @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>طــريقة الدفع:<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.FK_VillasAvailables_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_VillasAvailables_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label class="control-label" for="address">عدد المصاعد<abbr class="req">*</abbr></label>
+                                    <input class="form-control sty" id="NoOfElevators" value="@Model.NoOfElevators" readonly />
+                                    @Html.ValidationMessageFor(m => m.NoOfElevators, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="FilterHedin">
+                            <div class="form-group col">
+                                <label>المتبقي</label>
+                                <input type="number" class="form-control" min="0" value="@Model.Remaining" readonly>
+                            </div>
+                            <div class="form-group col">
+                                <label>المكسب</label>
+                                <input type="number" class="form-control" min="0" value="@Model.Over" readonly>
+                            </div>
+                            <div class="form-group col">
+                                <label>سنوات الأقساط</label>
+                                <input type="number" class="form-control" min="0" value="@Model.YearOfInstallment" readonly>
+                            </div>
+                            <div class="form-group col">
+                                <label>نظام القسط</label>
+                                @{
+                                    var BOI = Model.BasisOfInstallment;
+                                    if (BOI == 1)
+                                    {
+                                        <input type="text" class="form-control" placeholder="نظام الأقساط" min="0" value="سنوي" readonly>
+                                    }
+                                    else if (BOI == 2)
+                                    {
+                                        <input type="text" class="form-control" placeholder="نظام الأقساط" min="0" value="نصف سنوي" readonly>
+                                    }
+                                    else if (BOI == 3)
+                                    {
+                                        <input type="text" class="form-control" placeholder="نظام الأقساط" min="0" value="ربع سنوي" readonly>
+                                    }
+                                    else if (BOI == 4)
+                                    {
+                                        <input type="text" class="form-control" placeholder="نظام الأقساط" min="0" value="شهري" readonly>
+                                    }
+                                    else
+                                    { <input type="text" class="form-control" placeholder="نظام الأقساط" min="0" value="لا يوجد" readonly>}
+
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>رقم الفيلا </label>
+                                    <input type="text" placeholder="رقم الفيلا" value="@Model.VillaNumber" class="form-control sty form-control" id="VillaNumber" readonly>
+                                    @Html.ValidationMessageFor(m => m.VillaNumber, "", new { @class = "text-danger", required = "required" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>رقم المجموعه </label>
+                                    <input type="text" placeholder="المجموعه" value="@Model.GroupNumber" class="form-control sty form-control" id="GroupNumber" readonly>
+                                    @Html.ValidationMessageFor(m => m.GroupNumber, "", new { @class = "text-danger", required = "required" })
+                                </div>
+                            </div>
+
+
+                            <div class="col">
+                                <div class="form-group ">
+                                    <h5>وصف الوحدة</h5>
+                                    <textarea class="form-control sty" id="unitDescrip" rows="3" style="border :1px solid #2b3553  ; border-radius:10px" required readonly>@Model.ShortDescription</textarea>
+                                    @Html.ValidationMessageFor(m => m.ShortDescription, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <h5>الملاحظـــات</h5>
+                                    <textarea class="form-control sty" id="notes" rows="3" cols="300" style="border :1px solid #2b3553  ; border-radius:10px" readonly>@Model.Notes</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label>تفاصيل اضافيه</label>
+
+                            <div class="row" style="float:right">
+
+                                <div class="checkbox icheck form-check form-check-inline">
+                                    <label>
+                                        @if (Model.IsFurnished)
+                                        {
+                                            <input id="furnish" name="" type="checkbox" value="true" checked>
+                                        }
+                                        else
+                                        {
+                                            <input id="furnish" name="" type="checkbox" value="false">
+                                        }
+                                        مفروش
+                                    </label>
+                                </div>
+
+                                <div class="checkbox icheck form-check form-check-inline">
+                                    <label>
+                                        <input id="market" name="" type="checkbox" value="false"> بحث سوقي
+                                    </label>
+                                </div>
+                                <div class="checkbox icheck form-check form-check-inline">
+                                    <label>
+                                        @if (Model.IsNegotiable)
+                                        {
+                                            <input id="negotiate" name="" type="checkbox" value="true" checked>
+                                        }
+                                        else
+                                        {
+                                            <input id="negotiate" name="" type="checkbox" value="false">
+                                        }
+                                        قابل للنقاش
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group ">
+
+                            <div class="col">
+                                <label>الكماليات المتاحة</label>
+                                @*@Html.DropDownListFor(m => m.AccessoriesArr, Model.Accessories, new { @class = "form-control", id = "access", required = "required", multiple = "multiple" })*@
+                                <select class="form-control valid" data-val="true" data-val-required="لابد من ملا هذا الحقل" id="access" multiple="multiple" name="AccessoriesArr" required="required">
+                                    @foreach (var item in Model.Accessories)
+                                    {
+                                        if (item.Selected)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                            @*<div class="row">
+                <label>الكماليات المتاحة : </label>
+                <div class="row">
+                    @foreach (var item in Model.Accessories)
+                    {
+                        if (item.Selected)
+                        {
+                            <div class="checkbox icheck form-check form-check-inline ">
+                                <label>
+                                    <input class="access" type="checkbox" checked value="true" data-id="@item.Value">@item.Text
+                                </label>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="checkbox icheck form-check form-check-inline ">
+                                <label>
+                                    <input class="access" type="checkbox" value="false" data-id="@item.Value">@item.Text
+                                </label>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>*@
+                        </div>
+
+                        <div class="form-group">
+                            <label>صـــــور الوحــده:</label>
+                            @if (Model.Images.Any())
+                            {
+                                var counter = 0;
+                                var index = 0;
+                                int elementsInloop = 0;
+                                var loops = (Model.Images.Length % 4 > 0) ? ((Model.Images.Length / 4) + 1) : ((Model.Images.Length / 4));
+                                for (int i = 0; i < loops; i++)
+                                {
+                                    <div>
+                                        @{
+                                            index = counter;
+                                            elementsInloop = (Model.Images.Length - counter) > 4 ? 4 : Model.Images.Length - counter;
+
+                                        }
+
+                                        @for (int j = index; j < index + elementsInloop; j++)
+                                        {
+
+                                            <img src="~/@Model.Images[j]" width="100" height="100" style="border:1px thin grey;margin-right:5px;" alt="">
+
+                                            counter = counter + 1;
+                                        }
+
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+
+                                <div class="alert alert-danger text-right" role="alert">
+                                    لايوجد صور متاحة للوحده !
+                                </div>
+                            }
+
+                        </div>
+                    </form>
+
+                    <!-- Image Modal -->
+                    <div id="myModal" class="modal fade " role="dialog">
+                        <div class="modal-dialog .modal-dialog-centered " role="document">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Choose image</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        @if (Model.Images.Any())
+                                        {
+                                            var counter = 0;
+                                            var index = 0;
+                                            int elementsInloop = 0;
+                                            var loops = (Model.Images.Length % 4 > 0) ? ((Model.Images.Length / 4) + 1) : ((Model.Images.Length / 4));
+                                            for (int i = 0; i < loops; i++)
+                                            {
+                                                <div>
+                                                    @{
+                                                        index = counter;
+                                                        elementsInloop = (Model.Images.Length - counter) > 4 ? 4 : Model.Images.Length - counter;
+
+                                                    }
+
+                                                    @for (int j = index; j < index + elementsInloop; j++)
+                                                    {
+
+                                                        <img src="~/@Model.Images[j]" width="100" height="100" style="border:1px thin grey;margin-right:5px;" alt="">
+
+                                                        counter = counter + 1;
+                                                    }
+
+                                                </div>
+                                            }
+                                        }
+                                        <div class="jumbotron">
+                                            <form action="/ClientSales/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                            <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                                        </div>
+                                        <span class="alert alert-primary">الصورة الاولى التي سيتم تحميلها هي الصورة الاساسيه لعنوان العرض</span><br /><br />
+                                        <span class="alert alert-warning">اقصى عدد للصور هو 9 صور فقط  </span>
+                                        <span class="alert alert-info">مساحة الصوره لا تزيد عن 3 ميجابايتس  </span>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1094px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        </div>
+    </div>  <!-- End of body-->
+
+
+
+</div>
+<script>
+    //CKEDITOR.replace('notes');
+    //CKEDITOR.replace('title');
+    $("document").ready(function () {
+        if ($("#payment").val() ==3) { $("#FilterHedin").hide() }
+        $("select").attr("disabled", "diasabled");
+    });
+</script>
+

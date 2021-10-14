@@ -1,0 +1,111 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.ProfileViewModel
+
+@{
+    ViewBag.Title = "ViewProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/Theme/assets/Plugins/icheck-1.x/icheck-1.x/skins/flat/pink.css" rel="stylesheet" />
+
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        img {
+            border-radius: 50%;
+            margin-left: 43%;
+        }
+
+        #passbtn {
+            height: 45px;
+            width: 166px;
+            margin-top: 30px;
+            float: right
+        }
+
+        #user1 {
+            margin-top: 30px;
+        }
+
+        input[type="text"], input[type="email"] {
+            font-size: 1.4em;
+        }
+
+        .main-panel {
+            border-top: 1px solid #27293d;
+        }
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item  " aria-current="page"><a href="@Url.Action("Users","Admin")">المستــخدمبن</a></li>
+        <li class="breadcrumb-item active " aria-current="page">الصفحـــه الشخصــيه</li>
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">الصفحـــه الشخصــيه</h4>
+    </div>
+    <div class="card-body">        
+
+            <div class="form-group  ">
+                <label for="first" class="text-right"> الاسم الاول :</label>
+                <input type="text" class="form-control" id="first" placeholder="الاسم الاول" name="FirstName" required value="@Model.FirstName" readonly>              
+            </div>
+
+            <div class="form-group  ">
+                <label for="last" class="text-right"> الاسم الاخير :</label>
+                <input type="text" class="form-control" id="last" placeholder="الاسم الاخير" name="LastName" required value="@Model.LastName"readonly>               
+            </div>
+
+            <div class="form-group  ">
+                <label for="user" class="text-right">اسم المستخدم :</label>
+                <input type="text" class="form-control" id="user" placeholder="اسم المستخدم" name="UserName" required value="@Model.UserName"readonly>
+            </div>
+
+            <div class="form-group ">
+                <label for="phone" class="text-right">الموبايل :</label>
+                <input type="text" class="form-control" id="phone" placeholder="الموبايل" name="PhoneNumber" required value="@Model.PhoneNumber"readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="email">الإيميل :</label>
+                <input type="email" class="form-control" id="email" placeholder="الإيميل" name="Email" required value="@Model.Email"readonly>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="gender">الجنس/النوع:</label>
+                    @Html.DropDownListFor(m => m.FK_Users_Genders_Id, Model.GenderList, new { id = "gender", @class = "form-control", @required = "required", @readonly = "readonly" })
+                </div>
+                @*<div class="form-group col-md-4">
+
+                    <label>تاريخ الميلاد</label>
+                    <input type="date" id="user1" class="form-control " name="event_date" placeholder="اضغط هنا لاختيار التاريخ " autocomplete="off" required value="@Model.DateOfBirth.ToString("yyyy-MM-dd")" readonly>
+
+                </div>*@
+            </div>           
+    </div>
+
+</div>
+</div>
+@section scripts{
+ 
+  
+}
+
+
+
+
+
+

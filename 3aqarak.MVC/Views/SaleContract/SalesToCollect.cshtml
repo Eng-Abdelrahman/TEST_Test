@@ -1,0 +1,78 @@
+﻿@model List<_3aqarak.MVC.ViewModels.SaleContractViewModel>
+@{
+    ViewBag.Title = "SalesToCollect";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-header">
+
+    </div>
+    <div class="card-body">
+        <table class="table text-right table-hover dataTable no-footer">
+            <thead>
+                <tr class="active">
+                    <th>#</th>
+                    <th>تاريخ الإيجار</th>
+                    <th>تاريخ الإيجار القادم</th>
+                    <th>قيمه الايجار</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="@item.PK_SalesHeaders_Id">
+                            <td>@item.PK_SalesHeaders_Id</td>
+                            <td><input type="date" value="@item.DateOfNextInstall.Value.ToString("yyyy-MM-dd")" class="form-control" /></td>
+                            <td><input type="date" class="form-control newdate"  /></td>
+                            <td><input type="text" placeholder="ادخل قيمه القسط"  class="form-control PaidAmount" /></td>
+                            <td><input type="text" placeholder="ادخل قيمه القسط القادم " class="form-control nextPaidAmount" /></td>
+                            <td><button class="btn btn-success collect" data-id="@item.PK_SalesHeaders_Id" data-total-amount="@item.TotalAmount">تحصيل الايجار</button></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(".collect").click(function () {
+            var saleContractId = $(this).attr("data-id");
+            var totalAmount = $(this).attr("data-total-amount");
+            var nextDate = $(this).parents("tr").find(".newdate").val();
+            var nextFees =  $(this).parents("tr").find(".PaidAmount").val();
+            var nextPuls = $(this).parents("tr").find(".nextPaidAmount").val();
+            if ($(this).parents("tr").find(".newdate").val == "") {
+                $(".card-header").html("لابد من اختيار ميعاد");
+            }
+            if (nextFees > totalAmount) {
+                alertify.set('notifier', 'position', 'top-left');
+                alertify.notify("لابد من مراجعة البيانات", "error", function () { });
+                $(this).parents("tr").find(".nextPaidAmount").text(0);
+                $(this).parents("tr").find(".PaidAmount").focus();
+            }
+            $.ajax({
+                type: "GET",
+                url: "/SaleContract/UpdateNextSaleInstalled",
+                data: { newDate: nextDate, saleContractId: saleContractId, amount: nextFees, nextPuls: nextPuls },
+                success: function (response) {
+                    debugger;
+                    if (response.Valid === false) {
+                        $(".card-header").html(response.message);
+                    }
+                    else {
+                        $(".card-header").html(response.message);
+                        location.href = "/";
+                    }
+                },
+                error: function () {
+                }
+            });
+        });
+    </script>
+}

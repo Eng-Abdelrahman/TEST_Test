@@ -1,0 +1,662 @@
+﻿@model _3aqarak.MVC.ViewModels.PreviewScreenViewModel
+
+@{
+    ViewBag.Title = "PreviewResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","Home")">الرئيسية</a></li>
+        <li class="breadcrumb-item "><a href="@Url.Action("PreviewList","Preview")">صفحة المعاينات</a></li>
+        <li class="breadcrumb-item active " aria-current="page">نتيجة المعاينه</li>
+    </ol>
+</nav>
+<div class="card"  data-step="1" data-intro="هذه الصفحه مخصصه إدخال نتيجة المعاينه ">
+
+    <div class="card-header">
+        <h4 class="title text-right">التفاصــيل</h4>
+    </div>
+    <div class="card-body">
+        @if (Model.Header == null)
+        {
+            <div class="alert alert-danger text-right" role="alert">
+                لايوجد بيانات لاستعراضهم !
+            </div>
+        }
+        else
+        {
+            <form style="float :right">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                   
+                    <div class="form-group  col">
+                        <label class="preLabel"> اسم الموظف : </label>
+                        <input type="text" class="form-control" placeholder="اسم الموظف" disabled="" value="@Model.Header.EmpName">
+                    </div>
+
+                    <div class="form-group  col">
+                        <label class="preLabel"> اسم المشتري : </label>
+                        <input type="text" class="form-control" placeholder="اسم العميل" disabled="" value="@Model.Header.BuyerName">
+                    </div>
+
+                    <div class="form-group  col">
+                        <label class="preLabel"> كود العميل : </label>
+                        <input type="text" class="form-control" placeholder="كود العميل" disabled="" value="@Model.Header.FK_PreviewHeaders_Clients_BuyerId">
+                    </div>
+
+                    <div class="form-group col">
+                        <label class="preLabel"> تاريخ المعاينة </label>
+                        <input type="text" class="form-control" placeholder="تاريخ المعاينة" disabled="" value="@Model.Header.ReviewDate.ToShortDateString()">
+                    </div>
+
+                    <div class="form-group col">
+                        <label class="preLabel"> كود المعاينة </label>
+                        <input type="text" class="form-control" placeholder="كود المعاينة" disabled="" value="@Model.Header.PK_PreviewHeaders_Id">
+                    </div>
+
+                </div>
+
+            </form>
+            //advancedPayment and expexted contract options modal
+            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="agreementOptions" id="agreementcontract" value="true">
+                            <label class="form-check-label" for="agreementcontract">عقد اتفاق</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="agreementOptions" id="paymentReciept" value="false">
+                            <label class="form-check-label" for="paymentReciept">ايصال عربون</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table text-right table-hover ">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th> كود االعميــل</th>
+                        <th> اسم البائــع</th>
+                        <th> تفاصيل الوحده</th>
+                        <th>نتيجة المعاينة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Details)
+                    {
+                        <tr>
+                            <td class="text-center detId ">@item.PK_PreviewDetails_Id</td>
+                            <td class="text-center seller">@item.Fk_PreviewDetails_Clients_SellerId</td>
+                            <td>@item.SellerName</td>
+                            <td>
+                                <button type="button" title="التفاصيــل " rel="tooltip" class="btn btn-success btn-sm btn-icon details" data-catId="@item.Category_Id" data-saleId="@item.AvailableUnits_Id">
+                                    <i class="tim-icons icon-notes"></i>
+                                </button>
+                                @*<a href="@Url.Action("SaleDetails","clientsales",new { saleId=item.FK_PreviewDetails_AvailableUnits_Id, demandId=Model.Header.FK_PreviewHeaders_DemandUnit_Id })">تفاصيل الوحدة</a>*@
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+
+                                    <input class="form-check-input accept" id="getData" type="radio" name="@item.PK_PreviewDetails_Id" value="@item.PK_PreviewDetails_Id" data-toggle="modal" data-target=".bd-example-modal-lg"> &nbsp;
+                                    <label class="form-check-label"> مقبول </label>
+
+                                </div>
+
+                                <div class="form-check form-check-inline">
+
+                                    <input class="form-check-input cancel " type="radio" name="@item.PK_PreviewDetails_Id" value="@item.PK_PreviewDetails_Id">&nbsp;
+                                    <label class="form-check-label"> إلغاء </label>
+
+                                </div>
+                                <div class="form-check form-check-inline">
+
+                                    <input class="form-check-input reject" type="radio" name="@item.PK_PreviewDetails_Id" value="@item.PK_PreviewDetails_Id">&nbsp;
+                                    <label class="form-check-label"> رفـض </label>
+
+                                </div>
+                                @*<button type="button" class="btn btn-default delay" data-toggle="modal" data-target="#delayModal">
+                                        حجز موعد اخر
+                                    </button>*@
+                                <div class="form-check form-check-inline">
+
+                                    <input class="form-check-input postpone" type="radio" data-toggle="modal" data-target="#delayModal" name="@item.PK_PreviewDetails_Id" value="@item.PK_PreviewDetails_Id">&nbsp;
+                                    <label class="form-check-label"> تأجيــل </label>
+
+
+                                </div>
+                                @if (item.IsNoDecision)
+                                {
+                                    <div class="form-check form-check-inline">
+
+                                        <input class="form-check-input noDecision " checked type="radio" name="@item.PK_PreviewDetails_Id" value="@item.PK_PreviewDetails_Id">&nbsp;
+                                        <label class="form-check-label">  لم يتخذ قرار بعد</label>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-check form-check-inline">
+
+                                        <input class="form-check-input noDecision " type="radio" name="@item.PK_PreviewDetails_Id" value="@item.PK_PreviewDetails_Id">&nbsp;
+                                        <label class="form-check-label">  لم يتخذ قرار بعد</label>
+
+                                    </div>
+                                }
+
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!---->
+            <!-- The Modal -->
+            @*<div class="modal fade" id="myModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">الرجاء إختيار نوع العقد</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+
+                            <button type="button" id="agreement" class="btn btn-primary btn-lg btn-block">عــقــد إتــفـــاق</button>
+                            <button type="button" id="deposit" class="btn btn-secondary btn-lg btn-block">عربون</button>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>*@
+            <!---->
+            @*<button id="add" class="btn btn-default animation-on-hover" type="button">حفـــــــظ </button>*@
+        }
+
+
+        <!--Modal date-->
+        <div class="modal fade" id="delayModal" tabindex="-1" role="dialog" aria-labelledby="delayModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="datetime-local" id="date" />
+                        <span class="text-danger" id="dateErr"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary " id="savePostpone">حفــظ</button>
+                        <button type="button" class="btn btn-secondary " data-dismiss="modal">اغــلاق</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal details-->
+        <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary " data-dismiss="modal">اغــلاق</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal calls-->
+        <div class="modal fade" id="callModal" tabindex="-1" role="dialog" aria-labelledby="callModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="call-Form">
+                            <div class="thirdDiv">
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <br>
+                                        <label for="text" style="float:right "> التاريخ</label>
+                                        <input type="datetime-local" required id="CalldateTime" style="width:300px; height:40px ;border :1px solid #DDD ; border-radius:5px" class="form-control usr1">
+                                        <span class="text-danger " id="callDateErr"></span>
+                                    </div>
+
+                                </div>
+
+                                <br>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label style="float:right"> موضوع المكالمة </label>
+                                        <input type="text" required class="form-control" id="callSubject2">
+                                        <span class="text-danger" id="callSubject2Err"></span>
+                                    </div>
+
+                                </div>
+                                <br>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label style="float:right"> تفاصيل المكالمة </label>
+                                        <textarea required class="form-control" id="callDescription2" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px"></textarea>
+                                        <span class="text-danger" id="callDescription2Err"></span>
+                                    </div>
+
+                                </div>
+                                <br>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label style="float:right ; margin-right:10px"> الملاحظات </label>
+                                        <textarea class="form-control" id="notes2" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px"></textarea>
+                                        <span class="text-danger" id="notesErr"></span>
+                                    </div>
+                                </div>
+                                <br>
+
+                            </div>
+                            <input type="submit" class="btn btn-default " id="saveCall" role="button" value="حفـــظ ">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary " data-dismiss="modal">اغــلاق</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script>
+        var button = "";
+        //var today = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        var today = new Date();
+        var tomorrowDate = today.getDate() + 1;
+        today.setDate(tomorrowDate);
+        document.getElementById('date').min = today.toISOString().split("T")[0];
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+            $('table').DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+            });
+            $("table").on("change",".accept", function () {
+
+                if ($(this).is(":checked")) {
+
+                    $('#myModal').modal('toggle');
+
+                    @*var seller = $(this).parents("tr").find(".seller").html();
+                    var available = $(this).parents("tr").find(".details").attr("data-saleId");
+                    var availableCat = $(this).parents("tr").find(".details").attr("data-catId");
+                    var detailId = $(this).parents("tr").find(".detId").html();
+                    location.href = "/ExpectedContract/AddExpectedContract?seller=" + seller + "&buyer=@Model.Header.FK_PreviewHeaders_Clients_BuyerId&available=" + available + "&preview=@Model.Header.PK_PreviewHeaders_Id&detail=" + detailId + "&availableCat=" + availableCat;*@
+                };
+            });
+
+            $('input[name="agreementOptions"]').change(function(e) {
+                var option= $(this).val();
+                var seller = $("#getData").parents("tr").find(".seller").html();
+                var available = $("#getData").parents("tr").find(".details").attr("data-saleId");
+                var availableCat = $("#getData").parents("tr").find(".details").attr("data-catId");
+                var detailId = $("#getData").parents("tr").find(".detId").html();  
+                location.href = "/ExpectedContract/AddExpectedContract?seller=" + seller + "&buyer=@Model.Header.FK_PreviewHeaders_Clients_BuyerId&available=" + available + "&preview=@Model.Header.PK_PreviewHeaders_Id&detail=" + detailId + "&availableCat=" + availableCat+"&option=" + option;  
+             });           
+
+            $("table").on("change", ".postpone", function () {
+
+                button = $(this);
+                if ($(this).is(":checked")) {
+                    $("#delayModal").modal("show");
+                };
+            });
+
+            $("table").on("change", ".noDecision", function () {
+
+                button = $(this);
+                if ($(this).is(":checked")) {
+                    var detailId = $(this).parents("tr").find(".detId").html();
+                    $.ajax({
+                        "url": "/Preview/SuspendPreview/",
+                        accept: "json",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            __RequestVerificationToken: token,
+                            detail: detailId,
+
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                    $("#callModal").modal("show");
+                };
+            });
+
+            var callForm = $("#call-Form");
+            callForm.on("submit", function () {
+                var type = $("#ardTalabNum").attr("data-type");
+                var algo = {
+                    clientName: "@Model.Header.BuyerName",
+                    Clients_Id: "@Model.Header.FK_PreviewHeaders_Clients_BuyerId",
+                    PhoneNumber: "@Model.Header.PhoneNumber",
+                    DateTime: $("#CalldateTime").val(),
+                    Descreption: $("#callDescription2").val(),
+                    Notes: $("#notes2").val(),
+                    Subject: $("#callSubject2").val(),
+                    DemandCode: "@Model.Header.DemandUnit_Id",
+                    CategoryId:"@Model.Header.Category_Id",
+                }
+                if ($("#CalldateTime").val() === "" || $("#CalldateTime").val() === null) {
+                    $("#callDateErr").html("لا بد من ادخال التاريخ والوقت الخاص بالمعاينة!");
+                    alertify.set("notifier", "position", "top-right")
+                    alertify.notify("لا بد من ادخال التاريخ والوقت الخاص بالمعاينة", "error", 3, function () { });
+                    return false;
+                }
+                else {
+                    $("#callDateErr").html("");
+                }
+                if ($("#callSubject2").val() === "" || $("#callSubject2").val() === null) {
+                    $("#callSubject2Err").html("لا بد من تحديد موضوع المحادثة!");
+                    alertify.set("notifier", "position", "top-right")
+                    alertify.notify("لا بد من تحديد موضوع المحادثة!", "error", 3, function () { });
+                    return false;
+                }
+                else {
+                    $("#callSubject2Err").html("");
+                }
+
+                if ($("#callDescription2").val() === "" || $("#callDescription2").val() === null) {
+                    $("#callDescription2Err").html("لا بد من تحديد وصف للمحادثة!");
+                    alertify.set("notifier", "position", "top-right")
+                    alertify.notify("لا بد من ادخال التاريخ والوقت الخاص بالمعاينة", "error", 3, function () { });
+                    return false;
+                }
+                else {
+                    $("#callDescription2Err").html("");
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '/clientcalls/savepostponed',
+                    data: {
+                        __RequestVerificationToken: token,
+                        callVM: algo,
+                    },
+
+                    success: function (response) {
+
+                        if (response) {
+                            alertify.alert("تم حفظ المكالمة بنجاح", function () {
+
+                            });
+                        }
+                        else {
+                            alertify.alert("لم يتم احفظ المكالمة بنجاح", function () { });
+                        }
+                    },
+                    error: function () {
+                        alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                })
+            });
+
+            $("#savePostpone").on("click", function () {
+
+                if ($("#date").val() === null || $("#date").val() === "") {
+                    $("#dateErr").html("لابد من ادخال التاريخ الجديد!");
+                    return false;
+                }
+                else {
+                    $("#dateErr").html("");
+                }
+                var detailId = $(button).parents("tr").find(".detId").html();
+                $.ajax({
+                    "url": "/Preview/PostponePreview/",
+                    accept: "json",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        __RequestVerificationToken: token,
+                        preview: "@Model.Header.PK_PreviewHeaders_Id",
+                        detail: detailId,
+                        date: $("#date").val(),
+                    },
+                    success: function (response) {
+                        if (response.Valid) {
+                            $("#delayModal").modal("hide");
+                            alertify.alert(response.message, function () {
+                                $(button).parents("tr").remove();
+                            });
+                        }
+                        else {
+                            $("#delayModal").modal("hide");
+                            alertify.alert(response.message, function () {
+
+                            });
+                        };
+                    },
+                    error: function () {
+                        $("#delayModal").modal("hide");
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+            });
+
+
+            $("table").on("change", ".cancel", function () {
+                if ($(this).is(":checked")) {
+                    var button = $(this);
+
+                    var detailId = $(this).parents("tr").find(".detId").html();
+                    $.ajax({
+                        "url": "/Preview/CancelPreview/",
+                        accept: "json",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            __RequestVerificationToken: token,
+                            detail: detailId,
+
+                        },
+                        success: function (valid) {
+                            if (valid) {
+                                alertify.alert("تم الغاء المعاينه !!", function () {
+                                    $(button).parents("tr").remove();
+                                });
+                            }
+                            else {
+                                alertify.alert(" لم يتم الغاء المعاينه!!", function () {
+
+                                });
+                            };
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                };
+            });
+
+            $("table").on("change", ".reject", function () {
+                if ($(this).is(":checked")) {
+                    var button = $(this);
+
+                    var detailId = $(this).parents("tr").find(".detId").html();
+                    $.ajax({
+                        "url": "/Preview/rejectPreview/",
+                        accept: "json",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            __RequestVerificationToken: token,
+                            detail: detailId,
+
+                        },
+                        success: function (valid) {
+                            if (valid) {
+                                alertify.alert("تم الحفظ !!", function () {
+                                    $(button).parents("tr").remove();
+                                });
+                            }
+                            else {
+                                alertify.alert(" لم يتم الحفظ!!", function () {
+
+                                });
+                            };
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                };
+            });
+
+            $(".details").click(function () {
+                var idSale = $(this).attr("data-SaleId");
+                 var catId = $(this).attr("data-catId");
+                // fro Apartment *****
+                if (catId === "@_3aqarak.MVC.Helpers.Categories.Apartements") {
+                    $.ajax({
+                        "url": "/ClientSales/SaleDetails/",
+                        accept: "applicaton/html",
+                        type: "post",
+                        dataType: "html",
+                        data: {
+                            saleId: idSale,
+                            demandId: "@Model.Header.DemandUnit_Id",
+                        },
+                        success: function (response) {
+                            $("#detailsModal").find(".modal-body").html(response);
+                            $("#detailsModal").modal("show");
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                }
+                 // for Villas *****
+                else if (catId === "@_3aqarak.MVC.Helpers.Categories.Villas"){
+                     $.ajax({
+                        "url": "/VillasAvailable/SaleDetails/",
+                        accept: "applicaton/html",
+                        type: "post",
+                        dataType: "html",
+                        data: {
+                            saleId: id,
+                            demandId: "@Model.Header.DemandUnit_Id",
+                        },
+                        success: function (response) {
+                            $("#matches").find(".modal-body").html(response);
+                            $("#matches").modal("show");
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+                    });
+                }
+                    //for Land ******
+                else if (catId === "@_3aqarak.MVC.Helpers.Categories.Lands") {
+                     $.ajax({
+                        "url": "/AvailableLands/AvailableLandDetails/",
+                        accept: "applicaton/html",
+                        type: "post",
+                        dataType: "html",
+                        data: {
+                            saleId: id,
+                            demandId: "@Model.Header.DemandUnit_Id",
+                        },
+                        success: function (response) {
+                            $("#matches").find(".modal-body").html(response);
+                            $("#matches").modal("show");
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                }
+                    // for shop ************
+                else if (catId === "@_3aqarak.MVC.Helpers.Categories.Shops") {
+                     $.ajax({
+                        "url": "/ShopAvailable/AvailableShopDetails/",
+                        accept: "applicaton/html",
+                        type: "post",
+                        dataType: "html",
+                        data: {
+                            saleId: id,
+                            demandId: "@Model.Header.DemandUnit_Id",
+                        },
+                        success: function (response) {
+                            $("#matches").find(".modal-body").html(response);
+                            $("#matches").modal("show");
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                }
+
+            });
+
+        });
+
+          $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();
+    			
+
+                    // $(".left").css("float","left");
+                    // $("input").removeClass("error");
+                    // $(".right").hide();
+
+                 });
+            });
+    </script>
+}
+
+
+
+
+
+
+
+
+

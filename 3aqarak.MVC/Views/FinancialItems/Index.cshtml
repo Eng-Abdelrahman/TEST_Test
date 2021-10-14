@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles {
+    <style>
+
+        .imageDashstyly {
+            width: 27%;
+            display: block;
+            position: absolute;
+            top: 16%;
+            left: 5%;
+            height: 60%;
+        }
+
+        p {
+            /*width: 66%;*/
+            width: 75%;
+        }
+    </style>
+}
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item active " aria-current="page">الحســابات</li>
+
+    </ol>
+</nav>
+<div class="card algo" data-step="1" data-intro="هذه الصفحه مخصصه لعرض جميع الحسابات الخاصه بالبرنامج ويمكن من خلالها إضافة مصروف خارجي أ إيراد خارجي">
+    <div class="container-fluid">
+        <div class="card-header">
+            <h4 class="title text-right">استعراض التبويبات الحسابيه المختلفة</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+                <div class="card algo col-sm-3 offset-1" style="background-color:#95a252" data-step="2" data-intro="يمكن من هنا إضافة إيراد أو مصروف خارجي">
+                    <div class="card-body">
+                        <h4 class="card-title" style="text-align:right ;color:white">  <a href="@Url.Action("FinancialItems","FinancialItems",new { area=""})" class="card-link" style="float:right"> الايرادات و المصروفات </a> </h4>
+                        <div class="clearfix"></div>
+                        <br />
+                        <p class="card-text" style=" text-align:right;color:#d0ccc6 ;font-weight:bold"> لادخال وتعديل بنود الايرادات والمصروفات اليوميه</p>
+                        <img class="imageDashstyly text-center" src="~/Assets/image Units/icons8-sales-performance-96.png" />
+                        @*<div class="clearfix"></div>
+                            <a href="@Url.Action("FinancialItems","FinancialItems",new { area=""})" class="card-link" style="float:right">لينك الشاشة</a>
+                            <div class="clearfix"></div>*@
+
+                    </div>
+                </div>
+
+                <div class="card algo col-sm-3 offset-1" style="background-color:#858b98" data-step="3" data-intro="من هنا حساب العموله للموظفين ومديرين الفروع للعقود التي تمت">
+                    <div class="card-body">
+                        <h4 class="card-title" style="text-align:right ;color:white"> <a href="/contractsaccounting/contractcommissions" class="card-link" style="float:right"> حساب عمولات العقــود </a> </h4>
+                        <div class="clearfix"></div>
+                        <br />
+                        <p class="card-text" style="text-align:right;color:#d0ccc6 ;font-weight:bold"> حساب نسبه الشركة والموظفين من العقود المختلفة</p>
+                        <img class="imageDashstyly text-center" style="height:76%" src="~/Assets/image Units/icons8-calculator-100.png" />
+                        @*<div class="clearfix"></div>
+                            <a href="/contractsaccounting/contractcommissions" class="card-link" style="float:right">لينك الشاشة</a>
+                            <div class="clearfix"></div>*@
+
+                    </div>
+                </div>
+
+
+                <div class="card algo col-sm-3 offset-1" style="background-color:#b5291a" data-step="4" data-intro="هذا الجزء مخصص لعرض إجمالي الربح أو الخساره خلال اليوم للشركه">
+                    <div class="card-body">
+                        <h4 class="card-title" style=" text-align:right ; color:white">  <a href="@Url.Action("index","Profit")" class="card-link" style="float:right"> تقرير الدخل اليومي  </a> </h4>
+                        <div class="clearfix"></div>
+                        <br />
+                        <p class="card-text" style=" text-align:right;color:#d0ccc6 ;font-weight:bold">حساب صافي الدخل اليومي للشركه</p>
+                        <img class="imageDashstyly text-center" src="~/Assets/image Units/icons8-report-card-64.png" />
+                        @*<div class="clearfix"></div>
+                            <a href="@Url.Action("index","Profit")" class="card-link" style="float:right">لينك الشاشة</a>
+                            <div class="clearfix"></div>*@
+
+                    </div>
+                </div>
+
+
+            </div> <!-- End Row-->
+        </div> <!-- card body-->
+    </div>
+</div> <!-- card  -->
+@section scripts{
+<script>
+      $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();                    
+                 });
+            });
+    </script>
+    }

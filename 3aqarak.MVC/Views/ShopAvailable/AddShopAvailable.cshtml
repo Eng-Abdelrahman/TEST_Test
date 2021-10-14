@@ -1,0 +1,977 @@
+﻿@model _3aqarak.MVC.ViewModels.ShopAvailableViewModel
+@{
+    ViewBag.Title = "AddShopAvailable";
+}
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+
+        .checkBoxDiv {
+            margin-top: 1.5%;
+            margin-bottom: 1.5%;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","ShopAvailable")">طلبات المحلات</a></li>
+                <li class="breadcrumb-item active" aria-current="page">اضافة طلب محل لعميل </li>
+            </ol>
+        </nav>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="saveShopAvailable">
+                        @Html.AntiForgeryToken()
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                        <span class="text-danger" id="finishErr"></span>
+                        <span class="text-danger" id="accessError"></span>
+                        @Html.ValidationSummary()
+                        <div class="form-group  ">
+                            <label for="first" class="text-right"> بحث عن موظف السيلز:<abbr class="req">*</abbr></label>
+                            <input type="text" class="form-control" id="tele" placeholder="السيلز" name="FK_ShopAvailable_Users_SalesId" required data-val="true" data-val-required="الرجاء إختيار إسم موظف السيلز">
+                            @Html.ValidationMessageFor(m => m.FK_ShopAvailable_Users_SalesId)
+                        </div>
+
+                        <div class="row">
+                            <a class="btn btn-default col" data-toggle="modal" data-target="#myImagesModal">  تحميـل الصـور</a>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label class="preLabel">السعر<abbr class="text-danger">*</abbr></label>
+                                <input type="number" class="form-control" id="price" placeholder="السعر" min="1" required>
+                                @Html.ValidationMessageFor(p => p.Price, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col">
+                                <label class="preLabel">المساحة<abbr class="text-danger">*</abbr></label>
+                                <input type="number" class="form-control" id="space" placeholder="المساحة" min="1" required>
+                                @Html.ValidationMessageFor(p => p.Space, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col">
+                                <label class="preLabel">العنوان<abbr class="text-danger">*</abbr></label>
+                                <input type="text" class="form-control" id="address" placeholder="العنوان" required>
+                                @Html.ValidationMessageFor(p => p.Address, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col">
+                                <label>نوع التجهيز:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.IsFurnished, new SelectList(new[] { new { value = true, text = "مجهز" }, new { value = false, text = "غير مجهز" } }.ToList(), "value", "text"), "نوع التجهيز", new { @class = "form-control", id = "IsFurnisher", required = "required" })
+                                @Html.ValidationMessageFor(m => m.IsFurnished, "", new { @class = "text-danger", id = "FurnisherError" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label class="preLabel">المنطقة<abbr class="text-danger">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_ShopAvailable_Regions_Id, Model.Regions, "إختر المنطقة", new { @class = "form-control", id = "Region-dropdown" })
+                                @Html.ValidationMessageFor(p => p.FK_ShopAvailable_Regions_Id, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col">
+                                <label>الترخيص:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.Islicense, new SelectList(new[] { new { value = true, text = "مرخص" }, new { value = false, text = "غير مرخص" } }.ToList(), "value", "text"), "نوع التجهيز", new { @class = "form-control", id = "Islicense", required = "required" })
+                                @Html.ValidationMessageFor(m => m.Islicense, "", new { @class = "text-danger", id = "licenseError" })
+                            </div>
+                            <div class="col">
+                                <label>استخدام العقـــار:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_ShopAvailable_Usage_Id, Model.Usages, "اختر نوع العقار", new { @class = "form-control", id = "residence", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_ShopAvailable_Usage_Id, "", new { @class = "text-danger", id = "typeError" })
+                            </div>
+                            <div class="col">
+                                <label>الاقسام العقارية<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_ShopAvailable_Transactions_Id, Model.Transactions, "اختر نوع التعامل", new { @class = "form-control", id = "trans", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_ShopAvailable_Transactions_Id, "", new { @class = "text-danger", id = "transError" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>طــريقة الدفع:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_ShopAvailable_PaymentMethod_Id, Model.Payments, "اختر طريقة الدفع", new { @class = "form-control", id = "payment", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_ShopAvailable_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                            </div>
+                            <div class="col">
+                                <label>نوع المحل<abbr class="req">*</abbr></label>
+                                <select id="ScaleNamber" required class="form-control" name="ScaleNumber">
+                                    <option value="" disabled selected>إختر نوع المحل</option>
+                                    <option value="1">ميزانين</option>
+                                    <option value="2">أرضي وميزانين</option>
+                                    <option value="3">أرضي</option>
+                                    <option value="3">الكل</option>
+                                </select>
+                                @Html.ValidationMessageFor(m => m.ScaleNumber, "", new { @class = "text-danger", id = "ScaleNamberError" })
+                            </div>
+                            <div class="col">
+                                <label>سنه البناء<abbr class="req">*</abbr></label>
+                                <input id="BuildYear" min="1900" max="@DateTime.Now.Year" type="number" class="form-control" name="DateOfBuild" placeholder="سنة البناء" required />
+                                @Html.ValidationMessageFor(d => d.DateOfBuild, "", new { @class = "text-danger" })
+                                <span class="text-danger" id="BuildYearErr"></span>
+                            </div>
+                            <div class="col">
+                                <label>تقسيم المحل:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.IsDivider, new SelectList(new[] { new { value = true, text = "مقسم" }, new { value = false, text = "غير مقسم" } }.ToList(), "value", "text"), "نوع المحل", new { @class = "form-control", id = "IsDivider", required = "required" })
+                                @Html.ValidationMessageFor(m => m.IsDivider, "", new { @class = "text-danger", id = "DividerError" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label> عدد الحمامات<abbr class="req">*</abbr></label>
+                                <input id="Bath" type="number" min="0" class="form-control" placeholder="عدد الحمامات" name="Bath" style="border :1px solid #DDD" required>
+                                @*<span class="text-danger" id="minBathErr"></span>*@
+                                @Html.ValidationMessageFor(p => p.BathRooms, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col">
+                                <label>الاطــلالة:</label>
+                                @Html.DropDownListFor(m => m.FK_ShopAvialable_Views_Id, Model.Views, "", new { @class = "form-control", id = "view", required = "required", multiple = "multiple" })
+                                @Html.ValidationMessageFor(m => m.FK_ShopAvialable_Views_Id, "", new { @class = "text-danger", id = "viewError" })
+                            </div>
+                            <div class="col">
+                                <label>الملاحظــات:</label>
+                                <textarea class="form-control" id="notes" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px"></textarea>
+                                @Html.ValidationMessageFor(n => n.Notes, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label>الكماليات المتاحة : <abbr class="req">*</abbr></label>
+                            <div class="checkBoxDiv">
+                                @foreach (var item in Model.Accessories)
+                                {
+                                    if (item.Selected)
+                                    {
+                                        <div class="checkbox icheck form-check form-check-inline ">
+                                            <label>
+                                                <input class="access" type="checkbox" checked value="true" data-id="@item.Value">@item.Text
+                                            </label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="checkbox icheck form-check form-check-inline ">
+                                            <label>
+                                                <input class="access" type="checkbox" value="false" data-id="@item.Value">@item.Text
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Accessories, "", new { @class = "text-danger", id = "accesseriesError" })
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <label class="form-check-label ">
+                                        <input class="form-check-input access-chkBox" type="checkbox" id="IsMarketSearch-chkBox">بحث سوقي
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input access-chkBox" type="checkbox" id="IsNegotiable-chkBox">قابل للتفاوض
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col">
+                                <input type="button" id="filterBtn" class="btn btn-block" value="ترشيحات العرض " />
+                            </div>
+                        </div>
+
+                        <div class="row" id="hiddendemandtable" style="display:none;">
+                            <div class="col">
+                                <table class="table text-right table-hover " id="filterTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">اسم المشتــري </th>
+                                            <th> رقــم الطلب</th>
+                                            <th>تفاصيل الطلب</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col">
+                                <input type="text" class="form-control " id="clientSearchTxt" placeholder="بحث عن عميل معين بالاسم او الهاتف">
+                            </div>
+                            <div class="col">
+                                <input type="button" id="clientBtn" class="btn btn-default" value=" تسجيل  عميل جديد " />
+                            </div>
+                        </div>
+
+                        @*save client*@
+                        <div class="row" id="hiddendivforsaveclient">
+                            <div class="card-body">
+
+
+                                <span class="text-danger" id="finishErr"></span>
+                                <span class="text-danger" id="accessError"></span>
+                                <div class="form-group  ">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="first" class="text-right"> الاســـم  :<abbr class="req">*</abbr></label>
+                                            <input type="text" class="form-control " id="clientName" placeholder="الاســم" name="Name" required="required" data-val="true" data-val-required="الرجاء إدخال اسم العميل">
+                                            @Html.ValidationMessageFor(m => m.Name)
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="mobile" class="text-right">الموبايل :<abbr class="req">*</abbr></label>
+                                            @Html.TextBoxFor(m => m.Mobile, new { id = "clientMobile", @class = "form-control", placeholder = "الموبايل", type = "tel" })
+                                            @Html.ValidationMessageFor(m => m.Mobile)
+                                            <span class="valid-msg hide text-danger"> </span>
+                                            <span class="error-msg hide text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="last" class="text-right"> الرقم القومي :</label>
+                                        <input type="text" class="form-control" id="clientIdNumber" placeholder="الرقم القومي" name="IdNumber">
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label for="last" class="text-right"> الوظيفة :</label>
+                                        <input type="text" class="form-control" id="clientJob" placeholder="الوظيفة " name="Job">
+                                    </div>
+                                </div>
+                                @*#clientMobile2  #clientPhone #clientMobile*@
+                                <div class="form-group ">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="phone" class="text-right">التليفون :</label>
+                                            <input type="tel" class="form-control" id="clientPhone" placeholder="التليفون" name="Phone">
+                                            <span class="valid-msg3 hide text-danger"> </span>
+                                            <span class="error-msg3 hide text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="phone" class="text-right">2الموبايل :</label>
+                                            <input type="tel" class="form-control" id="clientMobile2" placeholder="الموبايل2" name="Mobile2">
+                                            <span class="valid-msg2 hide text-danger"> </span>
+                                            <span class="error-msg2 hide text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="last" class="text-right"> افضــل وقت للاتصــال :</label>
+                                            <input type="text" class="form-control" id="clientBestContactHour" placeholder="ميعاد الاتصــال" name="BestContactHour">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group  ">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="last" class="text-right"> العنــوان :</label>
+                                            <textarea class="form-control" rows="1" id="clientAddress" placeholder="العنوان" name="Address"></textarea>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="last" class="text-right"> ملاحظات :</label>
+                                            <textarea class="form-control" rows="1" id="clientNotes" placeholder="ملاحظات" name="ClientNotes"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*end save client*@
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <button type="submit" class="btn btn-default" id="saveAvailableLand"> إضافة</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1094px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        </div>
+    </div>
+    <!-- Image Modal -->
+    <div id="myImagesModal" class="modal fade " role="dialog">
+        <div class="modal-dialog .modal-dialog-centered" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Choose image</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+
+                        <div class="jumbotron">
+                            <form action="/ShopAvailable/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                            <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                        </div>
+                        <span class="alert alert-primary">الصورة الاولى التي سيتم تحميلها هي الصورة الاساسيه لعنوان العرض</span><br /><br />
+                        <span class="alert alert-warning">اقصى عدد للصور هو 9 صور فقط  </span>
+                        <span class="alert alert-info">مساحة الصوره لا تزيد عن 3 ميجابايتس  </span>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!--Modal details-->
+            <div class="modal fade" id="detailsModal" role="dialog">
+                <div class="modal-dialog modal-dialog-centered ">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">ترشيحات العرض</h4>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end of modal -->
+</div>
+@section scripts{
+    <script>
+        function validateShopAvailableData() {
+            if ($("#tele").val() === "" || $("#tele").val() === null) {
+                $("#tele").next("span.text-danger").html("الرجاء إدخال اسم الموظف!");
+                $("#accessError").next("span.text-danger").html("الرجاء إدخال اسم الموظف!");
+                return false;
+            }
+            else {
+                $("#tele").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#price").val() === "" || $("#price").val() === null) {
+                $("#price").next("span.text-danger").html("لابد من إدخال السعر");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال السعر!");
+
+                return false;
+            }
+            else {
+                $("#price").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+            if ($("#space").val() === "" || $("#space").val() === null) {
+                $("#space").next("span.text-danger").html("الرجاء إدخال المساحه!");
+                $("#accessError").next("span.text-danger").html("الرجاء إدخال المساحه!");
+                return false;
+            }
+            else {
+                $("#space").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#address").val() === "" || $("#address").val() === null) {
+                $("#address").next("span.text-danger").html("الرجاء إدخال العنوان!");
+                $("#accessError").next("span.text-danger").html("الرجاء إدخال العنوان!");
+                return false;
+            }
+            else {
+                $("#address").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#Region-dropdown").val() === "" || $("#Region-dropdown").val() === null) {
+                $("#Region-dropdown").next("span.text-danger").html("الرجاء اختيار المنطقة!");
+                $("#accessError").next("span.text-danger").html("الرجاء اختيار المنطقة!");
+                return false;
+            }
+            else {
+                $("#Region-dropdown").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#Islicense").val() === "" || $("#Islicense").val() === null) {
+                $("#Islicense").next("span.text-danger").html("الرجاء اختيار الترخيص!");
+                $("#accessError").next("span.text-danger").html("الرجاء اختيار التجهيز!");
+                return false;
+            }
+            else {
+                $("#Islicense").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#residence").val() === "" || $("#residence").val() === null) {
+                $("#residence").next("span.text-danger").html("الرجاء اختيار الاستخدام!");
+                $("#accessError").next("span.text-danger").html("الرجاء اختيار الاستخدام!");
+                return false;
+            }
+            else {
+                $("#residence").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#trans").val() === "" || $("#trans").val() === null) {
+                $("#trans").next("span.text-danger").html("الرجاء اختيار القسم !");
+                $("#accessError").next("span.text-danger").html("الرجاء اختيار القسم !");
+                return false;
+            }
+            else {
+                $("#trans").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#payment").val() === "" || $("#payment").val() === null) {
+                $("#payment").next("span.text-danger").html("الرجاء اختيار طريقة الدفع !");
+                $("#accessError").next("span.text-danger").html("الرجاء اختيار طريقة الدفع !");
+                return false;
+            }
+            else {
+                $("#payment").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#ScaleNumber").val() === "" || $("#ScaleNumber").val() === null) {
+                $("#ScaleNumber").next("span.text-danger").html("الرجاء اختيار نوع المحل !");
+                $("#accessError").next("span.text-danger").html("الرجاء اختيار نوع المحل  !");
+                return false;
+            }
+            else {
+                $("#ScaleNumber").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#BuildYear").val() === "" || $("#BuildYear").val() === null) {
+                $("#BuildYear").next("span.text-danger").html("لابد من إدخال سنه البناء!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال  سنه البناء!");
+
+                return false;
+            }
+            else {
+                $("#BuildYear").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+            if ($("#IsDivider").val() === "" || $("#IsDivider").val() === null) {
+                $("#IsDivider").next("span.text-danger").html("الرجاء اختيار التقسيم  !");
+                $("#accessError").next("span.text-danger").html("الرجاء اختيار التقسيم   !");
+                return false;
+            }
+            else {
+                $("#IsDivider").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#Bath").val() === "" || $("#Bath").val() === null) {
+                $("#Bath").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+
+                return false;
+            }
+            else {
+                $("#Bath").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+            if ($("#IsFurnisher").val() === "" || $("#IsFurnisher").val() === null) {
+                $("#IsFurnisher").next("span.text-danger").html("الرجاء اختيار نوع التجهيز  !");
+                $("#accessError").next("span.text-danger").html("الرجاء اختيار نوع التجهيز   !");
+                return false;
+            }
+            else {
+                $("#IsFurnisher").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            if ($("#view").val() === "" || $("#view").val() === null) {
+                $("#view").next("span.text-danger").html("لابد من إختبار الإطلالة!");
+                $("#accessError").next("span.text-danger").html("لابد من إختبار الإطلالة!");
+                return false;
+            }
+            else {
+                $("#view").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+            var accessArr = [];
+            $.each($(".access"), function (index, value) {
+
+                if ($(this).is(":checked")) {
+                    accessArr.push($(this).attr("data-id"));
+                };
+            });
+            if (accessArr.length < 1) {
+                accesseriesError
+                $("#accesseriesError").html("لابد من إختيار أي من الكماليات المتاحة !");
+                $("#accessError").html("لابد من إختيار أي من الكماليات المتاحة !");
+
+                return false;
+            }
+            else {
+                $("#accesseriesError").html("");
+                $("#accessError").html("");
+            }
+            return true;
+        };
+        var clientId = 0;
+        var SalesId = "";
+        function collectClientData(obj) {
+            obj.PK_Client_Id = clientId;
+            obj.BestContactHour = $("#clientBestContactHour").val();
+            obj.Name = $("#clientName").val();
+            obj.Phone = $("#clientPhone").val();
+            obj.Mobile = $("#clientMobile").val();
+            obj.Mobile2 = $("#clientMobile2").val();
+            obj.Job = $("#clientJob").val();
+            obj.ClientAddress = $("#clientAddress").val();
+            obj.ClientNotes = $("#clientNotes").val();
+            obj.IdNumber = $("#clientIdNumber").val();
+            return obj;
+        };
+
+        function collectShopAvailabledData() {
+            var accessArr = [];
+            $.each($(".access"), function (index, value) {
+                if ($(this).is(":checked")) {
+                    accessArr.push($(this).attr("data-id"));
+                };
+            });
+            var obj = {
+                FK_ShopAvailable_Users_SalesId: SalesId,
+                Price: $("#price").val(),
+                Space: $("#space").val(),
+                Address: $("#address").val(),
+                FK_ShopAvailable_Regions_Id: $("#Region-dropdown").val(),
+                Islicense: $("#Islicense").val(),
+                FK_ShopAvailable_Usage_Id: $("#residence").val(),
+                FK_ShopAvailable_Transactions_Id: $("#trans").val(),
+                FK_ShopAvailable_PaymentMethod_Id: $("#payment").val(),
+                ScaleNumber: $("#ScaleNamber").val(),
+                DateOfBuild: $("#BuildYear").val(),
+                IsDivider: $("#IsDivider").val(),
+                BathRooms: $("#Bath").val(),
+                IsFurnished: $("#IsFurnisher").val(),
+                FK_ShopAvialable_Views_Id: $("#view").val(),
+                AccessoriesArr: accessArr,
+                IsMarketResearch: $("#IsMarketSearch-chkBox").is(":checked"),
+                IsNegotiable: $("#IsNegotiable-chkBox").is(":checked"),
+                FK_ShopAvailable_Categories_Id: "@Model.FK_ShopAvailable_Categories_Id",
+                Notes: $("#notes").val(),
+                //client
+                FK_ShopAvailable_Clients_ClientId: clientId,
+                Name: $("#clientName").val(),
+                Mobile: iti.getNumber(),
+                IdNumber: $("#clientIdNumber").val(),
+                Job: $("#clientJob").val(),
+                Phone: iti3.getNumber(),
+                Mobile2: iti2.getNumber(),
+                BestContactHour: $("#clientBestContactHour").val(),
+                ClientAddress: $("#clientAddress").val(),
+                ClientNotes: $("#clientNotes").val(),
+            };
+            return obj;
+        };
+
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 3, // MB
+            maxFiles: 9,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 9,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+                })
+            },
+            successmultiple: function (file, response) {
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+                        Dropzone.forElement('#dropzoneJsForm').removeAllFiles(true);
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+            $(window).on("beforeunload", function () {
+                var shopSessionName = "AvailableShopImagePathList";
+                var shopPath = "/Assets/Img/AvailableShopImages";
+                $.ajax({
+                    url: "/home/DeleteImagesBeforUnloadPage/",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        sessionName: shopSessionName,
+                        path: shopPath
+                    }
+                });
+                alert("Goodbye!");
+            });
+            filterTable = $("#filterTable").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+                "bFilter": false,
+                "bInfo": false,
+                "bLengthChange": false,
+                "stateSave": true,
+                "ajax": {
+                    "url": "/ShopAvailable/LoadShopDemandMatchesData/",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        var valid = true;
+                        valid = validateShopAvailableData();
+                        if (!valid) {
+                            //$("#maxBuildYearErr").html("");
+                            //$("#accessError").html("");
+                            return false;
+                        }
+                        d.ShopAvailableVM = JSON.stringify(collectShopAvailabledData());
+                    },
+
+                },
+                "columns": [
+                    { "data": "PK_ShopDemands_Id", "name": "PK_ShopDemands_Id", "autoWidth": true },
+                    { "data": "FK_ShopDemands_Clients_ClientId", "name": "FK_ShopDemands_Clients_ClientId", "autoWidth": true },
+                    { "data": "DateString", "name": "DateString", "autoWidth": true },
+                    { "data": "ShortDescription", "name": "ShortDescription", "autoWidth": true },
+                    {
+                        "render": function (data, type, full, meta) { return ' <button type="button" title="تفاصيل العرض " rel="tooltip" class="btn btn-link details " data-id="' + full.PK_ShopDemands_Id + '">تفاصيل العرض</button>'; }
+                    },
+
+                ]
+            });
+            $("#filterBtn").click(function () {
+
+                var valid = true;
+                valid = validateShopAvailableData();
+                if (!valid) {
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify('لم يتم ادخال جميع البيانات راجع رسائل الخطا على الشاشه  !', 'error', 3, function () { });
+                    return false;
+                }
+
+                $("#hiddendemandtable").show(1000);
+                filterTable.draw();
+            });
+
+            $("#filterTable").on("click", ".details", function () {
+                var Id = $(this).attr("data-id");
+                $.ajax({
+                    "url": "/ShopDemand/DemandDetails/",
+                    accept: "applicaton/html",
+                    type: "post",
+                    dataType: "html",
+                    data: {
+
+                        id: Id,
+                    },
+                    success: function (response) {
+                        $("#detailsModal").find(".modal-body").html(response);
+                        $("#detailsModal").modal("show");
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+            });
+
+            $("#tele").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/dashboard/admin/EmpAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                SalesId = item.PK_Users_Id;
+                                return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                            }))
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    SalesId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0];
+                },
+            });
+
+            $("#clientSearchTxt").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/ApartmentAvailables/ClientAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name, value: item.Name + "-" + item.PK_Client_Id };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    clientId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0];
+                    $.ajax({
+                        url: "/ApartmentAvailables/GetClientdetails",
+                        type: "POST",
+                        dataType: "json",
+                        data: { id: clientId },
+                        success: function (data) {
+                            $("#clientBestContactHour").val(data.clientList.BestContactHour);
+                            $("#clientName").val(data.clientList.Name);
+                            $("#clientPhone").val(data.clientList.Phone);
+                            $("#clientMobile").val(data.clientList.Mobile);
+                            $("#clientMobile2").val(data.clientList.Mobile2);
+                            $("#clientJob").val(data.clientList.Job);
+                            $("#clientAddress").val(data.clientList.Address);
+                            $("#clientNotes").val(data.clientList.Notes);
+                            $("#clientIdNumber").val(data.clientList.IdNumber);
+                            $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").prop("readonly", true);
+                            $("#hiddendivforsaveclient").show(1000);
+                            $("#clientBtn").show();
+                        },
+                    });
+                },
+            });
+
+            $("#clientBtn").click(function () {
+                clientId = 0;
+                if ($("#hiddendivforsaveclient").css("display") === "none") {
+                    $("#hiddendivforsaveclient").show();
+                }
+                $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").prop("readonly", false);
+                $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").val("");
+            });
+
+            $("#saveShopAvailable").submit(function (e) {
+                e.preventDefault();
+                var valid = true;
+                valid = validateShopAvailableData();
+                if (!$(this).valid() || !valid) {
+                    return false;
+                }
+                var shopAvailable = collectShopAvailabledData();
+                $.ajax({
+                    url: "/ShopAvailable/SaveShopAvailable/",
+                    type: "POST",
+                    accept: "application/json",
+                    dataType: "json",
+                    data: {
+                        __RequestVerificationToken: token,
+                        shopAvailableVM: shopAvailable
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+                            alertify.alert(response.message, function () {
+                                location.href = "/ShopAvailable/ShopDemandsMatchesAfterAdd/";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+
+                            });
+                        };
+
+                    },
+                    error: function (response) {
+                        alertify.alert("حدث خطا ما عند حفظ البيانات!", function () {
+
+                        });
+                    }
+
+                });
+            });
+
+
+
+
+
+            $('.access').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $(this).val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $(this).val(false);
+                });
+
+        });
+    </script>
+    <script src="/Theme/assets/Plugins/intl-tel-input-master/build/js/intlTelInput.js"></script>
+
+    <script>
+        var errorMsg = document.querySelector(".error-msg"),
+            validMsg = document.querySelector(".valid-msg");
+
+        // here, the index maps to the error code returned from getValidationError - see readme
+        var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input = document.querySelector("#clientMobile");
+        var iti = window.intlTelInput(input, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+        var reset = function () {
+            input.classList.remove("error");
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+        // on blur: validate
+        input.addEventListener('blur', function () {
+            reset();
+            if (input.value.trim()) {
+                if (iti.isValidNumber()) {
+                    validMsg.classList.remove("hide");
+                } else {
+                    input.classList.add("error");
+                    var errorCode = iti.getValidationError();
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    errorMsg.classList.remove("hide");
+                }
+            }
+        });
+        // on keyup / change flag: reset
+        input.addEventListener('change', reset);
+        input.addEventListener('keyup', reset);
+
+
+        //input 2
+        var errorMsg2 = document.querySelector(".error-msg2"),
+            validMsg2 = document.querySelector(".valid-msg2");
+        var errorMap2 = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input2 = document.querySelector("#clientMobile2");
+        var iti2 = window.intlTelInput(input2, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+        var reset2 = function () {
+            input2.classList.remove("error");
+            errorMsg2.innerHTML = "";
+            errorMsg2.classList.add("hide");
+            validMsg2.classList.add("hide");
+        };
+
+        // on blur: validate
+        input2.addEventListener('blur', function () {
+            reset2();
+            if (input2.value.trim()) {
+                if (iti2.isValidNumber()) {
+                    validMsg2.classList.remove("hide");
+                } else {
+                    input2.classList.add("error");
+                    var errorCode2 = iti2.getValidationError();
+                    errorMsg2.innerHTML = errorMap2[errorCode2];
+                    errorMsg2.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input2.addEventListener('change', reset2);
+        input2.addEventListener('keyup', reset2);
+
+
+
+        //input3
+        var errorMsg3 = document.querySelector(".error-msg3"),
+            validMsg3 = document.querySelector(".valid-msg3");
+        var errorMap3 = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input3 = document.querySelector("#clientPhone");
+        var iti3 = window.intlTelInput(input3, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+
+        var reset3 = function () {
+            input3.classList.remove("error");
+            errorMsg3.innerHTML = "";
+            errorMsg3.classList.add("hide");
+            validMsg3.classList.add("hide");
+        };
+
+        // on blur: validate
+        input3.addEventListener('blur', function () {
+            reset3();
+            if (input3.value.trim()) {
+                if (iti3.isValidNumber()) {
+                    validMsg3.classList.remove("hide");
+                } else {
+                    input3.classList.add("error");
+                    var errorCode3 = iti3.getValidationError();
+                    errorMsg3.innerHTML = errorMap3[errorCode3];
+                    errorMsg3.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input3.addEventListener('change', reset3);
+        input3.addEventListener('keyup', reset3);
+
+
+    </script>
+}

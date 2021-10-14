@@ -1,0 +1,151 @@
+﻿@model _3aqarak.MVC.ViewModels.AvailableLandsViewModel
+<style>
+    label {
+        float: right;
+        font-size: 16px;
+        font-weight: bold;
+        clear: both;
+    }
+
+    h4 {
+        text-align: center;
+        font-size: 20px;
+        text-decoration: underline;
+    }
+
+    h5 {
+        text-align: right;
+        font-size: 16px;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+
+    li a {
+        font-size: 14px;
+    }
+
+    .modal {
+        top: -409px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                @if (ViewBag.demandId != null && ViewBag.demandId > 0)
+                {
+                    <li class="breadcrumb-item"><a href="@Url.Action("EditeLandDemand","ClientDemand",new { id = ViewBag.demandId })">الصفحة السابقة </a></li>
+                }
+                else
+                {
+                    <li class="breadcrumb-item"><a href="@Url.Action("EditAvailableLand","AvailableLands",new { id = ViewBag.demandId })">الصفحة السابقة </a></li>
+                }
+                <li class="breadcrumb-item active" aria-current="page">تفاصيل عرض بيع لعميل </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="AddClientsaleForm">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.PK_AvailableLands_Id, new { id = "id" })
+                        @Html.HiddenFor(m => m.FK_AvailableLands_Categories_CategoryId, new { id = "cats" })
+                        <h4> بيانات الوحدة  </h4>
+                        <div class="row">
+                            <div class="col">
+                                <label>منطقة العقار</label>
+                                @Html.DropDownListFor(m => m.FK_AvailabeLands_Regions_RegionId, Model.Regions, "اختر المنطقة", new { @class = "form-control", id = "region", required = "required" })
+                            </div>
+
+                            <div class="col">
+                                <label>نوع المعاملة</label>
+                                @Html.DropDownListFor(m => m.FK_AvaliableLands_Transactions_TransactionId, Model.Transactions, "اختر نوع التعامل", new { @class = "form-control", id = "trans", required = "required" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>المساحة</label>
+                            <input type="number" class="form-control" placeholder="المساحة" min="0" value="@Model.Space" id="space" readonly>
+                        </div>
+                        <div class="form-group ">
+                            <label>السعــر /الايجار المطــلوب</label>
+                            <input type="number" class="form-control sty form-control" id="price" min="0" placeholder="السعر المطلوب" readonly value="@Model.Price" required>
+                        </div>
+                        <div class="form-group ">
+                            <label>طــريقة الدفع:</label>
+                            @Html.DropDownListFor(m => m.FK_AvailableLands_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>الاطــــلاله</label>
+                                @Html.DropDownListFor(m => m.FK_AvailableLands_Views_ViewId, Model.Views, new { @class = "form-control", id = "view", required = "required" })
+                            </div>
+                        </div>
+
+                        <div class="form-group ">
+                            <h5>الملاحظـــات</h5>
+                            <textarea class="form-control sty" id="notes" rows="3" readonly style="border :1px solid #2b3553  ; border-radius:10px">@Html.Raw(Model.Notes)</textarea>
+                        </div>
+                        <br> <br> <br>
+                        <h4>بيانات اضافيه عن العرض   </h4>
+
+                        <div class="form-group">
+                                <label>صـــــور الوحــده:</label>
+                                @if (Model.Images.Any())
+                                {
+                                    var counter = 0;
+                                    var index = 0;
+                                    int elementsInloop = 0;
+                                    var loops = (Model.Images.Length % 4 > 0) ? ((Model.Images.Length / 4) + 1) : ((Model.Images.Length / 4));
+                                    for (int i = 0; i < loops; i++)
+                                    {
+                                        <div>
+                                            @{
+                                                index = counter;
+                                                elementsInloop = (Model.Images.Length - counter) > 4 ? 4 : Model.Images.Length - counter;
+
+                                            }
+
+                                            @for (int j = index; j < index + elementsInloop; j++)
+                                            {
+
+                                                <img src="~/@Model.Images[j]" width="100" height="100" style="border:1px thin grey;margin-right:5px;" alt="">
+
+                                                counter = counter + 1;
+                                            }
+
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+
+                                    <div class="alert alert-danger text-right" role="alert">
+                                        لايوجد صور متاحة للوحده !
+                                    </div>
+                                }
+
+                            </div>
+
+                        <br /><br /><br />
+
+
+                    </form>
+
+                </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1094px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        </div>
+    </div>  <!-- End of body-->
+
+</div>

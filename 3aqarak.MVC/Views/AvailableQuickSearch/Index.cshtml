@@ -1,0 +1,703 @@
+﻿@model _3aqarak.MVC.ViewModels.AvailableViewModel
+@{
+    ViewBag.Title = "Index";
+    var user = (_3aqarak.BLL.Dto.UserDto)Session["User"];
+}
+<!--*********************************************************************************************************************************************-->
+<!--*********************************************************************************************************************************************-->
+<!--*********************************************************************************************************************************************-->
+<!--************************************************************Apartment Available Quick Search*************************************************-->
+<!--*********************************************************************************************************************************************-->
+<!--*********************************************************************************************************************************************-->
+<!--*********************************************************************************************************************************************-->
+<!--*********************************************************************************************************************************************-->
+@section styles{
+    <style>
+        td.details-control {
+            background: url('../../Assets/Img/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('../../Assets/Img/details_close.png') no-repeat center center;
+        }
+    </style>
+}
+<div class="card">
+    <div class="container-fluid">
+        @Html.AntiForgeryToken()
+        <div class="card-header">
+            <div class="card-header text-right">
+                <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+                        <!-- <li class="breadcrumb-item"><a href="#">Library</a></li> -->
+                        <li class="breadcrumb-item active" aria-current="page"> أستعراض جميع العروض المتاحه  </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="card-body" data-step="1" data-intro="هذة الصفحه مسؤوله عن عرض جميع الشقق المعروضه والبحث بالتفصيل عن شقق محدده مع حذفها إذا كان لديك صلاحيات للحذف وتعديلها">
+            <div class="row">
+                @*<div class="col-md-4">
+                    <h4 class="text-right">الفئة</h4>
+                    @Html.DropDownList("Cat", Model.Categories as SelectList, "اختر الفئه", new { @class = "form-control", })
+                </div>*@
+            </div>
+            <br /> <br />
+            <div class="row" data-step="2" data-intro="الجزئيه الأولى في البحث ويمكن من خلالها البحث عن طريق التالي :-">
+                <div class="col" data-step="3" data-intro="المناطق في نطاق معي">
+                    <h4 class="text-right">المنطقة من</h4>
+                    @Html.DropDownList("regionss", Model.Regions as SelectList, "All", new { @class = "form-control", }) <br />
+                    <h4 class="text-right">المنطقة إلى</h4>
+                    @Html.DropDownList("regionssTo", Model.Regions as SelectList, "All", new { @class = "form-control", })
+                </div>
+                <div class="col" data-step="4" data-intro="عدد المصاعد الموجوده في الشقق في نطاق معين">
+                    <h4 class="text-right">المصاعد من</h4>
+                    <select id="ElevatorsFrom" required class="form-control">
+                        <option value="0" selected>All</option>
+                        <option value="11">لا يوجد</option>
+                        @{
+                            for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
+                    <br />
+                    <h4 class="text-right">المصاعد إلى</h4>
+                    <select id="ElevatorsTo" required class="form-control">
+                        <option value="" selected>All</option>
+                        @{
+                            for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col"  data-step="5" data-intro="مساحة الشقه في نطاق معين">
+                    <h4 class="text-right">المساحه من</h4>
+                    <input type="number" placeholder="All" id="SpaceFrom" class="form-control" /> <br />
+                    <h4 class="text-right">المساحه إلى</h4>
+                    <input type="number" placeholder="All" id="SpaceTo" class="form-control" />
+
+                </div>
+                @*<div class="col">
+                    <h4 class="text-right">السعـــر من</h4>
+                    <input type="number" placeholder="All" id="PriceFrom" class="form-control" /> <br />
+                    <h4 class="text-right">السعـــر إلى</h4>
+                    <input type="number" placeholder="All" id="PriceTo" class="form-control" />
+
+                </div>*@
+                <div class="col"  data-step="6" data-intro="تاريخ تسجيل الشقه في نطاق تاريخ معين">
+                    <label for="from">من تاريخ</label>
+                    <input type="date" id="from" class="form-control" /> <br />
+                    <label class="text-right" for="to">الى تاريخ</label>
+                    <input type="date" id="to" class="form-control" />
+                </div>
+            </div>
+            <br />
+            <div id="hiddenDivForInstallment">
+                <div class="row" id="colPrice">
+                    <div class="col-md-3">
+                        <h4 class="text-right"  data-step="8" data-intro="طريقة الدفع ومن خلالها تحدد باقي المدخلات حيث إن كانت كاش تبحث فقط بالسر وإن كانة تقسيط تفتح باقي المدخلات">طريقة الدفع</h4>
+                        @Html.DropDownList("Payments", Model.Payments as SelectList, "All", new { @class = "form-control", })
+                        <div id="Moo">
+                            <h4 class="text-right">نظام الأقساط</h4>
+                            <select id="BasisOfInstallmentDropdown" class="form-control">
+                                <option value="0"> اختر نظام القسط </option>
+                                <option value="1">سنوي</option>
+                                <option value="2">نصف سنوي</option>
+                                <option value="3">ربع سنوي</option>
+                                <option value="4">شهري</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col"  data-step="9" data-intro="سعر الشقق في نطاق معين">
+                        <h4 class="text-right" id="priceLableFrom">السعـــر من</h4>
+                        <input type="number" placeholder="All" id="PriceFrom" class="form-control" />
+                        <h4 class="text-right" id="priceLableTo">السعـــر إلى</h4>
+                        <input type="number" placeholder="All" id="PriceTo" class="form-control" />
+
+                    </div>
+
+                    <div class="col"  data-step="10" data-intro=" المتبقي هنا في حالة إحتيارك طريقة دفع تقسيط فيتم البحث من خلال المتبقي من مبلغ الشقه">
+                        <h4 class="text-right">المتبقي من</h4>
+                        <input type="number" placeholder="All" id="RemainingFrom" class="form-control" />
+                        <h4 class="text-right">المتبقي إلى</h4>
+                        <input type="number" placeholder="All" id="RemainingTo" class="form-control" />
+                    </div>
+                    <div class="col" data-step="11" data-intro=" عدد السنوات هنا في حالة إحتيارك طريقة دفع تقسيط ">
+                        <h4 class="text-right">عدد السنوات من</h4>
+                        <input type="number" placeholder="All" id="YearOfInstallmentFrom" class="form-control" />
+                        <h4 class="text-right">عدد السنوات إلى</h4>
+                        <input type="number" placeholder="All" id="YearOfInstallmentTo" class="form-control" />
+                    </div>
+                    <div class="col" data-step="12" data-intro=" الكسب هنا في حالة إحتيارك طريقة دفع تقسيط ">
+                        <h4 class="text-right">المكسب من</h4>
+                        <input type="number" placeholder="All" id="OverFrom" class="form-control" />
+                        <h4 class="text-right">المكسب إلى</h4>
+                        <input type="number" placeholder="All" id="OverTo" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="row" data-step="13" data-intro=" يتم البحث هنا بصوره أكثر تفصيله من خلال البحث برقم الشقه أو رقم العماره أو المجموعه">
+                    <div class="col">
+                        <h4 class="text-right">شقه </h4>
+                        <input type="number" placeholder="All" id="FlatNumber" class="form-control" />
+
+                    </div>
+                    <div class="col">
+                        <h4 class="text-right">عماره </h4>
+                        <input type="number" placeholder="All" id="ApartmentNumber" class="form-control" />
+
+                    </div>
+                    <div class="col">
+                        <h4 class="text-right">مجموعه </h4>
+                        <input type="number" placeholder="All" id="GroupNumber" class="form-control" />
+                    </div>
+                </div>
+                <div class="row" data-step="14" data-intro=" رقم الشقه هنا هو كود الشقه المخزنه به لسهولة البحث عنها والوصول إليها">
+                    <h4 class="text-right">رقم الشقه </h4>
+                    <input type="number" placeholder="All" id="availableNumber" class="form-control" />
+                </div>
+                </div>
+                <div class="text-center mr-auto">
+                    <button type="button" class="btn btn-default" id="filtering" data-step="15" data-intro=" بدء البحث بالمدخلات التي تم إدخالها">بحث</button> <button type="button" class="btn btn-default" id="morefiltering"  data-step="7" data-intro="الجزئية الثانية وهي البحث بصوره تفصيلية أكثر كما يلي :- ">عرض عناصر أكثر</button>
+                </div>
+
+                <br />
+                <div class="row text-center">
+                    <div class="col">
+                        <h3>اختر تاريخ و منطقة للبحث</h3>
+                    </div>
+                </div>
+                <table class="table text-right table-hover" data-step="16" data-intro=" تعرض هنا نتائج البحث التي تمت">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>المنطقة</th>
+                            <th>المساحة</th>
+                            <th>الدور</th>
+                            <th>السعر</th>
+                            <th>عدد الغرف</th>
+                            <th>عدد الحمامات</th>
+                            <th>عدد المصاعد</th>
+                            <th>التشطيب</th>
+                            @{
+
+                                if (@user.IsAdmin)
+                                {
+                                    <th>حذف</th>
+                                }
+                                else { }
+                            }
+                            @*<th>حذف</th>*@
+                            <th data-step="17" data-intro="هذا الزر لعرض تفاصيل أكثر ">المزيد</th>
+
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        <!--****************************start of Modal************************************************************************************-->
+        <div class="modal fade" id="modalContactForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">إطلب الشقه</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-1">
+                            <label data-error="wrong" data-success="right" for="form34">الإسم الكامل </label>
+                            <input type="text" id="ClientName" class="form-control validate">
+
+                        </div>
+
+                        <div class="md-form mb-1">
+                            <label data-error="wrong" data-success="right" for="form29">رقم الهاتف المحمول الأول </label>
+                            @*<input type="number" id="ClientFirstMobile" class="form-control validate">*@<br />
+                            <input type="tel" class="form-control validate" id="clientMobile" placeholder="الموبايل" name="Mobile" />
+                            <span class="error-msg error-msg-style"></span><span class="valid-msg valid-msg-style"></span>
+                        </div>
+
+
+
+                        <div class="md-form mb-1">
+                            <label data-error="wrong" data-success="right" for="form29"> رقم الهاتف المحمول الثاني (إختياري )</label>
+                            @*<input type="number" id="ClientSecundMobile" class="form-control validate">*@<br />
+                            <input type="tel" class="form-control" id="clientMobile2" placeholder="الموبايل2" name="Mobile2">
+                            <span class="error-msg2 error-msg-style"></span><span class="valid-msg2 valid-msg-style"></span>
+                        </div>
+
+                        <div class="md-form mb-1">
+                            <label data-error="wrong" data-success="right" for="form29">رقم الهاتف المنزلي (إختياري  )</label>
+                            @*<input type="number" id="ClientTelephone" class="form-control validate">*@<br />
+                            <input type="tel" class="form-control" id="clientPhone" placeholder="التليفون" name="Phone">
+                            <span class="error-msg3 error-msg-style"></span><span class="valid-msg3 valid-msg-style"></span>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button id="SendData" class="btn btn-unique">حجز معاينة</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--*************************************End of Modal******************************************-->
+        <div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog .modal-dialog-centered modal-lg" role="document">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">تفاصيل العرض</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!--container-->
+</div> <!-- card-->
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+            $("#hiddenDivForInstallment").hide();
+               if ($('#Payments').val() == "") {
+
+                    $("#priceLableFrom").html(" السعــر من");
+                    $("#priceLableTo").html(" السعــر إلى");
+                    $("#BasisOfInstallmentDropdown").attr('disabled', true);
+                    $("#OverFrom").attr('disabled', true);
+                    $("#OverTo").attr('disabled', true);
+                    $("#RemainingFrom").attr('disabled', true);
+                    $("#RemainingTo").attr('disabled', true);
+                    $("#YearOfInstallmentFrom").attr('disabled', true);
+                    $("#YearOfInstallmentTo").attr('disabled', true);
+            }
+            
+            $("#Payments").on('change', function () {
+                if ($('#Payments').val() == 4) {
+
+                    $("#priceLableFrom").html("ما تم دفعه من ");
+                    $("#priceLableTo").html("ما تم دفعه إلى ");
+                    $("#BasisOfInstallmentDropdown").attr('disabled', false);
+                    $("#OverFrom").attr('disabled', false);
+                    $("#OverTo").attr('disabled', false);
+                    $("#RemainingFrom").attr('disabled', false);
+                    $("#RemainingTo").attr('disabled', false);
+                    $("#YearOfInstallmentFrom").attr('disabled', false);
+                    $("#YearOfInstallmentTo").attr('disabled', false);
+
+                }
+                else if ($('#Payments').val() == 3) {
+
+                    $("#priceLableFrom").html(" السعــر من");
+                    $("#priceLableTo").html(" السعــر إلى");
+                    $("#BasisOfInstallmentDropdown").attr('disabled', true);
+                    $("#OverFrom").attr('disabled', true);
+                    $("#OverTo").attr('disabled', true);
+                    $("#RemainingFrom").attr('disabled', true);
+                    $("#RemainingTo").attr('disabled', true);
+                    $("#YearOfInstallmentFrom").attr('disabled', true);
+                    $("#YearOfInstallmentTo").attr('disabled', true);
+                }
+                 else if ($('#Payments').val() == "") {
+
+                    $("#priceLableFrom").html(" السعــر من");
+                    $("#priceLableTo").html(" السعــر إلى");
+                    $("#BasisOfInstallmentDropdown").attr('disabled', true);
+                    $("#OverFrom").attr('disabled', true);
+                    $("#OverTo").attr('disabled', true);
+                    $("#RemainingFrom").attr('disabled', true);
+                    $("#RemainingTo").attr('disabled', true);
+                    $("#YearOfInstallmentFrom").attr('disabled', true);
+                    $("#YearOfInstallmentTo").attr('disabled', true);
+                }
+            });
+
+            $("#Payments option[value='6']").hide();
+            //SET THE DATE TIME PICKER TO TODAY DATE
+            var now = new Date();
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+            // $('.pdate').val(today);
+            // END SET DATE
+
+            $("#morefiltering").click(function () {
+                $("#hiddenDivForInstallment").toggle(300);
+            });
+            $("#filtering").click(function () {
+                table.draw();
+            });
+
+            function format(full) {
+                // `d` is the original data object for the row
+                var checkIsAdmine = "@user.IsAdmin";
+                if (checkIsAdmine == "True") {
+                    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;width:100%;">' +
+                        '<tr>' +
+                        '<td align="right" >' + '<button type="button" title="تعديل"  rel="tooltip" class="btn btn-success btn-sm btn-icon unitDetails" data-toggle="modal" data-id="' + full.Available_Id + '"><i class="tim-icons icon-notes"></i></button>' + '</td>' +
+                        // '<td align="right">' + '<button type="button" title="حذف " rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_AvailableUnits_Id + '"><i class="tim-icons icon-simple-remove"></i></button>' + '</td>' +
+                        '<td align="right">' + '<a  class="filter" href="/clientsales/GetInstantMatches/' + full.Available_Id + '">الترشيحات</a>' + '</td>' +
+                        //'<td align="right">' + '<a  class=" btn btn-default " href = "/AvailableQuickSearch/DemandAvailable?demandId=' + full.PK_AvailableUnits_Id + '" >بحث عن طلبات عميل معين بالاسم او الهاتف</a>' + '</td>' +
+                        '<td align="right">' + '<a  class=" btn btn-default "  href = "/AvailableQuickSearch/DemandAvailable?AvailableId=' + full.Available_Id + '&selerId=' + full.ClientId + '" >بحث عن طلبات عميل معين بالاسم او الهاتف</a>' + '</td>' +
+                        '<td align="right">' + '<a id="newPreview" class=" btn btn-default "data-toggle="modal" data-target="#modalContactForm" data-id="' + full.Available_Id + '">عمل معاينه لعميل جديد</a>' + '</td>' +
+                        '</tr>' +
+                        '</table>';
+
+
+                }
+                else {
+                    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;width:100%;">' +
+                        '<tr>' +
+                        '<td align="right">' + '<button type="button" title="تعديل "  rel="tooltip" class="btn btn-success btn-sm btn-icon unitDetails" data-toggle="modal" data-id="' + full.Available_Id + '"><i class="tim-icons icon-notes"></i></button>' + '</td>' +
+                        '<td align="right">' + '<a  class="filter"   href="/clientsales/GetInstantMatches/' + full.Available_Id + '">الترشيحات</a>' + '</td>' +
+                        //'<td align="right">' + '<a  class=" btn btn-default " href = "/AvailableQuickSearch/DemandAvailable?demandId='+ full.PK_AvailableUnits_Id +'" >بحث عن طلبات عميل معين بالاسم او الهاتف</a>'+ '</td>' +
+                        '<td align="right">' + '<a  class=" btn btn-default "  href = "/AvailableQuickSearch/DemandAvailable?AvailableId=' + full.Available_Id + '&selerId=' + full.ClientId + '" >بحث عن طلبات عميل معين بالاسم او الهاتف</a>' + '</td>' +
+                        '<td align="right">' + '<a id="newPreview" class=" btn btn-default "data-toggle="modal" data-target="#modalContactForm" data-id="' + full.Available_Id + '">عمل معاينه لعميل جديد</a>' + '</td>' +
+                        '</tr>' +
+                        '</table>';
+                }
+
+
+
+
+            }
+            var checkIsAdmine = "@user.IsAdmin";
+            if (checkIsAdmine == "True") {
+                table = $("table").DataTable({
+
+                    "language": {
+                        "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": false,
+                    "bFilter": false,
+                    "orderMulti": false,
+                    "pageLength": 5,
+                    "ajax": {
+                        "url": "/AvailableQuickSearch/loaddata",
+                        "type": "post",
+                        "datatype": "json",
+                        "data": function (d) {
+                            d.cat = $("#Cat").val();
+                            d.regionFrom = $("#regionss").val();
+                            d.regionTo = $("#regionssTo").val();
+                            //d.pdate = $(".pdate").val();
+                            d.fromDate = $("#from").val();
+                            d.toDate = $("#to").val();
+                            d.ElevatorFrom = $("#ElevatorsFrom").val();
+                            d.ElevatorTo = $("#ElevatorsTo").val();
+                            d.SpaceFrom = $("#SpaceFrom").val();
+                            d.SpaceTo = $("#SpaceTo").val();
+                            d.PriceFrom = $("#PriceFrom").val();
+                            d.PriceTo = $("#PriceTo").val();
+                            //new feild
+                            d.Payments = $("#Payments").val();
+                            d.BasisOfInstallmentDropdown = $("#BasisOfInstallmentDropdown").val();
+                            d.OverFrom = $("#OverFrom").val();
+                            d.OverTo = $("#OverTo").val();
+                            d.RemainingFrom = $("#RemainingFrom").val();
+                            d.RemainingTo = $("#RemainingTo").val();
+                            d.YearOfInstallmentFrom = $("#YearOfInstallmentFrom").val();
+                            d.YearOfInstallmentTo = $("#YearOfInstallmentTo").val();
+                            d.FlatNumber = $("#FlatNumber").val();
+                            d.ApartmentNumber = $("#ApartmentNumber").val();
+                            d.GroupNumber = $("#GroupNumber").val();
+                            d.availableNumber = $("#availableNumber").val();
+                        },
+                    },
+                    "columns":
+                        [
+
+                            { "data": "Available_Id", "name": "Available_Id", "autoWidth": true },
+                            { "data": "RegionName", "name": "RegionName", "autowidth": true },
+                            { "data": "Space", "name": "Space", "autowidth": true },
+                            { "data": "Floor", "name": "Floor", "autowidth": true },
+                            { "data": "Price", "name": "Price", "autowidth": true },
+                            { "data": "Rooms", "name": "Rooms", "autowidth": true },
+                            { "data": "Bathrooms", "name": "Bathrooms", "autowidth": true },
+                            { "data": "NoOfElevator", "name": "NoOfElevator", "autowidth": true },
+                            { "data": "Type", "name": "Type", "autowidth": true },
+                        @*{
+                            "render": function (data, type, full, meta) { return ' <button type="button" title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon unitDetails" data-toggle="modal" data-id="' + full.PK_AvailableUnits_Id + '"><i class="tim-icons icon-notes"></i></button>'; }
+                        },*@
+
+
+                            {
+                                "render": function (data, type, full, meta) {
+                                    var checkIsAdmine = "@user.IsAdmin";
+                                    if (checkIsAdmine == "True") {
+                                        return '<button type="button" title="حذف " rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.Available_Id + '"><i class="tim-icons icon-simple-remove"></i></button>';
+                                    }
+                                    else { return '' }
+                                }
+
+                            },
+
+                            {
+
+                                "className": 'details-control',
+                                "orderable": false,
+                                "data": null,
+                                "defaultContent": ''
+
+                            },
+                        ],
+
+                });
+            }
+            else {
+                table = $("table").DataTable({
+
+                    "language": {
+                        "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": false,
+                    "bFilter": false,
+                    "orderMulti": false,
+                    "pageLength": 5,
+                    "ajax": {
+                        "url": "/AvailableQuickSearch/loaddata",
+                        "type": "post",
+                        "datatype": "json",
+                        "data": function (d) {
+                            d.cat = $("#Cat").val();
+                            d.regionFrom = $("#regionss").val();
+                            d.regionTo = $("#regionssTo").val();
+                            //d.pdate = $(".pdate").val();
+                            d.fromDate = $("#from").val();
+                            d.toDate = $("#to").val();
+                            d.ElevatorFrom = $("#ElevatorsFrom").val();
+                            d.ElevatorTo = $("#ElevatorsTo").val();
+                            d.SpaceFrom = $("#SpaceFrom").val();
+                            d.SpaceTo = $("#SpaceTo").val();
+                            d.PriceFrom = $("#PriceFrom").val();
+                            d.PriceTo = $("#PriceTo").val();
+                            //new feild
+                            d.Payments = $("#Payments").val();
+                            d.BasisOfInstallmentDropdown = $("#BasisOfInstallmentDropdown").val();
+                            d.OverFrom = $("#OverFrom").val();
+                            d.OverTo = $("#OverTo").val();
+                            d.RemainingFrom = $("#RemainingFrom").val();
+                            d.RemainingTo = $("#RemainingTo").val();
+                            d.YearOfInstallmentFrom = $("#YearOfInstallmentFrom").val();
+                            d.YearOfInstallmentTo = $("#YearOfInstallmentTo").val();
+                            d.FlatNumber = $("#FlatNumber").val();
+                            d.ApartmentNumber = $("#ApartmentNumber").val();
+                            d.GroupNumber = $("#GroupNumber").val();
+                            d.availableNumber = $("#availableNumber").val();
+                        },
+                    },
+                    "columns":
+                        [
+
+                            { "data": "Available_Id", "name": "Available_Id", "autoWidth": true },
+                            { "data": "RegionName", "name": "RegionName", "autowidth": true },
+                            { "data": "Space", "name": "Space", "autowidth": true },
+                            { "data": "Floor", "name": "Floor", "autowidth": true },
+                            { "data": "Price", "name": "Price", "autowidth": true },
+                            { "data": "Rooms", "name": "Rooms", "autowidth": true },
+                            { "data": "Bathrooms", "name": "Bathrooms", "autowidth": true },
+                            { "data": "NoOfElevator", "name": "NoOfElevator", "autowidth": true },
+                            { "data": "Type", "name": "Type", "autowidth": true },
+                        @*{
+                            "render": function (data, type, full, meta) { return ' <button type="button" title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon unitDetails" data-toggle="modal" data-id="' + full.PK_AvailableUnits_Id + '"><i class="tim-icons icon-notes"></i></button>'; }
+                        },*@
+
+
+
+
+                            {
+
+                                "className": 'details-control',
+                                "orderable": false,
+                                "data": null,
+                                "defaultContent": ''
+
+                            },
+                        ],
+
+                });
+            };
+            //add Child rows here ****************************************************
+            $('table tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+
+
+            $("table").on("click", ".delete", function () {
+
+                var Id = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                    "هل تريد حذف هذا العرض؟", function (confirm) {
+                        if (confirm) {
+                            $.ajax({
+                                url: "/ClientSales/DeleteClientSale",
+                                type: "post",
+                                data: {
+                                    __RequestVerificationToken: token,
+                                    id: Id,
+                                },
+
+                                success: function (result) {
+                                    if (result.valid) {
+                                        alertify.alert(result.message, function () {
+                                            button.parents("tr").remove();
+                                        });
+                                    }
+                                    else {
+                                        alertify.alert(result.message, function () { });
+                                    }
+
+                                }
+                            })
+                        }
+
+                    }
+
+                )
+            })
+          //*****************************************************************************start send Api data *********************************
+             function getDate() {
+               var today = new Date();
+               var date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+               var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                var dateTime = date + ' ' + time;
+                return dateTime;
+            }
+        $("#SendData").click(function (e) {
+                debugger;
+                var postModel = {
+                        Name: $("#ClientName").val(),
+                        Mobile:$("#clientMobile").val(),
+                        Mobile2:$("#clientMobile2").val(),
+                        Phone: $("#clientPhone").val(),
+                        ContactHour: $("#BestTime").val(),
+                        Notes: $("#nots").val(),
+                        Unit_Id: $("#newPreview").attr("data-id"),
+                        FK_Posts_Categories_Id: 1,
+                        IsClosed: false,
+                        CraetedAt: getDate(),
+                    }
+                $.ajax({
+                    type: "POST",
+                    url: "/AvailableQuickSearch/SetPreview/",
+                    //crossDomain: true,
+                    //async: false,
+                    //dataType: "Application/json",
+                    accepts: "Application/json",
+                    data: postModel,
+                    success: function (response) {
+
+                           if (response.valid) {
+                            alertify.alert(response.message, function () {
+                                    location.href = "/clientSales/DemandMatchesAfterAdd/";                        
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+
+                            });
+                        };
+
+                    }
+                    , error: function () {
+
+                            alertify.alert("حدث خطأ أثناء حفظ البيانات الرجاء المحاوله مره أخرى");
+                    }
+                });
+
+        });
+            //*****************************************************************************end send Api data *********************************
+            $(document).on("click", ".unitDetails", function () {
+                var availableId = $(this).attr("data-id");
+                location.href = "/clientsales/editclientsale/" + availableId;
+            });
+        
+        });
+
+        //*************** start buld our GaidLine *******************************************
+         $(document).ajaxComplete(function () {
+             $("select[aria-controls='DataTables_Table_0']").attr({ "data-step": "18", "data-intro": "يمكن من هنا تحديد عدد السجلات المعروضه" });
+              $("#DataTables_Table_0_paginate").attr({ "data-step": "19", "data-intro": "تستخدم هذه للتنقل بين الصفحات إن كانة كثيرة" });
+        });
+        $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();
+    			
+
+                    // $(".left").css("float","left");
+                    // $("input").removeClass("error");
+                    // $(".right").hide();
+
+                    
+                    switch($(targetElement).attr("data-step")){
+
+                        case '8':
+                            $("#hiddenDivForInstallment").show();
+                           //$("#morefiltering").click();//to open more ditals in search 
+                            $(targetElement).show();
+                            break;
+                        case '15':
+                            $("#hiddenDivForInstallment").hide();
+                            $("td.details-control:eq(0)").click();
+                            $(targetElement).show();
+                            break;
+                        //case '17':
+                             
+                        //    //  $("#morefiltering").click();
+                        //    $("#hiddenDivForInstallment").hide();
+                        //    $(targetElement).show();
+                        //    break;
+                        //case '17':
+                          //  debugger;
+             // $("#morefiltering").click();
+                            //$(".details-control:eq(1)").click();//to open first row in table 
+                           // $("td.details-control:eq(0)").click();
+                          //  $(targetElement).show();
+                            //break;
+
+                        
+                    }
+                 });
+            });
+        //$("#morefiltering").click();//to open more ditals in search 
+        // $(".details-control:eq(1)").click();//to open first row in table 
+        //**************** End this **************************
+    </script>
+}

@@ -1,0 +1,167 @@
+﻿@model _3aqarak.MVC.ViewModels.ContractCommissionsViewModel
+@{
+    ViewBag.Title = "SetContractCommmissions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card">
+    <div class="card-header text-right">
+
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" style="color:#0098f0">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="PreviewReservation.html" style="color:white"> توزيع عمولة العقود </a> </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+
+        <form>
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="form-group  col">
+                    <label class="preLabel"> كود العقد : </label>
+                    <input type="text" class="form-control" id="contCode" value="@Model.ContractId" placeholder="كود العقد " disabled="">
+                </div>
+
+                <div class="form-group col">
+                    <label class="preLabel"> قيمته :</label>
+                    @if (Model.TransCode == _3aqarak.MVC.Structs.TranscatTypes.Rental)
+                    {
+                        <input type="text" class="form-control" id="contValue" value="@Model.RentAmount" placeholder="قيمته" disabled="">
+
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control" id="contValue" value="@Model.TotalAmount" placeholder="قيمته" disabled="">
+
+                    }
+                </div>
+
+                <div class="form-group col">
+                    <label class="preLabel"> نسبة المكتب :</label>
+                    <input type="text" class="form-control" id="offPercentage" placeholder="نسبة المكتب" required="" style="border-color: rgb(43, 53, 83);">
+                    <input type="button" id="calculate" class="btn btn-default" value="احسب العمولات" />
+                </div>
+              
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <!--  <span class="preLabel"> اسم الموظف</span> <br> <br> -->
+
+                    <div class="form-group">
+                        <label class="preLabel"> TeleSales </label>
+                        <input type="text" class="form-control" id="TeleSales" value="@Model.TeleSalesName" disabled="">
+                    </div>
+                    <div class="form-group">
+                        <label class="preLabel"> Sales </label>
+                        <input type="text" class="form-control" id="Sales" value="@Model.SalesName" disabled="">
+                    </div>
+                    <div class="form-group">
+                        <label class="preLabel"> Branch Manager </label>
+                        <input type="text" class="form-control" id="BranchManager" value="@Model.MgrName" disabled="">
+                    </div>
+
+                </div>
+
+                <div class="col">
+                    <!--  <span class="preLabel"> النسبة</span> <br> <br> -->
+                    <div class="form-group">
+                        <label class="preLabel"> النسبة </label>
+                        <input type="text" class="form-control" id="per1" value="@Model.TelesalesCommissionPercent" disabled="">
+                    </div>
+                    <div class="form-group">
+                        <label class="preLabel"> النسبة </label>
+                        <input type="text" class="form-control" id="per2" value="@Model.SalesCommissionPercent" disabled="">
+                    </div>
+                    <div class="form-group">
+                        <label class="preLabel"> النسبة </label>
+                        <input type="text" class="form-control" id="per3" value="@Model.MgrCommissionPercent" disabled="">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <!--  <span class="preLabel"> المبلغ</span> <br> <br> -->
+                    <div class="form-group">
+                        <label class="preLabel"> المبلغ </label>
+                        <input type="text" class="form-control" id="teleComm" required="">
+                    </div>
+                    <div class="form-group">
+                        <label class="preLabel"> المبلغ </label>
+                        <input type="text" class="form-control" id="salesComm" required="">
+                    </div>
+                    <div class="form-group">
+                        <label class="preLabel">المبلغ </label>
+                        <input type="text" class="form-control" id="mgrComm" required="">
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <button type="submit" class="btn btn-default" id="Save"> حفظ </button>
+        </form>
+
+    </div>  <!-- End of body-->
+
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $("#calculate").click(function () {
+                var commission = $("#offPercentage").val();
+                if (commission !== "" && !isNaN(commission)) {
+                    var commNum = Number(commission);
+                    var teleComm = Number(($("#per1").val()).split(" ")[0]);
+                    var salesComm = Number(($("#per2").val()).split(" ")[0]);
+                    var mgrComm = Number(($("#per3").val()).split(" ")[0]);
+                    $("#teleComm").val(commNum * teleComm / 100);
+                    $("#salesComm").val(commNum * salesComm / 100);
+                    $("#mgrComm").val(commNum * mgrComm/100);
+                }
+            });
+
+            $("form").submit(function (e) {
+                e.preventDefault();
+                var obj = {
+                    ContractId:"@Model.ContractId",
+                    SalesId: "@Model.SalesId",
+                    TeleSalesId: "@Model.TeleSalesId",
+                    MgrId: "@Model.MgrId",
+                    Commission: $("#offPercentage").val(),
+                    SalesComm: $("#salesComm").val(),
+                    TeleSalesComm: $("#teleComm").val(),
+                    MgrComm: $("#mgrComm").val(),
+                    Code:"@Model.TransCode",
+
+                };
+                $.ajax({
+                    url:"/ContractsAccounting/SaveContractCommmissions",
+                    method:"post",
+                    accept:"json",
+                    data:{
+                        __RequestVerificationToken:token,
+                        comms:obj
+                    },
+                    success:function(result){
+                        if(result){
+                            alertify.alert("تم الحفظ بنجاح!",function(){
+                                location.href="@Url.Action("ContractCommissions", "ContractsAccounting")";
+                            });
+                        }
+                        else{
+                            alertify.alert("لم يتم الحفظ بنجاح",function(){                            
+                            });
+                        }
+                    },
+                });
+            });
+
+        });
+    </script>
+    }
+

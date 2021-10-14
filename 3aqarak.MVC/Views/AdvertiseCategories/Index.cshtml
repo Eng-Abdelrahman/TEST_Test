@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        .mybtn {
+            display: inline-block;
+            border-radius: 4px;
+            background-color: rgb(0, 191, 255);
+            border: none;
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 28px;
+            padding: 20px;
+            width: 200px;
+            transition: all 0.5s;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+            .mybtn span {
+                cursor: pointer;
+                display: inline-block;
+                position: relative;
+                transition: 0.5s;
+            }
+
+                .mybtn span:after {
+                    content: '\00bb';
+                    position: absolute;
+                    opacity: 0;
+                    top: 0;
+                    right: -20px;
+                    transition: 0.5s;
+                }
+
+            .mybtn:hover span {
+                padding-right: 25px;
+            }
+
+                .mybtn:hover span:after {
+                    opacity: 1;
+                    right: 0;
+                }
+
+        .catbtn {
+            color: #ff9900;
+            font-weight: bold;
+            font-Family: 'Tajawal', sans-serif;
+            text-shadow: #e8dee1 2px 2px 10px;
+        }
+
+        .cardRound {
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            text-align: center;
+        }
+
+        .cardImg {
+            width: 55%;
+            display: block;
+            margin: 6% 22%;
+        }
+    </style>
+}
+
+<div class="card" data-step="1" data-intro="هذه الصفحه مخصصه لعرض العقارات المعروضه على البرنامج بتاريخ معين لعمل إعلانات عنها ">
+    <div class="container-fluid">
+        <div class="card-header">
+            <div class="card-header text-right">
+                <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+
+                        <li class="breadcrumb-item active" aria-current="page"> إختيار نوع فئة الاعلان  </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="card-body">
+            <h4 class="title text-right">أستعراض جميع الفئات</h4>
+            <div class="container">
+                <div class="row justify-content-around ">
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color: #e4e0d99e;">
+                            <div class="card-body">
+                                <img class="cardImg text-center " src="~/Assets/image Units/image vill aoartment/buildings.png">
+                                <a class="catbtn" href="/Advertising/AdevertisingIndex?catId=@_3aqarak.MVC.Helpers.Categories.Apartements"> شقق</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color:#a7b26d73;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/home.png">
+                                <a class="catbtn" href="/Advertising/AdevertisingIndex?catId=@_3aqarak.MVC.Helpers.Categories.Villas">  فيلات</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color:#e4e0d99e;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/icons8-field-96.png">
+                                <a class="catbtn" href="/Advertising/AdevertisingIndex?catId=@_3aqarak.MVC.Helpers.Categories.Lands">  أراضي</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color:#a7b26d73;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/shop.png">
+                                <a class="catbtn" href="/Advertising/AdevertisingIndex?catId=@_3aqarak.MVC.Helpers.Categories.Shops"> محلات</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*end row*@
+
+
+
+        </div> <!-- end of card-->
+    </div>
+</div>
+@section scripts{
+    <script>
+      $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();
+                 });
+            });
+    </script>
+}

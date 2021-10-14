@@ -1,0 +1,803 @@
+﻿@model _3aqarak.MVC.ViewModels.AvailableLandsViewModel
+@{
+    ViewBag.Title = "AddAvailableLands";
+}
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+
+        .checkBoxDiv {
+            margin-top: 1.5%;
+            margin-bottom: 1.5%;
+        }
+    </style>
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">الصفحة الرئيسية</a></li>
+                <li class="breadcrumb-item "><a href="index"> عروض الأراضي </a> </li>
+                <li class="breadcrumb-item active">  إضافة عرض أراضي</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="card-body">
+        <div class="container">
+            <h5 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h5>
+            <form id="saveAvailableLandForm">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="preLabel">موظف السيلز<abbr class="text-danger">*</abbr></label>
+                        <input type="text" class="form-control" id="Sales-txt" placeholder="موظف السيلز">
+                        @*<span class="text-danger"></span>*@
+                        @Html.ValidationMessageFor(s => s.FK_AvaliableLands_Users_SalesId, "", new { @class = "text-danger" })
+                    </div>
+                </div>  <!-- End of row-->
+
+                <div class="row">
+                    <a class="btn btn-default col" data-toggle="modal" data-target="#myImagesModal">  تحميـل الصـور</a>
+                </div>
+                <br />
+                <div class="row">
+
+                    <div class="col">
+                        <label class="preLabel">السعر<abbr class="text-danger">*</abbr></label>
+                        <input type="number" class="form-control" id="Price-num" placeholder="السعر" min="1" required>
+                        @*<span class="text-danger"></span>*@
+                        @Html.ValidationMessageFor(p => p.Price, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col">
+                        <label class="preLabel">المساحة<abbr class="text-danger">*</abbr></label>
+                        <input type="number" class="form-control" id="Space-num" placeholder="المساحة" min="1" required>
+                        @*<span class="text-danger"></span>*@
+                        @Html.ValidationMessageFor(p => p.Space, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col">
+                        <label class="preLabel">العنوان<abbr class="text-danger">*</abbr></label>
+                        <input type="text" class="form-control" id="Address-txt" placeholder="العنوان" required>
+                        @*<span class="text-danger"></span>*@
+                        @Html.ValidationMessageFor(p => p.Address, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col">
+                        <label class="preLabel">نوع التعامل<abbr class="text-danger">*</abbr></label>
+                        @Html.DropDownListFor(m => m.FK_AvaliableLands_Transactions_TransactionId, Model.Transactions, "إختر نوع التعامل", new { @class = "form-control", id = "TransActionType-dropdown" })
+                        @*<span class="text-danger"></span>*@
+                        @Html.ValidationMessageFor(p => p.FK_AvaliableLands_Transactions_TransactionId, "", new { @class = "text-danger" })
+                    </div>
+
+                </div> <!-- End of row-->
+                <br />
+                <div class="row">
+                    <div class="col">
+                        <label class="preLabel">المنطقة<abbr class="text-danger">*</abbr></label>
+                        @Html.DropDownListFor(m => m.FK_AvailabeLands_Regions_RegionId, Model.Regions, "إختر المنطقة", new { @class = "form-control", id = "Region-dropdown" })
+                        @*<span class="text-danger"></span>*@
+                        @Html.ValidationMessageFor(p => p.FK_AvailabeLands_Regions_RegionId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col">
+                        <label class="preLabel">النوع<abbr class="text-danger">*</abbr></label>
+                        <select id="LandType-dropdown" required class="form-control">
+                            <option> اختر نوع الارض </option>
+                            <option value="true">كارديون مبانى</option>
+                            <option value="false">زراعى</option>
+                        </select>
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label class="preLabel">الإطلالة<abbr class="text-danger">*</abbr></label>
+                        @Html.DropDownListFor(m => m.FK_AvailableLands_Views_ViewId, Model.Views, "إختر الاطلالة", new { @class = "form-control", id = "View-dropdown" })
+                        @*<span class="text-danger"></span>*@
+                        @Html.ValidationMessageFor(p => p.FK_AvailableLands_Views_ViewId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col">
+                        <label class="preLabel">طريقة الدفع<abbr class="text-danger">*</abbr></label>
+                        @Html.DropDownListFor(m => m.FK_AvailableLands_PaymentMethod_Id, Model.Payments, "إختر طريقة الدفع ", new { @class = "form-control", id = "Payment-dropdown" })
+                        @*<span class="text-danger"></span>*@
+                        @Html.ValidationMessageFor(p => p.FK_AvailableLands_PaymentMethod_Id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col">
+                        <label class="preLabel"> الوصف<abbr class="text-danger">*</abbr></label>
+                        <textarea class="form-control" id="Description-txtArea" style="border :1px solid grey ; border-radius:5px"> </textarea>
+                        @*<span class="text-danger Description-span"></span>*@
+                        @Html.ValidationMessageFor(p => p.Description, "", new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="col">
+                        <label class="preLabel">ملاحظات</label>
+                        <textarea class="form-control" id="Nots-txtArea" style="border :1px solid grey ; border-radius:5px"> </textarea>
+                    </div>
+                </div> <!-- end of row-->
+                <br />
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <label class="form-check-label ">
+                                <input class="form-check-input access-chkBox" type="checkbox" id="IsMarketSearch-chkBox">بحث سوقي
+                                <span class="form-check-sign">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input access-chkBox" type="checkbox" id="IsNegotiable-chkBox">قابل للتفاوض
+                                <span class="form-check-sign">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5 mb-3">
+                    <div class="col">
+                        <a class="btn btn-success btn-block" id="getLandDemandsList-btn">إظهار الترشيحات</a>
+                    </div>
+                </div>
+                <div class="row" style="display:none;" id="landDemandsHiddenDiv">
+                    <div class="col">
+                        <table class="table text-right table-hover " id="landDemandsTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">اسم المشتــري </th>
+                                    <th> رقــم الطلب</th>
+                                    <th>تفاصيل الطلب</th>
+                                </tr>
+                            </thead>
+                            <tbody id="landDemandsTBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row ">
+                    <div class="col">
+                        <input type="text" class="form-control " id="clientSearchTxt" placeholder="بحث عن عميل معين بالاسم او الهاتف">
+                    </div>
+                    <div class="col">
+                        <input type="button" id="clientBtn" class="btn btn-default" value=" تسجيل  عميل جديد " />
+                    </div>
+                </div>
+
+                @*save client*@
+                <div class="row"  id="hiddendivforsaveclient">
+                    <div class="card-body">
+
+
+                        <span class="text-danger" id="finishErr"></span>
+                        <span class="text-danger" id="accessError"></span>
+                        <div class="form-group  ">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="first" class="text-right"> الاســـم  :<abbr class="req">*</abbr></label>
+                                    <input type="text" class="form-control " id="clientName" placeholder="الاســم" name="Name" required="required" data-val="true" data-val-required="الرجاء إدخال اسم العميل">
+                                    @Html.ValidationMessageFor(m => m.Name)
+                                </div>
+
+                                <div class="form-group col-md-6">
+
+                                    <label for="mobile" class="text-right">الموبايل :<abbr class="req">*</abbr></label>
+                                    @Html.TextBoxFor(m => m.Mobile, new { id = "clientMobile", @class = "form-control", placeholder = "الموبايل", type = "tel" })
+                                    @*<input type="text" class="form-control" id="clientMobile" placeholder="الموبايل" name="Mobile" required="required" data-val="true" data-val-required="الرجاء إدخال موبيل العميل">*@
+                                    @Html.ValidationMessageFor(m => m.Mobile)
+                                    <span class="valid-msg hide text-danger"> </span>
+                                    <span class="error-msg hide text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="last" class="text-right"> الرقم القومي :</label>
+                                @*@Html.TextBoxFor(m => m.IdNumber, new { @class = "form-control", id = "idNumber", placeholder = "الرقم القومي", name = "IdNumber" })*@
+                                <input type="text" class="form-control" id="clientIdNumber" placeholder="الرقم القومي" name="IdNumber">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="last" class="text-right"> الوظيفة :</label>
+                                <input type="text" class="form-control" id="clientJob" placeholder="الوظيفة " name="Job">
+                            </div>
+                        </div>
+                        @*#clientMobile2  #clientPhone #clientMobile*@
+                        <div class="form-group ">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="phone" class="text-right">التليفون :</label>
+                                    <input type="tel" class="form-control" id="clientPhone" placeholder="التليفون" name="Phone">
+                                    <span class="valid-msg3 hide text-danger"> </span>
+                                    <span class="error-msg3 hide text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="phone" class="text-right">2الموبايل :</label>
+                                    <input type="tel" class="form-control" id="clientMobile2" placeholder="الموبايل2" name="Mobile2">
+                                    <span class="valid-msg2 hide text-danger"> </span>
+                                    <span class="error-msg2 hide text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="last" class="text-right"> افضــل وقت للاتصــال :</label>
+                                    <input type="text" class="form-control" id="clientBestContactHour" placeholder="ميعاد الاتصــال" name="BestContactHour">
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group  ">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="last" class="text-right"> العنــوان :</label>
+                                    <textarea class="form-control" rows="1" id="clientAddress" placeholder="العنوان" name="Address"></textarea>
+                                    @*@Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger text-right" })*@
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="last" class="text-right"> ملاحظات :</label>
+                                    <textarea class="form-control" rows="1" id="clientNotes" placeholder="ملاحظات" name="ClientNotes"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*end save client*@
+
+                <div class="row mt-5">
+                    <div class="col">
+                        <button type="submit" class="btn btn-default" id="saveAvailableLand"> إضافة</button>
+                    </div>
+                </div>
+            </form>
+        </div>  <!-- container-->
+        <!-- Image Modal -->
+        <div id="myImagesModal" class="modal fade " role="dialog">
+            <div class="modal-dialog .modal-dialog-centered" role="document">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Choose image</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <div class="jumbotron">
+                                <form action="/AvailableLands/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                            </div>
+                            <span class="alert alert-primary">الصورة الاولى التي سيتم تحميلها هي الصورة الاساسيه لعنوان العرض</span><br /><br />
+                            <span class="alert alert-warning">اقصى عدد للصور هو 9 صور فقط  </span>
+                            <span class="alert alert-info">مساحة الصوره لا تزيد عن 3 ميجابايتس  </span>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end of modal -->
+        <!--modal details-->
+        <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModal" aria-hidden="true">
+            <div class="modal-dialog " role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="My-details-Modal-Body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  End body-->
+</div>
+@section scripts{
+    <script>
+        function validateAvailableLandsData() {
+            // availableLandObj Validation
+            if ($("#Sales-txt").val() === "" || $("#Sales-txt").val() === null) {
+                $("#Sales-txt").next("span.text-danger").html("لابد من ادخال اسم موظف السيلز");
+                return false;
+            }
+            else {
+                $("#Sales-txt").next("span.text-danger").html("");
+            }
+
+            if ($("#Price-num").val() === "" || $("#Price-num").val() === null || $("#Price-num").val() <= 0) {
+                $("#Price-num").next("span.text-danger").html("لابد من ادخال السعر");
+                return false;
+            }
+            else {
+                $("#Price-num").next("span.text-danger").html("");
+            }
+
+            if ($("#Space-num").val() === "" || $("#Space-num").val() === null || $("#Space-num").val() <= 0) {
+                $("#Space-num").next("span.text-danger").html("لابد من ادخال المساحة");
+                return false;
+            }
+            else {
+                $("#Space-num").next("span.text-danger").html("");
+            }
+
+            if ($("#Address-txt").val() === "" || $("#Address-txt").val() === null) {
+                $("#Address-txt").next("span.text-danger").html("لابد من ادخال العنوان");
+                return false;
+            }
+            else {
+                $("#Address-txt").next("span.text-danger").html("");
+            }
+
+            if ($("#TransActionType-dropdown").val() === "" || $("#TransActionType-dropdown").val() === null) {
+                $("#TransActionType-dropdown").next("span.text-danger").html("لابد من إختيار نوع التعامل");
+                return false;
+            }
+            else {
+                $("#TransActionType-dropdown").next("span.text-danger").html("");
+            }
+
+            if ($("#Region-dropdown").val() === "" || $("#Region-dropdown").val() === null) {
+                $("#Region-dropdown").next("span.text-danger").html("لابد من إختيار المنطقة ");
+                return false;
+            }
+            else {
+                $("#Region-dropdown").next("span.text-danger").html("");
+            }
+
+            if ($("#LandType-dropdown").val() === "" || $("#LandType-dropdown").val() === null) {
+                $("#LandType-dropdown").next("span.text-danger").html("لابد من إختيار نوع الارض ");
+                return false;
+            }
+            else {
+                $("#LandType-dropdown").next("span.text-danger").html("");
+            }
+
+            if ($("#View-dropdown").val() === "" || $("#View-dropdown").val() === null) {
+                $("#View-dropdown").next("span.text-danger").html("لابد من إختيار الاطلالة ");
+                return false;
+            }
+            else {
+                $("#View-dropdown").next("span.text-danger").html("");
+            }
+
+            if ($("#Payment-dropdown").val() === "" || $("#Payment-dropdown").val() === null) {
+                $("#Payment-dropdown").next("span.text-danger").html("لابد من إختيار طريقة الدفع ");
+                return false;
+            }
+            else {
+                $("#Payment-dropdown").next("span.text-danger").html("");
+            }
+
+            if ($("textarea#Description-txtArea").val() === "" || $("textarea#Description-txtArea").val() === null) {
+                $("textarea#Description-txtArea").next("span.text-danger").html("لابد من كتابة وصف ");
+                return false;
+            }
+            else {
+                $("textarea#Description-txtArea").next("span.text-danger").html("");
+            }
+
+            // clientObj Validation
+
+            return true;
+        };
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 3, // MB
+            maxFiles: 9,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 9,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+                })
+            },
+            successmultiple: function (file, response) {
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+                        Dropzone.forElement('#dropzoneJsForm').removeAllFiles(true);
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(function () {
+
+            $(window).on("beforeunload", function () {
+                var landSessionName = "AvailableLandsImagePathList";
+                var landPath = "/Assets/Img/AvailableLandsImages";
+                $.ajax({
+                    url: "/home/DeleteImagesBeforUnloadPage/",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        sessionName: landSessionName,
+                        path: landPath
+                    }
+                });
+                alert("Goodbye!");
+            });
+
+            var SalesId = "";
+            $("#Sales-txt").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/dashboard/admin/EmpAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                SalesId = item.PK_Users_Id;
+                                return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                            }))
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    SalesId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0];
+                },
+            });
+
+            var clientId = 0;
+            $("#clientSearchTxt").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/ApartmentAvailables/ClientAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name, value: item.Name + "-" + item.PK_Client_Id };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    clientId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0];
+                    $.ajax({
+                        url: "/ApartmentAvailables/GetClientdetails",
+                        type: "POST",
+                        dataType: "json",
+                        data: { id: clientId },
+                        success: function (data) {
+                            $("#clientBestContactHour").val(data.clientList.BestContactHour);
+                            $("#clientName").val(data.clientList.Name);
+                            $("#clientPhone").val(data.clientList.Phone);
+                            $("#clientMobile").val(data.clientList.Mobile);
+                            $("#clientMobile2").val(data.clientList.Mobile2);
+                            $("#clientJob").val(data.clientList.Job);
+                            $("#clientAddress").val(data.clientList.Address);
+                            $("#clientNotes").val(data.clientList.Notes);
+                            $("#clientIdNumber").val(data.clientList.IdNumber);
+                            $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").prop("readonly", true);
+                            $("#hiddendivforsaveclient").show(1000);
+                            $("#clientBtn").show();
+                        },
+                    });
+                },
+            });
+
+            $("#clientBtn").click(function () {
+                clientId = 0;
+                $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").prop("readonly", false);
+                $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").val("");
+            });
+
+            $("#getLandDemandsList-btn").click(function () {
+                var isValid = true;
+                isValid = validateAvailableLandsData();
+                if (!isValid) {
+                    return false;
+                }
+                var availableLandJsonObj = {
+                    FK_AvaliableLands_Users_SalesId: SalesId,
+                    Price: $("#Price-num").val(),
+                    Space: $("#Space-num").val(),
+                    Address: $("#Address-txt").val(),
+                    FK_AvaliableLands_Transactions_TransactionId: $("#TransActionType-dropdown").children("option:selected").val(),
+                    FK_AvailabeLands_Regions_RegionId: $("#Region-dropdown").children("option:selected").val(),
+                    Type: $("#LandType-dropdown").children("option:selected").val(),
+                    FK_AvaliableLands_Clients_ClientId: clientId,
+                    FK_AvailableLands_Views_ViewId: $("#View-dropdown").children("option:selected").val(),
+                    Description: $("#Description-txtArea").val(),
+                    Nots: $("#Nots-txtArea").val(),
+                    IsNegotiable: $("#IsNegotiable-chkBox").is(":checked"),
+                    IsMarketSearch: $("#IsMarketSearch-chkBox").is(":checked"),
+                    FK_ShopAvailable_Categories_Id:"@Model.FK_AvailableLands_Categories_CategoryId",
+                    // client properties
+
+                    PK_Client_Id: clientId,
+                    Name: $("#clientName").val(),
+                    //Mobile: $("#clientMobile").val(),
+                    Mobile: iti.getNumber(),
+
+                    IdNumber: $("#clientIdNumber").val(),
+                    Job: $("#clientJob").val(),
+                    //Phone: $("#clientPhone").val(),
+                    Phone: iti3.getNumber(),
+                    //Mobile2: $("#clientMobile2").val(),
+                    Mobile2: iti2.getNumber(),
+                    BestContactHour: $("#clientBestContactHour").val(),
+                    ClientAddress: $("#clientAddress").val(),
+                    ClientNotes: $("#clientNotes").val(),
+                };
+                $.ajax({
+                    url: "/AvailableLands/GetListOfLandDemands",
+                    type: "POST",
+                    data: { availableLandsViewModel: availableLandJsonObj },
+                    success: function (response) {
+                        if (response.landsDemandList.length > 0) {
+                            $.each(response.landsDemandList, function (index, value) {
+                                var responseTBody = '<tr><td>' + index + '</td><td>' + value.BuyerName + '</td><td>' + value.PK_LandsDemands_Id + '</td><td><a class="btn btn-success detailsofdemand" data-id="' + value.PK_LandsDemands_Id + '">تفاصيل</a></td></tr >';
+                                $("#landDemandsTBody").append(responseTBody);
+                            });
+                        }
+                        else {
+                            $("#landDemandsTable").html("لا يوجد بيانات لعرضها");
+                        }
+                        $("#landDemandsHiddenDiv").show(1000);
+                    },
+                    error: function () {
+                        $("#landDemandsHiddenDiv").show(1000);
+                        $("#landDemandsTable").html("لا يوجد بيانات لعرضها");
+                    }
+                });
+            });
+
+            $("#landDemandsTable").on("click",".detailsofdemand", function () {
+                var id = $(this).attr("data-id");
+                $("#detailsModal").modal("show");
+                $.ajax({
+                    url: "/LandsDemands/LandDemandDetails/",
+                    type: "get",
+                    data: { landDemandId: id },
+                    success: function (response) {
+                        $("#My-details-Modal-Body").html(response);
+                    },
+                    error: function () {
+                    }
+                });
+            });
+
+            $("#saveAvailableLandForm").submit(function (e) {
+                e.preventDefault();
+                var availableLandJsonObj = {
+                    FK_AvaliableLands_Users_SalesId: SalesId,
+                    Price: $("#Price-num").val(),
+                    Space: $("#Space-num").val(),
+                    Address: $("#Address-txt").val(),
+                    FK_AvaliableLands_Transactions_TransactionId: $("#TransActionType-dropdown").children("option:selected").val(),
+                    FK_AvailabeLands_Regions_RegionId: $("#Region-dropdown").children("option:selected").val(),
+                    Type: $("#LandType-dropdown").children("option:selected").val(),
+                    FK_AvaliableLands_Clients_ClientId: clientId,
+                    FK_AvailableLands_Views_ViewId: $("#View-dropdown").children("option:selected").val(),
+                    Description: $("#Description-txtArea").val(),
+                    Nots: $("#Nots-txtArea").val(),
+                    IsNegotiable: $("#IsNegotiable-chkBox").is(":checked"),
+                    IsMarketSearch: $("#IsMarketSearch-chkBox").is(":checked"),
+                    FK_AvailableLands_PaymentMethod_Id: $("#Payment-dropdown").children("option:selected").val(),
+
+                    // client properties
+                    Name: $("#clientName").val(),
+                    //Mobile: $("#clientMobile").val(),
+                    Mobile: iti.getNumber(),
+
+                    IdNumber: $("#clientIdNumber").val(),
+                    Job: $("#clientJob").val(),
+                    Phone: $("#clientPhone").val(),
+                    Phone:iti3.getNumber(),
+                    //Mobile2: $("#clientMobile2").val(),
+                    Mobile2: iti2.getNumber(),
+
+                    BestContactHour: $("#clientBestContactHour").val(),
+                    ClientAddress: $("#clientAddress").val(),
+                    ClientNotes: $("#clientNotes").val(),
+                };
+                $.ajax({
+                    url: "/AvailableLands/SaveAvailableLands/",
+                    type: "POST",
+                    accept: "application/json",
+                    dataType: "json",
+                    data: {
+                        __RequestVerificationToken: token,
+                        availableLandsViewModel: availableLandJsonObj
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+                            alertify.alert(response.message, function () {
+                                location.href = "/AvailableLands/LandDemandMatchesAfterAdd/";
+                            });
+                        }
+                        else {
+
+                        }
+                    },
+                    error: function (response) {
+                        alertify.alert("حدث خطا ما عند تسجيل البيانات", function () {
+
+                        })
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="/Theme/assets/Plugins/intl-tel-input-master/build/js/intlTelInput.js"></script>
+    <script>
+        var errorMsg = document.querySelector(".error-msg"),
+            validMsg = document.querySelector(".valid-msg");
+
+        // here, the index maps to the error code returned from getValidationError - see readme
+        var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input = document.querySelector("#clientMobile");
+        var iti = window.intlTelInput(input, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+        var reset = function () {
+            input.classList.remove("error");
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+
+        // on blur: validate
+        input.addEventListener('blur', function () {
+            reset();
+            if (input.value.trim()) {
+                if (iti.isValidNumber()) {
+                    validMsg.classList.remove("hide");
+                } else {
+                    input.classList.add("error");
+                    var errorCode = iti.getValidationError();
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    errorMsg.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input.addEventListener('change', reset);
+        input.addEventListener('keyup', reset);
+
+
+        //input 2
+        var errorMsg2 = document.querySelector(".error-msg2"),
+            validMsg2 = document.querySelector(".valid-msg2");
+        var errorMap2 = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input2 = document.querySelector("#clientMobile2");
+        var iti2 = window.intlTelInput(input2, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+        var reset2 = function () {
+            input2.classList.remove("error");
+            errorMsg2.innerHTML = "";
+            errorMsg2.classList.add("hide");
+            validMsg2.classList.add("hide");
+        };
+
+        // on blur: validate
+        input2.addEventListener('blur', function () {
+            reset2();
+            if (input2.value.trim()) {
+                if (iti2.isValidNumber()) {
+                    validMsg2.classList.remove("hide");
+                } else {
+                    input2.classList.add("error");
+                    var errorCode2 = iti2.getValidationError();
+                    errorMsg2.innerHTML = errorMap2[errorCode2];
+                    errorMsg2.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input2.addEventListener('change', reset2);
+        input2.addEventListener('keyup', reset2);
+
+
+
+        //input3
+        var errorMsg3 = document.querySelector(".error-msg3"),
+            validMsg3 = document.querySelector(".valid-msg3");
+        var errorMap3 = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input3 = document.querySelector("#clientPhone");
+        var iti3 = window.intlTelInput(input3, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+
+        var reset3 = function () {
+            input3.classList.remove("error");
+            errorMsg3.innerHTML = "";
+            errorMsg3.classList.add("hide");
+            validMsg3.classList.add("hide");
+        };
+
+        // on blur: validate
+        input3.addEventListener('blur', function () {
+            reset3();
+            if (input3.value.trim()) {
+                if (iti3.isValidNumber()) {
+                    validMsg3.classList.remove("hide");
+                } else {
+                    input3.classList.add("error");
+                    var errorCode3 = iti3.getValidationError();
+                    errorMsg3.innerHTML = errorMap3[errorCode3];
+                    errorMsg3.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input3.addEventListener('change', reset3);
+        input3.addEventListener('keyup', reset3);
+
+
+    </script>
+}

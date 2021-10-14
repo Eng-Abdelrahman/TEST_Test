@@ -1,0 +1,174 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.CommissionsViewModel
+
+@{ 
+    ViewBag.Title = "AddCommission";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@section styles{
+
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            font-size: 20px;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item  " aria-current="page"><a href="@Url.Action("Commissions","commission")">نسب العمولات</a></li>
+        <li class="breadcrumb-item active " aria-current="page">اضافة </li>
+
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">أضافة </h4>
+    </div>
+    <div class="card-body">
+
+
+        <form id="addCommission-form">
+            @Html.AntiForgeryToken()
+            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+
+            <div class="form-group  ">
+                @*@Html.LabelFor(m => m.FK_Commissions_Categories_Id, new { @class = "text-right" })*@
+                <label for="first" class="text-right"> فئة العقار  :<abbr class="req">*</abbr></label>
+                @Html.DropDownListFor(m => m.FK_Commissions_Categories_Id, Model.Categories, "اختر فئه العقار", new { @class = "form-control", id = "cat" })
+                @Html.ValidationMessageFor(m => m.FK_Commissions_Categories_Id, "", new { @class = "text-danger " })  <br />
+            </div>
+
+            <div class="form-group  ">
+               @* @Html.LabelFor(m => m.FK_Commissions_Transactions_Id, new { @class = "text-right" })*@
+                <label for="first" class="text-right"> نوع المعاملة التجارية  :<abbr class="req">*</abbr></label>
+                @Html.DropDownListFor(m => m.FK_Commissions_Transactions_Id, Model.Transactions, "اختر المعاملة التجاريه", new { @class = "form-control", id = "trans" })
+                @Html.ValidationMessageFor(m => m.FK_Commissions_Transactions_Id, "", new { @class = "text-danger " })  <br />
+            </div>
+
+
+            <div class="form-group  ">
+               @* @Html.LabelFor(m => m.TelesalesComission, new { @class = "text-right" })*@
+                <label for="first" class="text-right"> نسبة التلي سيلز  :<abbr class="req">*</abbr></label>
+                <input type="number" class="form-control" id="tele" name="CompanyComission" required>
+                @Html.ValidationMessageFor(m => m.TelesalesComission, "", new { @class = "text-danger " })  <br />
+            </div>
+
+            <div class="form-group  ">
+                @*@Html.LabelFor(m => m.SalesComission, new { @class = "text-right" })*@
+                <label for="first" class="text-right"> نسبة  السيلز  :<abbr class="req">*</abbr></label>
+                <input type="number" class="form-control" id="sales" name="EmployeeComission" required />
+                @Html.ValidationMessageFor(m => m.SalesComission, "", new { @class = "text-danger " })  <br />
+            </div>
+
+            <div class="form-group  ">
+                @*@Html.LabelFor(m => m.MgrCommission, new { @class = "text-right" })*@
+                <label for="first" class="text-right"> نسبة  مدير الفرع  :<abbr class="req">*</abbr></label>
+                <input type="number" class="form-control" id="mgr" name="EmployeeComission" required />
+                @Html.ValidationMessageFor(m => m.MgrCommission, "", new { @class = "text-danger " })  <br />
+            </div>
+
+
+
+            <div class="form-group" style="margin-top:5%">
+                <button id="save" type="submit" class="btn btn-default animation-on-hover " style="float:right">حفـــــظ</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+@section scripts{
+
+    <script>
+
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $(document).ready(function () {
+
+            $("#addCommission-form").submit(function (e) {
+
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return false;
+                }
+                var param = {
+                    FK_Commissions_Categories_Id: $("#cat").val(),
+                    FK_Commissions_Transactions_Id: $("#trans").val(),
+                    TelesalesComission: $("#tele").val(),
+                    SalesComission: $("#sales").val(),
+                    MgrCommission: $("#mgr").val(),
+                };
+                $.ajax({
+                    url: "/dashboard/Commission/SaveCommission",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        commVM:param,
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (result) {
+                            alertify.alert("تم الحفظ بنجاح", function () {
+                                location.href = "@Url.Action("commissions", "commission", new { area = "dashboard" })";
+                            });
+                        }
+                        else {
+                            alertify.alert("لم يتم الحفظ بنجاح!", function () {
+                            });
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

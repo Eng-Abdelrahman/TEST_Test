@@ -1,0 +1,336 @@
+﻿@model _3aqarak.MVC.ViewModels.LandDemandForUpdateViewModel
+@{
+    ViewBag.Title = "EditeLandDemand";
+}
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+    </style>
+}
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","LandsDemands")">طلبات العملاء </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("LandsDemand","LandsDemands",new { id=Model.FK_LandsDemands_Clients_ClientId})">طلبات عميل </a></li>
+                <li class="breadcrumb-item active" aria-current="page">تعديل طلب لعميل </li>
+            </ol>
+        </nav>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="editLandDemand">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.FK_LandsDemands_Clients_ClientId, new { id = "clientId" })
+                        @Html.HiddenFor(m => m.PK_LandsDemands_Id, new { id = "id" })
+                        @Html.HiddenFor(m => m.FK_LandsDemands_Categories_Id, new { id = "cat" })
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                        <div class="form-group  ">
+                            <label for="first" class="text-right"> بحث عن موظف السيلز:<abbr class="req">*</abbr></label>
+                            <input type="text" value="@Model.SalseName" class="form-control" id="tele" placeholder="السيلز" name="FK_DemandUnits_Users_Sales" required>
+                            @Html.ValidationMessageFor(m => m.FK_LandsDemands_Users_SalesId, "", new { @class = "text-danger " })
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>من منـــطقة:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_LandsDemands_Regions_FromId, Model.RegionsFrom, "مــن", new { @class = "form-control", id = "regFrom", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_LandsDemands_Regions_FromId, "", new { @class = "text-danger", id = "FromRegError" })
+                            </div>
+                            <div class="col">
+                                <label>الى منـــطقة:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_LandsDemands_Regions_ToId, Model.RegionsTo, "الــى", new { @class = "form-control", id = "regTo", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_LandsDemands_Regions_ToId, "", new { @class = "text-danger", id = "ToRegError" })
+                            </div>
+                            <div class="col">
+                                <label>القسم الحالي للطلب<abbr class="req">*</abbr></label>
+                                <input type="text" class="form-control" id="transValue" value="@Model.TransType" data-id="@Model.FK_LandsDemands_Transactions_Id" readonly>
+                            </div>
+                            <div class="col">
+                                <label>الاقسام العقارية</label>
+                                <select class="form-control" id="trans">
+                                    <option value="">يرجى اختيار قسم عقاري جديد لو احتجت</option>
+                                    @foreach (var item in Model.Transactions)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+                                @Html.ValidationMessageFor(m => m.FK_LandsDemands_Transactions_Id, "", new { @class = "text-danger", id = "transError" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>السعر/الايجار<abbr class="req">*</abbr></label>
+                                    <input id="minPrice" type="number" min="0" value="@Model.MinPrice" class="form-control" placeholder="من" name="MinPrice">
+                                    <span class="text-danger" id="minPriceErr"></span>
+                                    <input id="maxPrice" type="number" min="0" value="@Model.MaxPrice" class="form-control" placeholder="إلي">
+                                    <span class="text-danger" id="maxPriceErr"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>المساحة<abbr class="req">*</abbr></label>
+                                    <input id="minSpace" type="number" min="0" value="@Model.MinSpace" class="form-control" placeholder="من" />
+                                    <span class="text-danger" id="minSpaceErr"></span>
+                                    <input id="maxSpace" type="number" min="0" value="@Model.MaxSpace" class="form-control" placeholder="الى" />
+                                    <span class="text-danger" id="maxSpaceErr"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label>طــريقة الدفع:</label>
+                                @Html.DropDownListFor(m => m.FK_LandsDemands_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_LandsDemands_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                            </div>
+                        </div>
+                        <div class="row">
+
+                         
+                            <div class="col">
+                                <label>الاطــلالة:</label>
+                                @*@Html.DropDownListFor(m => m.ViewsArr, Model.Views, "", new { @class = "form-control", id = "view", required = "required", multiple = "multiple" })*@
+                                <select class="form-control valid" data-val="true" data-val-required="لابد من ملا هذا الحقل" id="view" multiple="multiple" name="ViewsArr" required="required">
+                                    @foreach (var item in Model.Views)
+                                    {
+                                        if (item.Selected)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+
+                                        }
+
+                                    }
+                                </select>
+                                @Html.ValidationMessageFor(m => m.ViewsArr, "", new { @class = "text-danger", id = "viewError" })
+                            </div>
+                           
+
+                            <div class="col">
+                                <label>الملاحظــات:</label>
+                                <textarea class="form-control" id="notes" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px">@Model.Notes</textarea>
+
+                            </div>
+                        </div>
+                       
+
+                    </form>
+                        <div class="card-footer">
+                            <div class="row">
+                                <input type="submit" class="btn btn-default" form="editLandDemand" role="button" />
+                            </div>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $("document").ready(function () {
+
+            var teleId = "@Model.FK_LandsDemands_Users_SalesId";
+            $("#tele").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/dashboard/admin/EmpAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                            }))
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    teleId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0];
+                },
+
+            });
+
+            $("#editLandDemand").submit(function (e) {
+              
+                e.preventDefault();
+                if ($("#tele").val() === "" || $("#tele").val() === null) {
+                    $("#tele").next("span.text-danger").html("لابد من ادخال اسم الموظف");
+                    return false;
+                }
+                else {
+                    $("#tele").next("span.text-danger").html("");
+                }
+                if ($("#regFrom").val() === "" || $("#regFrom").val() === null) {
+                    $("#regFrom").next("span.text-danger").html("لابد من اختيار منطقه");
+                    return false;
+                }
+                else {
+                    $("#regFrom").next("span.text-danger").html("");
+                }
+                if ($("#regTo").val() === "" || $("#regTo").val() === null) {
+                    $("#regTo").next("span.text-danger").html("لابد من اختيار منطقه");
+                    return false;
+                }
+                else {
+                    $("#regTo").next("span.text-danger").html("");
+                }
+                //if ($("#transValue").val() === "" || $("#transValue").val() === null) {
+                //    $("#transValue").next("span.text-danger").html("لابد من اختيار نوع التعامل");
+                //    return false;
+                //}
+                //else {
+                //    $("#transValue").next("span.text-danger").html("");
+                //}
+                if ($("#minPrice").val() === "" || $("#minPrice").val() === null) {
+                    $("#minPrice").next("span.text-danger").html("لابد من ملا هذا الحقل");
+                    return false;
+                }
+                else {
+                    $("#minPrice").next("span.text-danger").html("");
+                }
+                if ($("#maxPrice").val() === "" || $("#maxPrice").val() === null) {
+                    $("#maxPrice").next("span.text-danger").html("لابد من ملا هذا الحقل");
+                    return false;
+                }
+                else {
+                    $("#maxPrice").next("span.text-danger").html("");
+                }
+                if (Number($("#maxPrice").val()) < Number($("#minPrice").val())) {
+                    alertify.notify("القيمة الصغرى لا يمكن ان تزيد عن العظمى", 'error', 3, function () { })
+                    return false;
+                }
+                if (isNaN($("#maxPrice").val()) || isNaN($("#minPrice").val())) {
+                    alertify.notify("لابد من ادخال رقم فى خانه السعر", 'error', 3, function () { })
+                    return false;
+                }
+                if ($("#maxSpace").val() === "" || $("#maxSpace").val() === null) {
+                    $("#maxSpace").next("span.text-danger").html("لابد من ملئ هذا الحقل");
+                    return false;
+                }
+                else {
+                    $("#maxSpace").next("span.text-danger").html("");
+                }
+                if ($("#minSpace").val() === "" || $("#minSpace").val() === null) {
+                    $("#minSpace").next("span.text-danger").html("لابد من ملئ هذا الحقل");
+                    return false;
+                }
+                else {
+                    $("#minSpace").next("span.text-danger").html("");
+                }
+                if (isNaN($("#minSpace").val()) || isNaN($("#maxSpace").val())) {
+                    alertify.notify("لابد ان تدخل رقم في خانة المساحة", 'error', 3, function () { })
+                    return false;
+                }
+                if (Number($("#minSpace").val()) > Number($("#maxSpace").val())) {
+                    alertify.notify("القيمة الصغرى لا يمكن ان تزيد عن العظمى", 'error', 3, function () { })
+                    return false;
+                }
+                if ($("#payment").val() === "" || $("#payment").val() === null) {
+                    $("#payment").next("span.text-danger").html("لابد من اختيار طريقة الدفع");
+                    return false;
+                }
+                else {
+                    $("#payment").next("span.text-danger").html("");
+                }
+                //if ($("#trans").val() === "" || $("#trans").val() === null) {
+                //    $("#trans").next("span.text-danger").html("لابد من اختيار طريقة التعامل");
+                //    return false;
+                //}
+                //else {
+                //    $("#trans").next("span.text-danger").html("");
+                //}
+                var viewArr = [];
+                $.each($("#view option:selected"), function (index, value) {
+                    viewArr.push($(this).val());
+                });
+                var landDemandJsonObj = {
+
+                    MinPrice: $("#minPrice").val(),
+                    MaxPrice: $("#maxPrice").val(),
+                    MinSpace: $("#maxSpace").val(),
+                    MaxSpace: $("#maxSpace").val(),
+                    FK_LandsDemands_Users_SalesId: teleId,
+                    FK_LandsDemands_Regions_FromId: $("#regFrom").val(),
+                    FK_LandsDemands_Regions_ToId: $("#regTo").val(),
+                    FK_LandsDemands_PaymentMethod_Id: $("#payment").val(),
+                    Notes: $("#notes").val(),
+
+                    FK_LandsDemands_Categories_Id: $("#cat").val(),
+                    FK_LandsDemands_Clients_ClientId: $("#clientId").val(),
+                    PK_LandsDemands_Id: $("#id").val(),
+                    ViewsArr: viewArr,
+                };
+
+               
+            if ($("#trans").val() !== "" && $("#trans").val() !== null) {
+             
+                landDemandJsonObj.FK_LandsDemands_Transactions_Id = $("#trans").val();
+                
+            }
+
+            else {
+                landDemandJsonObj.FK_LandsDemands_Transactions_Id = $("#transValue").attr("data-id");
+                };
+            $.ajax({
+                url: "/LandsDemands/UpdateLandDemand/",
+                type: "post",
+                dataType: "json",
+                data: {
+                    __RequestVerificationToken: token,
+                    landsDemandVM: landDemandJsonObj
+                },
+                success: function (response) {
+                    if (response.valid) {
+                        alertify.alert(response.message, function () {
+                            location.href = "/LandsDemands/availableLandMatchesAfterUpdate/";
+                        });
+                    }
+                    else {
+                        alertify.alert(response.message, function () {
+
+                        });
+                    };
+                },
+                error: function (response) {
+                    alertify.alert("حدث خطا ما عند حفظ البيانات!", function () {
+
+                    });
+                }
+            });
+
+            });
+            
+        });
+    </script>
+}

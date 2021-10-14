@@ -1,0 +1,177 @@
+﻿
+@model _3aqarak.MVC.ViewModels.ShopAvailableDemandViewModel
+@{
+    ViewBag.Title = "SelectAvailables";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+    </style>
+
+}
+<div class="card">
+
+    <div class="card-body">
+        @Html.AntiForgeryToken()
+        <form>
+            <div class="form-group ">
+                <label for="text" style="float:right"> احجز المعاينات للطلب رقم:</label>
+                <input type="text" class="form-control" readonly value="@Model.Demand.PK_ShopDemands_Id">
+                <input type="hidden" value="@Model.Demand.FK_ShopDemands_Categories_Id" id="demandCat" />
+            </div>
+            <div class="form-group ">
+                <label for="text" style="float:right"> للعميــــــل:</label>
+                <input type="text" class="form-control" readonly value="@Model.Buyer.Name">
+            </div>
+        </form>
+        @if (Model.availables == null || !Model.availables.Any())
+        {
+            <div class="alert alert-danger text-right" role="alert">
+                لايوجد بيانات لاستعراضها !
+            </div>
+        }
+        else
+        {
+            <table class="table text-right table-hover " id="matchTable">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th>اسم البــــائع </th>
+                        <th> رقــم العرض</th>
+                        <th>تـــاريخ المعاينة</th>
+                        <th>وقــت المعاينة</th>
+
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 0;
+                        foreach (var item in Model.availables)
+                        {
+                            <tr>
+                                <td class="text-center seller">@item.FK_ShopAvailable_Clients_ClientId</td>
+                                <td class="text-center">@item.SellerName</td>
+                                <td class="available" data-catId="@item.FK_ShopAvailable_Categories_Id">@item.PK_ShopAvailable_Id </td>
+                                <td>@Model.Dates[i].Date.ToShortDateString()<input type="hidden" class="date" value="@Model.Dates[i]" /></td>
+                                <td>@Model.Dates[i].ToString("hh:mm tt")</td>
+                                <td>
+
+                                    <button type="button" rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="@item.PK_ShopAvailable_Id">
+                                        <i class="tim-icons icon-simple-remove"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        <input type="button" class="btn btn-default" role="button" id="preview" value="حجز معاينة">
+        @*<button class="btn btn-default" id="search-button" data-toggle="modal" data-target="#callModal" data-id="@Model.Buyer.PK_Client_Id"> الاتصال بالمشتري </button>*@
+
+    </div>
+
+</div>
+
+@section scripts{
+
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+            var dTable = $("#matchTable").DataTable({
+                "bFilter": false,
+                "bLengthChange": false,
+            });
+
+            $(".delete").click(function(){
+
+                $(this).parents("tr").remove();
+            });
+
+            $("#preview").click(function () {
+
+                var availableIds = [];
+                var availableCats = [];
+                var demandcat = $("#demandCat").val();
+                var availables=$(".available");
+                $.each(availables,function(index,value){
+                    availableIds.push($(this).html());
+                    availableCats.push($(this).attr("data-catId"))
+                });
+                var sellerIds=[];
+                var sellers=$(".seller");
+                $.each(sellers,function(index,value){
+                    sellerIds.push($(this).html());
+                });
+                var datList=[];
+                var dates=$(".date");
+                $.each(dates,function(index,value){
+                    datList.push($(this).val());
+                });
+
+                $.ajax({
+                    url: "/preview/AddPreview/",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        __RequestVerificationToken:token,
+                        buyerId:@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Buyer.PK_Client_Id)),
+                        demandId:@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Demand.PK_ShopDemands_Id)),
+                        availableIds:availableIds,
+                        sellerId:sellerIds,
+                        dates: datList,
+                        demanCat: demandcat,
+                        availableCatIds:availableCats,
+                    },
+                    success:function( response){
+                        if(response.Valid){
+                            alertify.alert(response.Message,function(){
+                                location.href="@Url.Action("PreviewsList","Preview")";
+                            });
+                        }
+                        else{
+                            alertify.alert(response.Message,function(){
+
+                            });
+                        }
+
+                    },
+                    error:function(){
+
+                    },
+
+                });
+
+            });
+
+        });
+
+
+    </script>
+
+}
+

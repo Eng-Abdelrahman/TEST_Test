@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" />
+  <Import Project="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8B13B147-258C-4681-BA33-9CF39A771425}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>_3aqarak.BLL</RootNamespace>
+    <AssemblyName>3aqarak.BLL</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\analyzers\dotnet\Microsoft.CodeAnalysis.VersionCheckAnalyzer.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Humanizer.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeQuality.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeQuality.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetCore.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetCore.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3aqarak.Security\3aqarak.Security.csproj">
+      <Project>{86078ABC-6F01-4DA4-964B-64D271087557}</Project>
+      <Name>3aqarak.Security</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.4.0.2\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DI\AutofacBLLContainer.cs" />
+    <Compile Include="Domain\AspNet_SqlCacheTablesForChangeNotification.cs" />
+    <Compile Include="Domain\tbl_FellowupCall.cs" />
+    <Compile Include="Domain\tbl_Accessories.cs" />
+    <Compile Include="Domain\tbl_AvailableLands.cs" />
+    <Compile Include="Domain\tbl_AvailableUnits.cs" />
+    <Compile Include="Domain\tbl_Branches.cs" />
+    <Compile Include="Domain\tbl_Categories.cs" />
+    <Compile Include="Domain\tbl_Clients.cs" />
+    <Compile Include="Domain\tbl_ClientsCalls.cs" />
+    <Compile Include="Domain\tbl_Collections.cs" />
+    <Compile Include="Domain\tbl_Commissions.cs" />
+    <Compile Include="Domain\tbl_CompCommissions.cs" />
+    <Compile Include="Domain\tbl_ContractArchives.cs" />
+    <Compile Include="Domain\tbl_DemandAccessories.cs" />
+    <Compile Include="Domain\tbl_DemandUnits.cs" />
+    <Compile Include="Domain\tbl_DemandViews.cs" />
+    <Compile Include="Domain\tbl_Demand_Finishings.cs" />
+    <Compile Include="Domain\tbl_Departements.cs" />
+    <Compile Include="Domain\tbl_EmpCollections.cs" />
+    <Compile Include="Domain\tbl_EmpCommissions.cs" />
+    <Compile Include="Domain\tbl_EventLogs.cs" />
+    <Compile Include="Domain\tbl_ExpectedContracts.cs" />
+    <Compile Include="Domain\tbl_Expenses.cs" />
+    <Compile Include="Domain\tbl_FinancialItems.cs" />
+    <Compile Include="Domain\tbl_FinancialSummaries.cs" />
+    <Compile Include="Domain\tbl_Finishings.cs" />
+    <Compile Include="Domain\tbl_Genders.cs" />
+    <Compile Include="Domain\tbl_LandDemandViews.cs" />
+    <Compile Include="Domain\tbl_LandImages.cs" />
+    <Compile Include="Domain\tbl_LandsDemands.cs" />
+    <Compile Include="Domain\tbl_Messages.cs" />
+    <Compile Include="Domain\tbl_Offers.cs" />
+    <Compile Include="Domain\tbl_PaymentBasis.cs" />
+    <Compile Include="Domain\tbl_PaymentMethods.cs" />
+    <Compile Include="Domain\tbl_PostbonedCalls.cs" />
+    <Compile Include="Domain\tbl_Posts.cs" />
+    <Compile Include="Domain\tbl_PreviewDetails.cs" />
+    <Compile Include="Domain\tbl_PreviewHeaders.cs" />
+    <Compile Include="Domain\tbl_Regions.cs" />
+    <Compile Include="Domain\tbl_RentAgreementDetails.cs" />
+    <Compile Include="Domain\tbl_RentAgreementHeaders.cs" />
+    <Compile Include="Domain\tbl_RentalArchives.cs" />
+    <Compile Include="Domain\tbl_Revenues.cs" />
+    <Compile Include="Domain\tbl_SaleAgreementDetails.cs" />
+    <Compile Include="Domain\tbl_SaleAgreementHeaders.cs" />
+    <Compile Include="Domain\tbl_SalesArchives.cs" />
+    <Compile Include="Domain\tbl_ShopAvailabeAccessories.cs" />
+    <Compile Include="Domain\tbl_ShopAvailable.cs" />
+    <Compile Include="Domain\tbl_ShopAvailableImages.cs" />
+    <Compile Include="Domain\tbl_ShopDemandAccessories.cs" />
+    <Compile Include="Domain\tbl_ShopDemands.cs" />
+    <Compile Include="Domain\tbl_ShopDemandViews.cs" />
+    <Compile Include="Domain\tbl_Specializations.cs" />
+    <Compile Include="Domain\tbl_StaticContracts.cs" />
+    <Compile Include="Domain\tbl_ToDoList.cs" />
+    <Compile Include="Domain\tbl_Transactions.cs" />
+    <Compile Include="Domain\tbl_UnitAccessories.cs" />
+    <Compile Include="Domain\tbl_UnitImages.cs" />
+    <Compile Include="Domain\tbl_units.cs" />
+    <Compile Include="Domain\tbl_UnitUsage.cs" />
+    <Compile Include="Domain\tbl_Users.cs" />
+    <Compile Include="Domain\tbl_Views.cs" />
+    <Compile Include="Domain\tbl_VillaAccessories.cs" />
+    <Compile Include="Domain\tbl_VillaDemandAccessories.cs" />
+    <Compile Include="Domain\tbl_VillademandFinishings.cs" />
+    <Compile Include="Domain\tbl_VillasAvailables.cs" />
+    <Compile Include="Domain\tbl_VillasDemands.cs" />
+    <Compile Include="Domain\tbl_VillasDemandViews.cs" />
+    <Compile Include="Domain\tbl_VillasImages.cs" />
+    <Compile Include="Dto\AccessDto.cs" />
+    <Compile Include="Dto\AvailableDto.cs" />
+    <Compile Include="Dto\AvailableLandsDto.cs" />
+    <Compile Include="Dto\BasisDto.cs" />
+    <Compile Include="Dto\BranchDto.cs" />
+    <Compile Include="Dto\CatDto.cs" />
+    <Compile Include="Dto\ClientCallDto.cs" />
+    <Compile Include="Dto\ClientDto.cs" />
+    <Compile Include="Dto\CommissionsDto.cs" />
+    <Compile Include="Dto\CommPctgsDto.cs" />
+    <Compile Include="Dto\ContractArchiveDto.cs" />
+    <Compile Include="Dto\ContractCommissionsDto.cs" />
+    <Compile Include="Dto\DemandCentralDto.cs" />
+    <Compile Include="Dto\DemandDto.cs" />
+    <Compile Include="Dto\DeptDto.cs" />
+    <Compile Include="Dto\EventLogDto.cs" />
+    <Compile Include="Dto\ExpectedContractDto.cs" />
+    <Compile Include="Dto\FellowCallDto.cs" />
+    <Compile Include="Dto\FinancialItemsDto.cs" />
+    <Compile Include="Dto\FinishingDto.cs" />
+    <Compile Include="Dto\GenderDto.cs" />
+    <Compile Include="Dto\ImportVillasAvailableDto.cs" />
+    <Compile Include="Dto\LandsDemandsDto.cs" />
+    <Compile Include="Dto\MessagesDto.cs" />
+    <Compile Include="Dto\MixDemandClientDto.cs" />
+    <Compile Include="Dto\MixedAvailableClientDto.cs" />
+    <Compile Include="Dto\MixedVillasAvailableDto.cs" />
+    <Compile Include="Dto\NotificationDto.cs" />
+    <Compile Include="Dto\PaymentDto.cs" />
+    <Compile Include="Dto\PostponedCallDto.cs" />
+    <Compile Include="Dto\PostsDto.cs" />
+    <Compile Include="Dto\PreviewDetailsDto.cs" />
+    <Compile Include="Dto\PreviewHeaderDto.cs" />
+    <Compile Include="Dto\PreviewScreenDto.cs" />
+    <Compile Include="Dto\ProfitDto.cs" />
+    <Compile Include="Dto\RegionDto.cs" />
+    <Compile Include="Dto\RentDetailsDto.cs" />
+    <Compile Include="Dto\RentHeaderDto.cs" />
+    <Compile Include="Dto\SaleDetailsDto.cs" />
+    <Compile Include="Dto\SaleHeaderDto.cs" />
+    <Compile Include="Dto\ShopAvailableAccessoriesDto.cs" />
+    <Compile Include="Dto\ShopAvailableDto.cs" />
+    <Compile Include="Dto\ShopAvailableImagesDto.cs" />
+    <Compile Include="Dto\ShopDemandDto.cs" />
+    <Compile Include="Dto\SpecialDto.cs" />
+    <Compile Include="Dto\StaticDto.cs" />
+    <Compile Include="Dto\TransDto.cs" />
+    <Compile Include="Dto\UnitDto.cs" />
+    <Compile Include="Dto\UnitUsageDto.cs" />
+    <Compile Include="Dto\UserDto.cs" />
+    <Compile Include="Dto\ViewDto.cs" />
+    <Compile Include="Dto\VillasAvailableDto.cs" />
+    <Compile Include="Dto\VillasDemandDto.cs" />
+    <Compile Include="Helpers\Categories.cs" />
+    <Compile Include="Helpers\Confirmation.cs" />
+    <Compile Include="Helpers\DemandsWithPreviews.cs" />
+    <Compile Include="Helpers\Demand_AvailableHelpers.cs" />
+    <Compile Include="Helpers\PreviewFilter.cs" />
+    <Compile Include="Helpers\PreviewStatus.cs" />
+    <Compile Include="Helpers\Status.cs" />
+    <Compile Include="Helpers\UnitUsages.cs" />
+    <Compile Include="Interfaces\IAccountingService.cs" />
+    <Compile Include="Interfaces\IFellowCallService.cs" />
+    <Compile Include="Interfaces\IFilterService.cs" />
+    <Compile Include="Interfaces\IImportService.cs" />
+    <Compile Include="Interfaces\IMessageService.cs" />
+    <Compile Include="Interfaces\Repositories\IAppartmentCustomRepository.cs" />
+    <Compile Include="Interfaces\IAvailableLandsSevice.cs" />
+    <Compile Include="Interfaces\ICommissionsService.cs" />
+    <Compile Include="Interfaces\IContractArchiveService.cs" />
+    <Compile Include="Interfaces\IEventLogService.cs" />
+    <Compile Include="Interfaces\IFinancialService.cs" />
+    <Compile Include="Interfaces\IAccessService.cs" />
+    <Compile Include="Interfaces\IAvailableService.cs" />
+    <Compile Include="Interfaces\IBasisService.cs" />
+    <Compile Include="Interfaces\IBranchService.cs" />
+    <Compile Include="Interfaces\ICallService.cs" />
+    <Compile Include="Interfaces\ICatService.cs" />
+    <Compile Include="Interfaces\IClientService.cs" />
+    <Compile Include="Interfaces\IConfirmation.cs" />
+    <Compile Include="Interfaces\IDemandService.cs" />
+    <Compile Include="Interfaces\IDeptService.cs" />
+    <Compile Include="Interfaces\IexpectedContractService.cs" />
+    <Compile Include="Interfaces\IFinishService.cs" />
+    <Compile Include="Interfaces\ILandsDemandsService.cs" />
+    <Compile Include="Interfaces\ILandsImagesService.cs" />
+    <Compile Include="Interfaces\INotificationDto.cs" />
+    <Compile Include="Interfaces\INotificationService.cs" />
+    <Compile Include="Interfaces\IpostsService.cs" />
+    <Compile Include="Interfaces\IPreviewFilter.cs" />
+    <Compile Include="Interfaces\IPreviewService.cs" />
+    <Compile Include="Interfaces\IProfitService.cs" />
+    <Compile Include="Interfaces\IRegionService.cs" />
+    <Compile Include="Interfaces\IRentContractService.cs" />
+    <Compile Include="Interfaces\IReportServices.cs" />
+    <Compile Include="Interfaces\Repositories\ICustomPreviewRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILandCustomRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRepository.cs" />
+    <Compile Include="Interfaces\ISaleContractService.cs" />
+    <Compile Include="Interfaces\Repositories\IScalarValsRepository.cs" />
+    <Compile Include="Interfaces\IShopAvailableAccessoriesService.cs" />
+    <Compile Include="Interfaces\IShopAvailableService.cs" />
+    <Compile Include="Interfaces\IShopDemandService.cs" />
+    <Compile Include="Interfaces\ISpecialService.cs" />
+    <Compile Include="Interfaces\IStaticService.cs" />
+    <Compile Include="Interfaces\ITransService.cs" />
+    <Compile Include="Interfaces\Repositories\IShopCustomRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IUnitOfWork.cs" />
+    <Compile Include="Interfaces\IUSerService.cs" />
+    <Compile Include="Interfaces\IViewService.cs" />
+    <Compile Include="Interfaces\IVillasAvailablesService.cs" />
+    <Compile Include="Interfaces\IVillasDemandService.cs" />
+    <Compile Include="Interfaces\OrderType.cs" />
+    <Compile Include="Interfaces\Repositories\IVillaCustomRepository.cs" />
+    <Compile Include="Services\FellowupCallService.cs" />
+    <Compile Include="Services\ImportService.cs" />
+    <Compile Include="Services\LandsAvailableService.cs" />
+    <Compile Include="Services\ContractArchiveService.cs" />
+    <Compile Include="Services\EventLogService.cs" />
+    <Compile Include="Services\LandsDemandsService.cs" />
+    <Compile Include="Services\LandsImagesService.cs" />
+    <Compile Include="Services\MessageService.cs" />
+    <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="Services\PostService.cs" />
+    <Compile Include="Services\ProfitService.cs" />
+    <Compile Include="Services\AccessService.cs" />
+    <Compile Include="Services\AccountingService.cs" />
+    <Compile Include="Services\AvailableService.cs" />
+    <Compile Include="Services\BasisService.cs" />
+    <Compile Include="Services\BranchService.cs" />
+    <Compile Include="Services\CallsService.cs" />
+    <Compile Include="Services\CatService.cs" />
+    <Compile Include="Services\ClientService.cs" />
+    <Compile Include="Services\CommissionService.cs" />
+    <Compile Include="Services\DemandService.cs" />
+    <Compile Include="Services\DeptService.cs" />
+    <Compile Include="Services\ExpectedContractService.cs" />
+    <Compile Include="Services\FinancialService.cs" />
+    <Compile Include="Services\FinishService.cs" />
+    <Compile Include="Services\PreviewService.cs" />
+    <Compile Include="Services\RegionService.cs" />
+    <Compile Include="Services\RentContractService.cs" />
+    <Compile Include="Services\ReportService.cs" />
+    <Compile Include="Services\SaleContractService.cs" />
+    <Compile Include="Services\ShopAvailableAccessoriesService.cs" />
+    <Compile Include="Services\ShopAvailableService.cs" />
+    <Compile Include="Services\ShopDemandService.cs" />
+    <Compile Include="Services\SpecialService.cs" />
+    <Compile Include="Services\StaticService.cs" />
+    <Compile Include="Services\TransService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\ViewService.cs" />
+    <Compile Include="Services\VillaDemandService.cs" />
+    <Compile Include="Services\VillasAvailableService.cs" />
+    <Compile Include="Structs\Structs.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props'))" />
+  </Target>
+</Project>

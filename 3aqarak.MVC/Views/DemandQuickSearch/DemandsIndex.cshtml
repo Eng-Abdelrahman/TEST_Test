@@ -1,0 +1,758 @@
+﻿
+@model _3aqarak.MVC.ViewModels.DemandViewModel
+
+@{
+    ViewBag.Title = "DemandsIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = (_3aqarak.BLL.Dto.UserDto)Session["User"];
+
+}
+@section styles{
+    <style>
+        td.details-control {
+            background: url('../../Assets/Img/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('../../Assets/Img/details_close.png') no-repeat center center;
+        }
+
+        th, td {
+            text-align: center;
+        }
+
+        #availables .modal-content {
+            width: 136%;
+        }
+
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+    <div class="card"  data-step="1" data-intro=" هذا الجزء خاص بالحث عن طلبات شقق معينة من خلال تاريخ الإدخال والسعر والمنطقه والساحه ورقم الشقه المخنه به ومن زر المزيد يمكن رؤية الترشسحات لهذا الطلب ويمكن البحث عن عرض لعميل معين ومطابقته لهذا الطلب ">
+        @Html.AntiForgeryToken()
+        <div class="card-header">
+            <div class="card-header text-right">
+                <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("index", "Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+                        <!-- <li class="breadcrumb-item"><a href="#">Library</a></li> -->
+                        <li class="breadcrumb-item active" aria-current="page"> أستعراض جميع الطلبات المتاحه  </li>
+                    </ol>
+                </nav>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @*<div class="col-md-4">
+                    <label class="preLabel">الفئة</label>
+                    @Html.DropDownList("Cat", Model.Categories as SelectList, "اختر الفئه", new { @class = "form-control", })
+
+                </div>*@ 
+            </div> <br />
+            <div class="row">
+                 
+                <div class="col">
+                    <label class="preLabel ">المنطقة من</label>
+                    @Html.DropDownList("regionss", Model.RegionsFrom as SelectList, "All", new { @class = "form-control", }) <br />
+                   <label class="preLabel">المنطقة إلى</label>
+                    @Html.DropDownList("regionssTo", Model.RegionsFrom as SelectList, "All", new { @class = "form-control", })
+                </div>
+                <!--******************************************************-->
+                <div class="col">
+                   <label class="preLabel">المصاعد من</label>
+                    <select id="ElevatorsFrom" required class="form-control">
+                        @*<option value="0" selected>All</option>*@
+                        <option value="0" selected>0</option>
+                        @{
+                            for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+
+                    </select> <br />
+                   <label class="preLabel">المصاعد إلى</label>
+                    <select id="ElevatorsTo" required class="form-control">
+                        <option value="11" selected>All</option>
+                        @{
+                            for (int i = 0; i <= 10; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+
+                </select>
+
+                </div>
+                <div class="col">
+                    <label class="preLabel">المساحه من</label>
+                    <input type="number" placeholder="All" id="SpaceFrom" class="form-control" /> <br />
+                    <label class="preLabel">المساحه إلى</label>
+                    <input type="number" placeholder="All" id="SpaceTo" class="form-control" />
+
+                </div>
+                <div class="col">
+                    <label class="preLabel">السعــر من</label>
+                    <input type="number" placeholder="All" id="PriceFrom" class="form-control" /> <br />
+                    <label class="preLabel">السعـر إلى</label>
+                    <input type="number" placeholder="All" id="PriceTo" class="form-control" />
+                </div>
+
+
+                <!--******************************************************-->
+                <div class="col">
+                    <label  class="preLabel" for="from">من تاريخ</label>
+                    <input type="date" id="from" class="form-control" /> <br/>
+                    <label  class="preLabel" for="to">الى تاريخ</label>
+                    <input type="date" id="to" class="form-control" />
+                </div>
+
+                @*<div class="col ">
+            <label for="to">الى تاريخ</label>
+            <input type="date" id="to" class="form-control" />
+        </div>*@
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label class="preLabel">رقم الطلب</label>
+                    <input type="number" placeholder="All" id="Demand" class="form-control" /> <br />
+                </div>
+                
+            </div>
+            <br />
+            <div class="col text-center mr-auto">
+                <button type="button" class="btn btn-default" id="filtering">بحث</button>
+            </div>
+            <br />
+            <div class="row text-center">
+                <div class="col">
+                    <h3>اختر تاريخ و منطقة للبحث</h3>
+                </div>
+            </div>
+
+        <table id="maintable" class="table text-right table-hover ">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="text-center">#</th>
+                    <th colspan="2">المنطقة</th>
+                    <th colspan="2">المساحة</th>
+                    <th colspan="2">الدور</th>
+                    <th colspan="2">السعر</th>
+                    <th colspan="2">عدد الغرف</th>
+                    <th colspan="2">عدد الحمامات</th>
+                    <th colspan="2">عدد المصاعد</th>
+                    @{
+
+                        if (@user.IsAdmin)
+                        {
+                          <th rowspan="2">حذف</th>
+                        }
+                            else { }
+                        }
+                    @*<th rowspan="2">حذف</th>*@
+                    <th rowspan="2">المزيد</th>
+                </tr>
+                <tr>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                </tr>
+            </thead>
+
+        </table>
+    </div>
+    <!--Matches Modal-->
+    <div class="modal fade" id="availables" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="clientSearchTxt" placeholder="بحث عن عروض عميل معين بالاسم او الهاتف">
+
+                    </div>
+                    <div id="clientAvailablesDiv" style="display:none;">
+                        <table id="availabletable" class="table text-right table-hover table-responsive-lg">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>رقم العميل </th>
+                                    <th>التــاريخ </th>
+                                    <th>وصف العرض </th>
+                                    <th>التفاصيل</th>
+                                    <th> تاريـــخ المعاينه</th>
+                                    <th> بيانات الاتصال</th>
+                                    <th></th>
+
+                                </tr>
+                            </thead>
+
+                        </table>
+                        <button type="button" class="btn btn-primary" id="preview">حجز معاينة</button>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal details-->
+    <div class="modal fade" id="detailsModal" role="dialog">
+        <div class="modal-dialog modal-dialog-centered ">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--Modal Contacts-->
+    <div class="modal fade" id="calls" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="myModal" class="modal fade " role="dialog">
+        <div class="modal-dialog .modal-dialog-centered modal-lg" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">تفاصيل العرض</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        function format(full) {
+                // `d` is the original data object for the row
+            var checkIsAdmine = "@user.IsAdmin";
+            var newContent = "";
+            if (checkIsAdmine == "True") {
+                newContent='<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;width:100%;">' +
+                        '<tr>' +
+                        '<td align="right">' + '<button type="button" title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon unitDetails" data-toggle="modal" data-id="' + full.PK_DemandUnits_Id + '"><i class="tim-icons icon-notes"></i></button>' + '</td>' +
+                        //'<td align="right">' + '<button type="button" title="حذف " rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_DemandUnits_Id + '"><i class="tim-icons icon-simple-remove"></i></button>' + '</td>' +
+                    '<td align="right">' + '<a  class="filter" href="/clientdemand/GetInstantMatches/' + full.PK_DemandUnits_Id + '">الترشيحات</a>' + '</td>' +
+                    //the new one here instead of in the same view
+                    '<td align="right">' + '<a  class=" btn btn-default " href = "/DemandQuickSearch/AvailableDemand?demandId=' + full.PK_DemandUnits_Id + '&buyerId=' + full.FK_DemandUnits_Clients_ClientId +'" >بحث عن عروض عميل معين بالاسم او الهاتف</a>' + '</td>' +
+
+                    //'<td align="right">' + '<input type="button" class=" btn btn-default clientSearchbtn" value="بحث عن عروض عميل معين بالاسم او الهاتف" data-demandId="' + full.PK_DemandUnits_Id + '"data-buyerId="' + full.FK_DemandUnits_Clients_ClientId + '">' + '</td>' +
+
+
+                        '</tr>' +
+                        '</table>';
+                }
+            else {
+                newContent= '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;width:100%;">' +
+                        '<tr>' +
+                        '<td align="right">' + '<button type="button" title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon unitDetails" data-toggle="modal" data-id="' + full.PK_DemandUnits_Id + '"><i class="tim-icons icon-notes"></i></button>' + '</td>' +
+                    '<td align="right">' + '<a  class="filter" href="/clientdemand/GetInstantMatches/' + full.PK_DemandUnits_Id + '">الترشيحات</a>' + '</td>' +
+                     //the new one here instead of in the same view
+                   '<td align="right">' + '<a  class=" btn btn-default " href = "/DemandQuickSearch/AvailableDemand?demandId=' + full.PK_DemandUnits_Id +'&buyerId=' + full.FK_DemandUnits_Clients_ClientId + '" >بحث عن عروض عميل معين بالاسم او الهاتف</a>' + '</td>' +
+                    //'<td align="right">' + '<input type="button" class=" btn btn-default clientSearchbtn" value="بحث عن عروض عميل معين بالاسم او الهاتف" data-demandId="' + full.PK_DemandUnits_Id + '"data-buyerId="' + full.FK_DemandUnits_Clients_ClientId + '">' + '</td>' +
+                    '</table>';
+              }
+
+            return newContent;
+            }
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var clientId = 0;
+        var buyerId = 0;
+        var demandId = 0;
+        $(document).ready(function () {
+         //client auto complete
+
+            $("#clientSearchTxt").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/demandQuicksearch/ClientAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name, value: item.Name + "-" + item.PK_Client_Id };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#clientAvailablesDiv").show(1000);
+                    clientId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0];
+                    availableTable.draw();
+
+                },
+            });
+
+            availableTable = $("#availabletable").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+                "bFilter": false,
+                "bInfo": false,
+                "bLengthChange": false,
+                "stateSave": true,
+                select: {
+                    style: "multi",
+                },
+                "ajax": {
+                    "url": "/ClientSales/LoadSalesData/",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.id = clientId;
+                    },
+
+                },
+                "columns": [
+                    { "data": "PK_AvailableUnits_Id", "name": "PK_AvailableUnits_Id", "autoWidth": true },
+                    { "data": "FK_AvaliableUnits_Clients_ClientId", "name": "FK_AvaliableUnits_Clients_ClientId", "autoWidth": true },
+                    { "data": "DateString", "name": "DateString", "autoWidth": true },
+                    { "data": "ShortDescription", "name": "ShortDescription", "autoWidth": true },
+                     {
+                         "render": function (data, type, full, meta) { return ' <button type="button" title="تفاصيل العرض " rel="tooltip" class="btn btn-link details " data-id="' + full.PK_AvailableUnits_Id + '">تفاصيل العرض</button>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return ' <input type="datetime-local" class="form-control date" autocomplete="off" required><span class="text-danger dateErr" ></span >'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return '<button class="btn btn-default call" id="search-button" data-id="'+clientId+'" data-offer="'+full.PK_AvailableUnits_Id+'" data-type="sale"> الاتصـــال  </button>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return '<button type="button" class="btn btn-success openDatesModal" data-toggle="modal" data-target="#dates" data-id="'+full.PK_AvailableUnits_Id+'">اوقات الحجز</button>'; }
+                    },
+                ]
+            });
+
+
+
+
+            $("#availabletable").on("click", ".details", function () {
+                var Id = $(this).attr("data-id");
+                $.ajax({
+                    "url": "/Clientsales/SaleDetails/",
+                    accept: "applicaton/html",
+                    type: "post",
+                    dataType: "html",
+                    data: {
+                        saleId: Id,
+                    },
+                    success: function (response) {
+
+                        $("#availabletable").modal("hide");
+                        $("#detailsModal").find(".modal-body").html(response);
+                        $("#detailsModal").modal("show");
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+            });
+            $("#detailsModal").on('hidden.bs.modal', function () {
+
+                $("#availabletable").modal("show");
+            });
+            $("#availabletable").on("click",".call",function () {
+                var btn = $(this);
+                $.ajax({
+                    "url": "/ClientCalls/GeClientContact/",
+                    accept: "applicaton/html",
+                    type: "post",
+                    dataType: "html",
+                    data: {
+                        clientId: $(btn).attr("data-id"),
+                        offerId: $(btn).attr("data-offer"),
+                        OfferType: $(btn).attr("data-type"),
+                    },
+                    success: function (response) {
+                        $("#calls").find(".modal-body").html(response);
+                        $("#calls").modal("show");
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+
+
+            });
+
+
+            $("#preview").click(function () {
+            
+                 var selectedData = availableTable.rows({ selected: true }).data();
+                 var selected = availableTable.rows({ selected: true }).nodes();
+                if (selected.length < 1) {
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify('لم يتم  اختيار اي عرض!', 'error', 3, function () { });
+                    return false;
+                };
+
+                var availableList = [];
+                $.each(selectedData, function (index, value) {                   
+                    availableList.push(value["PK_AvailableUnits_Id"]);
+                });
+
+                var dateList = [];
+
+                $.each(selected, function (index, value) {
+                    var date = $(this).find(".date").val();
+                    if (date === "" || date === null) {
+                        $(this).find(".dateErr").html("لابد من تحديد تاريخ ووقت المعاينه!");
+                        alertify.set('notifier', 'position', 'top-left');
+                        alertify.notify('لم يتم  تحديد تاريخ ووقت احد المعاينات!', 'error', 3, function () { });
+                        stopProcessing = true;
+                    }
+                    else {
+                        $(this).find(".dateErr").html("");
+                        stopProcessing = false;
+                    }
+                    if (!stopProcessing) {
+                        dateList.push(date);
+                    };
+
+                });
+                if (stopProcessing) {
+                    dateList.length = 0;
+                    return false;
+                };
+             location.href = "/Clientdemand/SelectAvailables?availableIds=" + availableList + "&demandId=" + demandId + "&buyerId=" + buyerId + "&dates=" + dateList;
+
+
+            });
+
+
+
+            //SET THE DATE TIME PICKER TO TODAY DATE
+            var now = new Date();
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+           // $('.pdate').val(today);
+            // END SET DATE
+
+            $("#filtering").click(function () {
+                table.draw();
+            });
+
+
+              var checkIsAdmine = "@user.IsAdmin";
+            if (checkIsAdmine == "True") {
+                table = $("#maintable").DataTable({
+
+                    "language": {
+                        "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": false,
+                    "bFilter": false,
+                    "orderMulti": false,
+                    "pageLength": 5,
+                    "ajax": {
+                        "url": "/DemandQuickSearch/LoadDemands",
+                        "type": "post",
+                        "datatype": "json",
+                        "data": function (d) {
+                            d.cat = $("#Cat").val();
+                            d.regId = $("#regionss").val();
+                            d.regIdTo = $("#regionssTo").val();
+
+                            d.ElevatorFrom = $("#ElevatorsFrom").val();
+                            d.ElevatorTo = $("#ElevatorsTo").val();
+                            d.SpaceFrom = $("#SpaceFrom").val();
+                            d.SpaceTo = $("#SpaceTo").val();
+                            d.PriceFrom = $("#PriceFrom").val();
+                            d.PriceTo = $("#PriceTo").val();
+
+                            d.fromDate = $("#from").val();
+                            d.toDate = $("#to").val();
+
+                            d.Demand = $("#Demand").val();
+                        },
+                    },
+                    "columns":
+                        [
+                            { "data": "PK_DemandUnits_Id", "name": "PK_DemandUnits_Id", "autoWidth": true },
+                            { "data": "RegionNameFrom", "name": "RegionNameFrom", "autowidth": true },
+                            { "data": "RegionNameTo", "name": "RegionNameTo", "autowidth": true },
+
+                            { "data": "MinSpace", "name": "MinSpace", "autowidth": true },
+                            { "data": "MaxSpace", "name": "MaxSpace", "autowidth": true },
+
+                            { "data": "MinFloor", "name": "Floor", "autowidth": true },
+                            { "data": "MaxFloor", "name": "Floor", "autowidth": true },
+
+                            { "data": "MinPrice", "name": "Price", "autowidth": true },
+                            { "data": "MaxPrice", "name": "Price", "autowidth": true },
+
+                            { "data": "MinRooms", "name": "Rooms", "autowidth": true },
+                            { "data": "MaxRooms", "name": "Rooms", "autowidth": true },
+
+                            { "data": "MinBathRooms", "name": "MinBathRooms", "autowidth": true },
+                            { "data": "MaxBathRooms", "name": "MaxBathRooms", "autowidth": true },
+
+                            { "data": "NoElevatorsFrom", "name": "NoElevatorsFrom", "autowidth": true },
+                            { "data": "NoElevatorsTo", "name": "NoElevatorsTo", "autowidth": true },
+                            {
+                                "render": function (data, type, full, meta) {
+                                    var checkIsAdmine = "@user.IsAdmin";
+                                    if (checkIsAdmine == "True") {
+                                        return '<button type="button" title="حذف " rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_DemandUnits_Id + '"><i class="tim-icons icon-simple-remove"></i></button>';
+                                    }
+                                    else { return '' }
+                                }
+                            },
+                            {
+
+                                "className": 'details-control',
+                                "orderable": false,
+                                "data": null,
+                                "defaultContent": ''
+
+                            },
+                        ],
+
+                });
+            }
+            else {
+                 table = $("#maintable").DataTable({
+
+                    "language": {
+                        "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": false,
+                    "bFilter": false,
+                    "orderMulti": false,
+                    "pageLength": 5,
+                    "ajax": {
+                        "url": "/DemandQuickSearch/LoadDemands",
+                        "type": "post",
+                        "datatype": "json",
+                        "data": function (d) {
+                            d.cat = $("#Cat").val();
+                            d.regId = $("#regionss").val();
+                            d.regIdTo = $("#regionssTo").val();
+
+                            d.ElevatorFrom = $("#ElevatorsFrom").val();
+                            d.ElevatorTo = $("#ElevatorsTo").val();
+                            d.SpaceFrom = $("#SpaceFrom").val();
+                            d.SpaceTo = $("#SpaceTo").val();
+                            d.PriceFrom = $("#PriceFrom").val();
+                            d.PriceTo = $("#PriceTo").val();
+
+                            //d.pdate = $(".pdate").val();
+                            d.fromDate = $("#from").val();
+                            d.toDate = $("#to").val();
+                             d.Demand = $("#Demand").val();
+                        },
+                    },
+                    "columns":
+                        [
+                            { "data": "PK_DemandUnits_Id", "name": "PK_DemandUnits_Id", "autoWidth": true },
+                            { "data": "RegionNameFrom", "name": "RegionNameFrom", "autowidth": true },
+                            { "data": "RegionNameTo", "name": "RegionNameTo", "autowidth": true },
+
+                            { "data": "MinSpace", "name": "MinSpace", "autowidth": true },
+                            { "data": "MaxSpace", "name": "MaxSpace", "autowidth": true },
+
+                            { "data": "MinFloor", "name": "Floor", "autowidth": true },
+                            { "data": "MaxFloor", "name": "Floor", "autowidth": true },
+
+                            { "data": "MinPrice", "name": "Price", "autowidth": true },
+                            { "data": "MaxPrice", "name": "Price", "autowidth": true },
+
+                            { "data": "MinRooms", "name": "Rooms", "autowidth": true },
+                            { "data": "MaxRooms", "name": "Rooms", "autowidth": true },
+
+                            { "data": "MinBathRooms", "name": "MinBathRooms", "autowidth": true },
+                            { "data": "MaxBathRooms", "name": "MaxBathRooms", "autowidth": true },
+
+                            { "data": "NoElevatorsFrom", "name": "NoElevatorsFrom", "autowidth": true },
+                            { "data": "NoElevatorsTo", "name": "NoElevatorsTo", "autowidth": true },
+                           
+                            {
+
+                                "className": 'details-control',
+                                "orderable": false,
+                                "data": null,
+                                "defaultContent": ''
+
+                            },
+                        ],
+
+                });
+
+            };
+               $("table").on("click", ".delete", function () {
+                var Id = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد حذف هذا الطلب؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/ClientDemand/DeleteClientDemand",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: Id,
+                                 },
+
+                                 success: function (result) {
+                                     if (result.valid) {
+                                         alertify.alert(result.message, function () {
+                                             button.parents("tr").remove();
+                                         });
+                                     }
+                                     else {
+                                         alertify.alert(result.message, function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+               })
+             //add Child rows here ****************************************************
+            $('table tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                    $(".clientSearchbtn").click(function () {                     
+                        $("#availables").modal("show");
+                        buyerId = $(this).attr("data-buyerId");
+                        demandId = $(this).attr("data-demandId");
+                    });
+                }
+            });
+            $("table").on("click", ".edit", function () {
+                id = $(this).attr("data-id");
+                location.href = "/ClientDemand/EditClientDemand/" + id;
+            });
+            $(document).on("click", ".unitDetails", function () {
+                var availableId = $(this).attr("data-id");
+                location.href = "/ClientDemand/EditClientDemand/" + availableId;
+            });
+        });
+
+
+          $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();
+    			
+
+                    // $(".left").css("float","left");
+                    // $("input").removeClass("error");
+                    // $(".right").hide();
+
+                    
+                   
+                 });
+            });
+    </script>
+}
+
+

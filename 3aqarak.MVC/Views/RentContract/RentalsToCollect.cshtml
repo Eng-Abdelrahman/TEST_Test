@@ -1,0 +1,64 @@
+﻿@model List<_3aqarak.MVC.ViewModels.RentContractViewModel>
+@{
+    ViewBag.Title = "RentalsToCollect";
+}
+<div class="card">
+    <div class="card-header">
+
+    </div>
+    <div class="card-body">
+        <table class="table text-right table-hover dataTable no-footer">
+            <thead>
+                <tr class="active">
+                    <th>#</th>
+                    <th>تاريخ الإيجار</th>
+                    <th>تاريخ الإيجار القادم</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="@item.PK_RentAgreements_Id">
+                            <td>@item.PK_RentAgreements_Id</td>
+                            <td><input type="date" value="@item.DateNxtRent.ToString("yyyy-MM-dd")" class="form-control" /></td>
+                            <td><input type="date" class="form-control" id="newdate" /></td>
+                            <td><button class="btn btn-success" data-id="@item.PK_RentAgreements_Id" id="collect">تحصيل الايجار</button></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $("#collect").click(function () {
+            var rentContractId = $(this).attr("data-id");
+            var nextDate = $("#newdate").val();
+            if ($("#newdate").val() == "") {
+                debugger;
+                $(".card-header").html("لابد من اختيار ميعاد");
+            }
+            $.ajax({
+                type: "get",
+                url: "/RentContract/CollectRentalFees",
+                data: { newDate: nextDate, id: rentContractId },
+                success: function (response) {
+                    debugger;
+                    if (response.Valid === false) {
+                        $(".card-header").html(response.message);
+                    }
+                    else {
+                        $(".card-header").html(response.message);
+                        location.href = "/";
+                    }
+                },
+                error: function () {
+                }
+            });
+        });
+    </script>
+}

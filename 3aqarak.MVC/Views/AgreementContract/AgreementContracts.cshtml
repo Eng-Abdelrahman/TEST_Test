@@ -1,0 +1,317 @@
+﻿@model _3aqarak.MVC.ViewModels.AgreementContractViewModel
+@{
+    ViewBag.Title = "AgreementContracts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = (_3aqarak.BLL.Dto.UserDto)Session["User"];
+}
+
+@section styles{
+    <style>
+    </style>
+}
+<div class="card">
+    <div class="container-fluid">
+        <div class="card-header text-right">
+            <!-- <h4 class="card-title">شاشة التسجيل</h4> <br>  -->
+            <!-- <span class="card-title"> كود : 12212</span> -->
+            <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#">Library</a></li> -->
+                    <li class="breadcrumb-item active" aria-current="page">  حجز معاد اتفاق  </li>
+                </ol>
+            </nav>
+        </div>
+        <!-- Body-->
+        <div class="card-body">
+            @Html.AntiForgeryToken()
+            @*<div class="container-fluid">*@
+            <div class="row">
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class="form-group col ">
+                    <label class="prelabel" for="from">من تاريخ</label>
+                    <input type="date" class="form-control" id="from" required />
+                </div>
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class="form-group col ">
+                    <label class="prelabel" for="to">الى تاريخ</label>
+                    <input type="date" id="to" class="form-control" required />
+
+                </div>
+                <div class="col" style="margin-top:3%">
+                    @Html.DropDownList("categories", Model.Cats, "اختر فئه العرض", new { id = "cats", @class = "form-control" })
+                </div>
+                <div class="form-group col" style="margin-top:3%">
+                    @*<input type="button" class="btn btn-default"  id="getContracts" value="عرض العقود"  />*@
+                    <button class="btn btn-default" id="getContracts"> عرض العقود</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive ps">
+            <!-- Page Table -->
+            @*<div class="container-fluid">*@
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th class='text-right id'>#</th>
+                        <th>اسم البائع</th>
+                        <th>اسم المشتري</th>
+                        <th> كود العرض</th>
+                        <th> تاريخ امضاء العقود</th>
+                        <th class="text-center"></th>
+                        <th class="text-center"></th>
+                        <th class="text-center"></th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+            </table>
+            @*</div>*@
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1022px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        </div>
+    </div>  <!-- End of body-->
+    <!--Modal-->
+
+    <div class="modal fade" id="contractType" tabindex="-1" role="dialog" aria-labelledby="contractType" aria-hidden="true">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">اختيار نوع العقد</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <label class="radio-inline " style="float:right">
+                        <input type="radio" id="rentBtn" name="optradio" value="rent">أيجـــار
+                    </label>
+                    <label class="radio-inline" style="float:right">
+                        <input type="radio" id="saleBtn" name="optradio" value="sale">بيـــع
+                    </label>
+                    <div id="slide">
+                        <label class="radio-inline " style="float:right">
+                            <input type="radio" name="optradio2" value="install">قســـط
+                        </label>
+                        <label class="radio-inline" style="float:right">
+                            <input type="radio" name="optradio2" value="cash">كــــاش
+                        </label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary makeContract" data-dismiss="modal">Save</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script>
+        document.getElementById('from').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        document.getElementById('to').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var expectedId = "";
+        var typeRadio = "";
+        var transRadio = "";
+        $(document).ready(function () {
+            $("#slide").hide();
+            table = $("table").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+                "bFilter": false,
+
+                "ajax": {
+                    "url": "/AgreementContracts/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.catId = $("#cats").val();
+                        d.fromDate = $("#from").val();
+                        d.toDate = $("#to").val();
+                    },
+
+                },
+
+                "columns": [
+                    { "data": "PK_AgreementContract_Id", "name": "PK_AgreementContract_Id", "autoWidth": true },
+                    { "data": "SellerName", "name": "SellerName", "autoWidth": true },
+                    { "data": "BuyerName", "name": "BuyerName", "autoWidth": true },
+                    { "data": "AvailableUnits_Id", "name": "AvailableUnits_Id", "autoWidth": true },
+                    { "data": "DateTimeString", "name": "DateTimeString", "autoWidth": true },
+                    {
+                        "render": function (data, type, full, meta) { return '<button type="button" title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon edit"data-id="' + full.PK_AgreementContract_Id + '"><i class="tim-icons icon-notes"></i></button>'; },
+
+                    },
+                    {
+                        "render": function (data, type, full, meta) {
+                            var checkIsAdmine = "@user.IsAdmin";
+                            if (checkIsAdmine == "True") {
+                            return '<button type="button" title="حذف " rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_AgreementContract_Id + '"><i class="tim-icons icon-simple-remove"></i></button>';
+                            }
+                            else {return ''}
+                        }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return ' <button type="button" title="الغاء " rel="tooltip" class="btn btn-default cancel"data-id="' + full.PK_AgreementContract_Idd + '">الغــاء</button>'; },
+
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return ' <button type="button" title="عمل عقد "data-toggle="modal" data-target="#contractType" rel="tooltip" class="btn btn-default contract"data-id="' + full.PK_AgreementContract_Id + '">عمل عقد</button>'; },
+
+                     },
+
+                ]
+            });
+            $("#getContracts").click(function () {
+                table.draw();
+            });
+
+            $("table").on("click", ".edit", function () {
+                Id = $(this).attr("data-id");
+                location.href = "/AgreementContracts/EditExpectedContract/" + Id;
+            });
+            $("#saleBtn").on("change", function () {
+
+                if ($(this).is(":checked")) {
+
+                    if ($("#slide").is(":hidden")) {
+
+                        $("#slide").slideDown("slow");
+                    }
+                }
+            });
+            $("#rentBtn").on("change", function () {
+
+                if ($(this).is(":checked")) {
+
+                    if (!$("#slide").is(":hidden")) {
+
+                        $("#slide").slideUp("slow");
+                    } else {
+                        $("#slide").hide();
+                    }
+                }
+            });
+            $('#contractType').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                expectedId = button.data('id') // Extract info from data-* attributes
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+            })
+            $('#contractType').on('hide.bs.modal', function (event) {
+
+                $("input[type=radio]").prop("checked",false);
+            })
+            $("input[name=optradio]").on("change", function () {
+                typeRadio = $(this);
+           });
+            $("input[name=optradio2]").on("change", function () {
+               transRadio = $(this);
+           });
+            $(".makeContract").on("click", function () {
+
+                //var radio = $("input[name=optradio]:ckecked");
+                var value = $(typeRadio).val();
+                var trans = $(transRadio).val();
+                if (value === "rent") {
+                    location.href = "/RentContract/addContract?id=" + expectedId + "&type=" + value;
+                }
+                if (value === "sale" && trans === "install") {
+                    location.href = "/SaleContract/addContract?id=" + expectedId + "&type=" + value + "&install=true";
+                }
+                if (value === "sale" && trans === "cash") {
+                    location.href = "/SaleContract/addContract?id=" + expectedId + "&type=" + value + "&install=false";
+                }
+
+                //location.href = "/RentContract/addContract/" + Id;
+            });
+
+            $("table").on("click", ".delete", function () {
+                var Id = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد حذف ذلك السجل؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/AgreementContract/DeleteAgreementContract",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: Id,
+                                 },
+
+                                 success: function (result) {
+                                     if (result) {
+                                         alertify.alert("تم حذف السجل بنجاح !", function () {
+                                             button.parents("tr").remove();
+                                         });
+                                     }
+                                     else {
+                                         alertify.alert("لم يتم حذف السجل بنجاح!", function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+            });
+
+            $("table").on("click", ".cancel", function () {
+
+                var Id = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد الغاء ذلك السجل؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/AgreementContract/CancelAgreementContract",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: Id,
+                                 },
+
+                                 success: function (result) {
+                                     if (result) {
+                                         alertify.alert("تم الغاءالسجل بنجاح !", function () {
+                                             button.parents("tr").remove();
+                                         });
+                                     }
+                                     else {
+                                         alertify.alert("لم يتم الغاء  السجل بنجاح!", function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+            })
+
+        });
+
+
+    </script>
+
+}
+

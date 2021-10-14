@@ -1,0 +1,157 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@section styles{
+    <style>
+
+        .cardImg {
+            width: 55%;
+            /*height: 25%;*/
+            display: block;
+            margin: 6% 22%;
+        }
+
+        .cardRound {
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            text-align: center;
+        }
+
+        .catbtn {
+            color: #ff9900;
+            font-weight: bold;
+            font-Family: 'Tajawal', sans-serif;
+            text-shadow: #e8dee1 2px 2px 10px;
+        }
+
+
+        .white-content .card:not(.card-white) {
+            background-color: #3296c59c;
+            direction: rtl;
+        }
+    </style>
+}
+<div class="card" data-step="1" data-intro="هذه الصفحه مخصصه للبحث السريع عن الشق والفيلات والمحلات والأراضي من خلال البحث عن الطلبات أو العروض" >
+    <div class="container-fluid">
+        <div class=" card-header">
+            <div class="card-header text-right">
+
+                <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+                        <li class="breadcrumb-item active" aria-current="page"> إختيار نوع البحث  </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color: #e4e0d99e;">
+                            <div class="card-body">
+                                <img class="cardImg text-center img-fluid" src="~/Assets/image Units/image vill aoartment/buildings.png">
+                                <a class="catbtn" href="@Url.Action("Index","AvailableQuickSearch",new { area="",id="clientId"})"> عروض شقق</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color:#e4e0d99e;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/home.png">
+                                <a class="catbtn" href="@Url.Action("Index","VillasAvailableQuicSearch")"> عروض فيلات</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color:#e4e0d99e;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/icons8-field-96.png">
+                                <a class="catbtn" href="@Url.Action("Index","LandsAvailableQuickSearch",new { area="",id="clientId"})"> عروض أراضي</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color:#e4e0d99e;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/shop.png">
+                                <a class="catbtn" href="@Url.Action("Index","ShopAvailableQuicSearch")">عروض محلات</a>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div> <!-- End of first row-->
+                <div class="row">
+
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color: #a7b26d73;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/buildings.png">
+                                <a class="catbtn" href="@Url.Action("DemandsIndex","DemandQuickSearch",new { area="",id="clientId"})"> طلبات شقق</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color:#a7b26d73;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/home.png">
+                                <a class="catbtn" href="@Url.Action("Index","VillasDemandQuicSearch")"> طلبات فيلات</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ">
+                        <div class="card cardRound" style="background-color:#a7b26d73;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/icons8-field-96.png">
+                                <a class="catbtn" href="@Url.Action("Index","LandsDemandQuickSearch",new { area="",id="clientId"})"> طلبات أراضي</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card cardRound" style="background-color:#a7b26d73;">
+                            <div class="card-body">
+                                <img class="cardImg text-center" src="~/Assets/image Units/image vill aoartment/shop.png">
+                                <div> <a class="catbtn" href="@Url.Action("Index","ShopDemandQuicSearch")"> طلبات محلات</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End of second row-->
+              
+            </div> <!-- end of container -->
+
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("a").removeClass("btn btn-default btn-block")
+        })
+          $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();
+    			
+
+                    // $(".left").css("float","left");
+                    // $("input").removeClass("error");
+                    // $(".right").hide();
+
+                    
+                 
+                 });
+            });
+    </script>
+
+}
+
+

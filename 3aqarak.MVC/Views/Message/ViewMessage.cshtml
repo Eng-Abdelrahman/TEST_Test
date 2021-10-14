@@ -1,0 +1,219 @@
+﻿@model _3aqarak.MVC.ViewModels.MessageViewModel
+@{
+    ViewBag.Title = "ViewMessage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = (_3aqarak.BLL.Dto.UserDto)Session["User"];
+}
+
+
+<div class="card" data-step="1" data-intro="هذه الصفحه مخصصه لعرض المهمات الموكله إلى الموظفين">
+    <div class="container-fluid">
+        @Html.AntiForgeryToken()
+        <div class="card-header text-right">
+            <!-- <h4 class="card-title">شاشة التسجيل</h4> <br>  -->
+            <!-- <span class="card-title"> كود : 12212</span> -->
+            <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#">Library</a></li> -->
+                    <li class="breadcrumb-item active" aria-current="page"> عرض الرسائل المرسله إلى الموظفين  </li>
+                </ol>
+            </nav>
+        </div>
+        <!-- Body-->
+        <div class="card-body">
+
+            <div class="row" data-step="2" data-intro="من هنا البحث عن المهمات في فتره معينه">
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class=" col">
+                    <label class="prelabel" for="from">من تاريخ</label>
+                    <input type="date" id="from" class="form-control" />
+                </div>
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class="col">
+                    <label class="prelabel" for="to">الى تاريخ</label>
+                    <input type="date" id="to" class="form-control" />
+
+                </div>
+                <div class="col" style="margin-top:3%" data-step="3" data-intro="هذا إسم صاحب الحساب الذي يستخدم البرنامج حاليا">
+                   <h4>أهلا بك :@Model.UserName</h4>
+                </div>
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class="col" style="margin-top:3%">
+                 
+                    <button class="btn btn-default" id="getContracts"> عرض الرسائل</button> 
+                </div>
+            </div>
+            <div class="table-responsive ps">
+                <!-- Page Table -->
+                <table class="table table-hover table-striped" data-step="4" data-intro="من هنا تعرض المهمات الموكله إليك ولابد من إتمامها قبل الوقت المحدد لإنتهائها ">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>إسم الموظف</th>
+                            <th>عنوان الرساله </th>
+                            <th> تاريخ الإرسال</th>
+                            <th data-step="5" data-intro="من هنا تقرأ المهمه"> الرساله</th>
+                            <th data-step="6" data-intro="عند الضغط على تمت تحدد المهمه بتمت">هل تمت</th>
+                            
+
+                        </tr>
+                    </thead>
+                </table>
+                <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                    <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+                </div>
+                <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                    <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+                </div>
+                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1022px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+            </div>
+        </div>  <!-- End of body-->
+    </div>
+</div> <!-- card-->
+@section scripts{
+    <script>
+        //document.getElementById('from').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        //document.getElementById('to').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+
+        $(document).ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            table = $("table").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+                "bFilter": false,
+
+                "ajax": {
+                    "url": "/Message/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.ReceverId = @Model.FK_Messages_Users_RecieverId;
+                        d.fromDate = $("#from").val();
+                        d.toDate = $("#to").val();
+                    },
+
+                },
+
+                "columns": [
+                    { "data": "PK_Messages_Id", "name": "PK_Messages_Id", "autoWidth": true },
+                    { "data": "UserName", "name": "UserName", "autoWidth": true },
+                    { "data": "Title", "name": "Title", "autoWidth": true },
+                    { "data": "DateString", "name": "DateString", "autoWidth": true },
+                   // { "data": "IsRead", "name": "IsRead", "autoWidth": true },
+                    {
+                            "render": function (data, type, full, meta) {
+                                var checkIsRead = full.IsRead;
+                                if (checkIsRead == false) {
+                                    return "<a class='btn btn-success btn-sm' style='margin-left:5px' onclick='CheckIsRead("+full.PK_Messages_Id+")'><i class='fa fa-check'></i> قرأه</a>";
+                                }
+                                else { return "<a class='btn btn-success btn-sm' style='margin-left:5px' onclick='Read("+full.PK_Messages_Id+")'><i class='fa fa-check'></i> قرأه</a>"; }
+                            },
+                        },
+                    
+                    {
+                            "render": function (data, type, full, meta) {
+                                var checkIsDone = full.IsDone;
+                                if (checkIsDone == false) {
+                                    return "<a class='btn btn-success btn-sm' style='margin-left:5px' onclick='Check("+full.PK_Messages_Id+")'><i class='fa fa-check'></i> Done</a>";
+                                }
+                                else { return '<h4 color="green" style=" color: #0ea731;">Done</h4>'; }
+                            },
+                        },
+
+                ]
+            });
+          
+            $("#getContracts").click(function () {
+                table.draw();
+            });
+
+            $("table").on("click", ".edit", function () {
+                Id = $(this).attr("data-id");
+                location.href = "/Message/EditMessage/" + Id;
+            });
+
+           
+
+            $("table").on("click", ".delete", function () {
+                var Id = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                    "هل تريد حذف ذلك السجل؟", function (confirm) {
+                        if (confirm) {
+                            $.ajax({
+                                url: "/SaleContract/DeleteContract",
+                                type: "post",
+                                data: {
+                                    __RequestVerificationToken: token,
+                                    id: Id,
+                                },
+
+                                success: function (result) {
+                                    debugger;
+                                    if (result) {
+                                        alertify.alert("تم حذف السجل بنجاح !", function () {
+                                            button.parents("tr").remove();
+                                        });
+                                    }
+                                    else {
+                                        alertify.alert("لم يتم حذف السجل بنجاح!", function () { });
+                                    }
+
+                                }
+                            })
+                        }
+
+                    }
+
+                )
+            });
+
+        });
+  
+         function Read(Id) {
+                location.href = "/Message/DetailMessage/" + Id;
+        }
+         function CheckIsRead(Id) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("CheckIsReadMessage","Message")/' + Id,
+                    success: function (data) {
+                       location.href = "/Message/DetailMessage/" + Id;
+                    }
+
+                });
+        }
+
+         function Check(Id) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("CheckMessage","Message")/' + Id,
+                    success: function (data) {
+                        table.ajax.reload();
+                    }
+
+                });
+            }
+
+          $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();                    
+                 });
+            });
+    </script>
+
+}
+
+
+
+
+

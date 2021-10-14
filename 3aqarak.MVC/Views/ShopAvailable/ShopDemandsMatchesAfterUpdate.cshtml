@@ -1,0 +1,343 @@
+﻿@model _3aqarak.MVC.ViewModels.ShopDemandsMatchesAfterAddViewModel
+@{
+    ViewBag.Title = "ShopDemandsMatchesAfterUpdate";
+}
+
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-body">
+        <form>
+            @Html.AntiForgeryToken()
+            <div class="form-group ">
+                <label for="text" style="float:right"> الطلبات المطابقة للعرض رقم:</label>
+                <input type="text" class="form-control" readonly value="@Model.ShopAvailable.PK_ShopAvailable_Id">
+            </div>
+            <div class="form-group ">
+                <label for="text" style="float:right"> للعميـــــل:</label>
+                <input type="text" class="form-control" readonly value="@Model.Seller.Name">
+            </div>
+        </form>
+        @if (Model.ShopDemands.Count == 0 && Model.ShopDemands == null)
+        {
+            <div class="alert alert-danger text-right" role="alert">
+                لايوجد بيانات لاستعراضها !
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover text-right" id="matchTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>إسم المشترى</th>
+                        <th>رقم الطلب</th>
+                        <th> تاريـــخ المعاينه</th>
+                        <th>تفاصيل الطلب</th>
+                        <th>تفاصيل الاتصال</th>
+                        <th>حجز معاينه</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ShopDemands)
+                    {
+                        <tr>
+                            <td class="text-center buyer">@item.FK_ShopDemands_Clients_ClientId</td>
+                            <td class="text-center ">@item.BuyerName</td>
+                            <td class="landDemand">@item.PK_ShopDemands_Id</td>
+                            <td>
+                                <input type="datetime-local" class="form-control date " autocomplete="off" required>
+                                <span class="text-danger dateErr"></span>
+
+                            </td>
+                            <td>
+                                <button type="button" title="تعديل " rel="tooltip" class="btn btn-success btn-sm btn-icon edit" data-id="@item.PK_ShopDemands_Id">
+                                    <i class="tim-icons icon-notes"></i>
+                                </button>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button type="button" title="تفاصيل الاتصـتال " rel="tooltip" class="btn btn-default call" data-id="@item.FK_ShopDemands_Clients_ClientId" data-offer="@item.PK_ShopDemands_Id" data-type="demand" data-category="@item.FK_ShopDemands_Categories_Id">
+                                    الاتصال بالمشتري
+                                </button>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button type="button" title="حجز معاينة " rel="tooltip" class="btn btn-default preview " data-Buyer="@item.FK_ShopDemands_Clients_ClientId" data-demandCat="@item.FK_ShopDemands_Categories_Id">
+                                    حجـــز معايــنه
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="row" id="excludedAvailablelands">
+                @if (Model.ShopDemandsWithSameClient != null)
+                {
+                    <div class="form-group">
+                        <label class="control-label text-right">عروض تم استثناءها من الترشيحات لانها لنفس العميل</label>
+                        <p> @Model.ShopDemandsWithSameClient.FK_ShopDemands_Clients_ClientId : العرض رقم </p>
+                    </div>
+                }
+                @if (Model.ShopDemandsWithPreviews != null && Model.ShopDemandsWithPreviews.Count > 0)
+                {
+                    <div class="form-group">
+                        <label lass="control-label text-right">عروض تم ترشيحها للعميل من قبل وتم تحديد ميعاد معاينه لها</label>
+                        <ul>
+                            @foreach (var item in Model.ShopDemandsWithPreviews)
+                            {
+                                <li>@item.PK_ShopDemands_Id</li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+            <button type="button" title="تفاصيل الاتصـتال " rel="tooltip" class="btn btn-success call" data-id="@Model.ShopAvailable.FK_ShopAvailable_Clients_ClientId" data-offer="@Model.ShopAvailable.PK_ShopAvailable_Id" data-category="@Model.ShopAvailable.FK_ShopAvailable_Categories_Id" data-type="sale">
+                الاتصــــال بالبائع
+            </button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#dates">
+                اوقات الحجز
+            </button>
+            <!--Modal matches-->
+            <div class="modal fade" id="matches" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Modal Contacts-->
+            <div class="modal fade" id="calls" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Modal dates-->
+            <div class="modal fade" id="dates" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="My-Dates-Modal-Body">
+                            <div class="text-center">
+                                <h4 id="dateOfReservation">المواعيد المحجوزه مسبقا</h4>
+                                <button type="button" class="btn btn-success btn-sm" data-id="@Model.ShopAvailable.PK_ShopAvailable_Id" id="reservationDates">بحث</button>
+                                <input type="date" class="form-control-sm " value="@DateTime.Now.ToString("yyyy-MM-dd")" id="mydate" />
+                            </div>
+                            <div id="datesBody">
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+            var dTable = $("#matchTable").DataTable({
+                select: {
+                    style: "multi",
+                },
+                stateSave: true,
+                "bFilter": false,
+                "bLengthChange": false,
+            });
+
+            $(".edit").click(function () {
+                var Id = $(this).attr("data-id");
+                $.ajax({
+                    "url": "/ShopDemand/DemandDetails/",
+                    accept: "applicaton/html",
+                    type: "get",
+                    dataType: "html",
+                    data: { availableLandId: Id },
+                    success: function (response) {
+                        $("#matches").find(".modal-body").html(response);
+                        $("#matches").modal("show");
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+            });
+
+            $(".call").click(function () {
+                var btn = $(this);
+                $.ajax({
+                    "url": "/ClientCalls/GeClientContact/",
+                    accept: "applicaton/html",
+                    type: "post",
+                    dataType: "html",
+                    data: {
+                        clientId: $(btn).attr("data-id"),
+                        offerId: $(btn).attr("data-offer"),
+                        OfferType: $(btn).attr("data-type"),
+                        catId: $(btn).attr("data-category")
+                    },
+                    success: function (response) {
+                        $("#calls").find(".modal-body").html(response);
+                        $("#calls").modal("show");
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+
+
+            });
+
+            $("#reservationDates").click(function () {
+                var id = $(this).attr("data-id");
+                var cat = "@_3aqarak.MVC.Helpers.Categories.Lands";
+                var date = $("#mydate").val();
+                $("#datesBody").empty();
+                $.ajax({
+                    type: "get",
+                    url: "/Preview/getDatesRelated/",
+                    data: { id: id, date: date, catId: cat },
+                    success: function (dates) {
+
+                        if (dates.length === 0) {
+                            $("#datesBody").html("لا يوجد مواعيد لعرضها");
+                        }
+                        else {
+                            $("#datesBody").empty();
+                            $.each(dates, function (i, value) {
+                                $("#datesBody").append('<ul class="list-unstyled "><li>' + value + '</li></ul>');
+                            });
+                        }
+                    },
+                    error: function () {
+                        $("#datesBody").html("لا يوجد مواعيد لعرضها");
+                    }
+                });
+            });
+
+
+
+
+            $(".preview").click(function () {
+                var availableLandList = [];
+                var datelist = [];
+                var availableCategoryIds = [];
+
+                if ($(this).parents("tr").find(".date").val() === "" || $(this).parents("tr").find(".date").val() === null) {
+                    $(this).parents("tr").find(".date").siblings(".dateErr").html("لا بد من ادخال التاريخ والوقت الخاص بالمعاينة!");
+                    alertify.set("notifier", "position", "top-right")
+                    alertify.notify("لا بد من ادخال التاريخ والوقت الخاص بالمعاينة", "error", 3, function () { });
+                    return false;
+                }
+                else {
+                    $(this).parents("tr").find(".date").siblings(".dateErr").html("");
+                }
+                availableLandList.push("@Model.ShopAvailable.PK_ShopAvailable_Id");
+                datelist.push($(this).parents("tr").find(".date").val());
+
+                /////////////////////////////////////////////////////////////
+                availableCategoryIds.push("@Model.ShopAvailable.FK_ShopAvailable_Categories_Id");
+                var demandId = $(this).parents("tr").find("td.landDemand").html();
+                var buyerId = $(this).parents("tr").find("td.buyer").html();
+                var sellerId = "@Model.ShopAvailable.FK_ShopAvailable_Clients_ClientId";
+                var demandCategoryId = $(this).attr("data-demandCat");
+                //////////////////////////////////////////////////////////////
+
+                $.ajax({
+                    url: "/Preview/AddPreview",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        __RequestVerificationToken: token,
+                        buyerId: buyerId,
+                        demandId: demandId,
+                        availableIds: availableLandList,
+                        sellerId: sellerId,
+                        dates: datelist,
+                        demanCat: demandCategoryId,
+                        availableCatIds: availableCategoryIds
+                    },
+                    success: function (response) {
+                        if (response.Valid) {
+                            if (response.UrlList != null) {
+                                $("#My-Dates-Modal-Body").html(response.UrlList);
+                            }
+                            else {
+                                $("#My-Dates-Modal-Body").html("لا يوجد مواعيد لعرضها");
+                            }
+                            alertify.alert(response.Message, function () {
+                                location.href="@Url.Action("PreviewsList","Preview")";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.Message, function () {
+
+                            });
+                        }
+                    },
+                    error: function () { }
+                });
+            });
+        });
+    </script>
+}

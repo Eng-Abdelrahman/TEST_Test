@@ -1,0 +1,131 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.TransactionViewModel
+@{
+    ViewBag.Title = "AddTrans";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            font-size: 20px;
+        }
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item  " aria-current="page"><a href="@Url.Action("transaction","trans")">الاقسام العقارية</a></li>
+        <li class="breadcrumb-item active " aria-current="page">اضافة </li>
+
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">أضافة </h4>
+    </div>
+    <div class="card-body">
+
+
+        <form id="addTrans-form">
+            @Html.AntiForgeryToken()
+            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+            <div class="form-group  ">
+                <label for="first" class="text-right"> النــوع:<abbr class="req">*</abbr></label>
+                <input type="text" class="form-control" id="trans" placeholder="النــوع" name="TransType" required>
+                @Html.ValidationMessageFor(m => m.TransType, "", new { @class = "text-danger " })
+            </div>
+
+            <div class="form-group  ">
+                <label for="first" class="text-right"> الكـــود:<abbr class="req">*</abbr></label>
+                <input type="text" class="form-control" id="code" placeholder="الكــود" name="TransCode" required>
+                @Html.ValidationMessageFor(m => m.TransCode, "", new { @class = "text-danger " })
+            </div>
+            <div class="alert alert-primary text-right" role="alert" style="font-size:16px;">
+                يجب مراعاة ان كود البيع دائما 2
+                يجب مراعاة ان كود الايجار دائما 1
+            </div>
+            <div class="alert alert-danger text-right" role="alert" style="font-size:16px;">
+                في حاله اضافة اقسام عقارية اخري خلاف البيع والايجار يرجى التنسيق مع الدعم الفني!
+            </div>
+            <div class="form-group" style="margin-top:5%">
+                <button id="save" type="submit" class="btn btn-default animation-on-hover " style="float:right">حفـــــظ</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $(document).ready(function () {
+
+            $("#addTrans-form").submit(function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return false;
+                }
+                var param = {
+                    TransType: $("#trans").val(),
+                    TransCode:$("#code").val(),
+                };
+                $.ajax({
+                    url: "/dashboard/transaction/Savetrans",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        transVM:param,
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.Valid) {
+                            alertify.alert(result.Message, function () {
+                                location.href = "@Url.Action("trans", "transaction", new { area = "dashboard" })";
+                            });
+                        }
+                        else {
+                            alertify.alert(result.Message,function () {
+                            });
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,180 @@
+﻿@model IEnumerable<_3aqarak.MVC.ViewModels.ImportCientViewModel>
+@{
+    ViewBag.Title = "ImportClient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section styles{
+    <style>
+        .table-responsive {
+            width: 100%;
+            overflow: auto;
+            overflow-y: hidden;
+            overflow-x: scroll !important;
+        }
+
+    </style>
+}
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item active" aria-current="page">عرض العملاء المستوردين </li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <span class="text-danger" id="finishErr"></span>
+                    <span class="text-danger" id="accessError"></span>
+
+                    <div id="errorMsg">@*<ul class="list-group-item list-group-item-danger"></ul>*@</div>
+
+                   
+                    <div class="ex1">
+                        <table class="table" id="demandImportTable">
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Name)
+                                </th>
+                                <th >
+                                    @Html.DisplayNameFor(model => model.Mobile)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IdNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Address)
+                                </th>
+                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ClientName">
+                                        @Html.DisplayFor(model => item.Name)
+                                    </td>
+                                    <td class="ClientMobile">
+                                        @Html.DisplayFor(modelItem => item.Mobile)
+                                    </td>
+                                    <td class="MinPrice">
+                                        @Html.DisplayFor(modelItem => item.IdNumber)
+                                    </td>
+                                    <td class="MinPrice">
+                                        @Html.DisplayFor(modelItem => item.Address)
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <input id="btnInsert" type="button" value="Insert" />
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+                 var errorlist = [];
+        $("#btnInsert").click(function () {
+            var itemlist = [];
+            //***
+              $("table tr:nth-child(n+2)").each(function () {
+                  var tdlist = $(this).find("td");
+              
+                  var ItemValidation = {
+                      ClientName: $(tdlist[0]).html(),
+                      Mobile: $(tdlist[1]).html(),
+                      IdNumber: $(tdlist[2]).html(),
+                      Address: $(tdlist[3]).html(),
+                  };
+                  var IdNumberValidation = ItemValidation.IdNumber.trim().length;
+                
+                  if (IdNumberValidation > 14 || IdNumberValidation < 14  &&  (ItemValidation.IdNumber != null || ItemValidation.IdNumber != "")) {
+                    var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "لابد للرقم القومي أن لا يقل ولا يزيد عن 14 رقم للعميل " + clientName + "";
+                    errorlist.push(errorMessage);
+                }
+            });
+                //***
+
+            if (errorlist == null || errorlist.length == 0) {
+                //get cell values, instead of the header text.
+                //$("table tr:not(:first)").each(function () {
+                $("table tr:nth-child(n+2)").each(function () {
+                    var tdlist = $(this).find("td");
+
+                    var Item = {
+                        Name: $(tdlist[0]).html(),
+                        Mobile: $(tdlist[1]).html(),
+                        IdNumber: $(tdlist[2]).html(),
+                        Address: $(tdlist[3]).html(),
+                    };
+                    debugger;
+                    if (Item.IdNumber == "") {
+                        Item.IdNumber = "";
+                    }
+                      if (Item.Address == "") {
+                        Item.Address = "";
+                    }
+                    itemlist.push(Item);
+                })
+
+                $.ajax({
+                    url: '@Url.Action("SaveImportClient", "Import")', //
+                    dataType: "json",
+                    data: JSON.stringify({ itemlist: itemlist }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        //alertify.alert("تم حفظ البيانات بنجاح", function () {
+                        //       location.href = "/Home/Index/";
+                        //});
+
+                        if (response.valid) {
+
+                            alertify.alert(response.message, function () {
+                                location.href = "/Home/Index/";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+                                location.href = "/Home/Index/";
+                            });
+                            //alert("success");
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("error");
+                    }
+                });
+            }//end of validation
+            //print validation here
+             $("#errorMsg").empty();
+            for (var I = 0; I < errorlist.length; I++) {
+                ErrorList = "<li>" + errorlist[I] + "</li>";
+               // $("#errorMsg").innerHTML += ErrorList;
+                $("#errorMsg").append('<ul class="list-group-item list-group-item-danger">' + ErrorList + '</ul>')
+            }
+            errorlist = [];
+        });
+
+        $(document).ready(function () {
+     
+        });
+       
+    </script>
+}
+
+
+
+

@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B8526283-4204-42E5-ABEE-558A832CC1B1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>_3aqarak.DAL</RootNamespace>
+    <AssemblyName>3aqarak.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.4.0.2\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DI\AutoFacDALContainer.cs" />
+    <Compile Include="Migrations\201911051817142_addVillaNumberAndGroupNumberInVillas.cs" />
+    <Compile Include="Migrations\201911051817142_addVillaNumberAndGroupNumberInVillas.Designer.cs">
+      <DependentUpon>201911051817142_addVillaNumberAndGroupNumberInVillas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911051828374_AddMoreFieldsInCode.cs" />
+    <Compile Include="Migrations\201911051828374_AddMoreFieldsInCode.Designer.cs">
+      <DependentUpon>201911051828374_AddMoreFieldsInCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911061432311_remove.cs" />
+    <Compile Include="Migrations\201911061432311_remove.Designer.cs">
+      <DependentUpon>201911061432311_remove.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911061437431_adding3fields.cs" />
+    <Compile Include="Migrations\201911061437431_adding3fields.Designer.cs">
+      <DependentUpon>201911061437431_adding3fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911091545080_removeCallumnFloreNumber.cs" />
+    <Compile Include="Migrations\201911091545080_removeCallumnFloreNumber.Designer.cs">
+      <DependentUpon>201911091545080_removeCallumnFloreNumber.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911091733261_removefieldinvalls.cs" />
+    <Compile Include="Migrations\201911091733261_removefieldinvalls.Designer.cs">
+      <DependentUpon>201911091733261_removefieldinvalls.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911091544563_removingAddress.cs" />
+    <Compile Include="Migrations\201911091544563_removingAddress.Designer.cs">
+      <DependentUpon>201911091544563_removingAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911112332248_createMigrationForAddingNewFieldsNamedTblAgreementContract.cs" />
+    <Compile Include="Migrations\201911112332248_createMigrationForAddingNewFieldsNamedTblAgreementContract.Designer.cs">
+      <DependentUpon>201911112332248_createMigrationForAddingNewFieldsNamedTblAgreementContract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911121324544_Add_new_field_in_Available_and_Villas.cs" />
+    <Compile Include="Migrations\201911121324544_Add_new_field_in_Available_and_Villas.Designer.cs">
+      <DependentUpon>201911121324544_Add_new_field_in_Available_and_Villas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911121749054_removingMyPropertyAndAddingIsCanceled.cs" />
+    <Compile Include="Migrations\201911121749054_removingMyPropertyAndAddingIsCanceled.Designer.cs">
+      <DependentUpon>201911121749054_removingMyPropertyAndAddingIsCanceled.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911121754504_removingMyProperty.cs" />
+    <Compile Include="Migrations\201911121754504_removingMyProperty.Designer.cs">
+      <DependentUpon>201911121754504_removingMyProperty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911121839218_AddIsPostpondAndNoteInTblAgreement.cs" />
+    <Compile Include="Migrations\201911121839218_AddIsPostpondAndNoteInTblAgreement.Designer.cs">
+      <DependentUpon>201911121839218_AddIsPostpondAndNoteInTblAgreement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911121925165_AddPostpondInTblAgreement.cs" />
+    <Compile Include="Migrations\201911121925165_AddPostpondInTblAgreement.Designer.cs">
+      <DependentUpon>201911121925165_AddPostpondInTblAgreement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911131559538_Add_new_field_in_Available_Collect_Price_Over_together.cs" />
+    <Compile Include="Migrations\201911131559538_Add_new_field_in_Available_Collect_Price_Over_together.Designer.cs">
+      <DependentUpon>201911131559538_Add_new_field_in_Available_Collect_Price_Over_together.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911132029221_Add_new_field_in_VillasAvailable_Collect_Price_Over_together.cs" />
+    <Compile Include="Migrations\201911132029221_Add_new_field_in_VillasAvailable_Collect_Price_Over_together.Designer.cs">
+      <DependentUpon>201911132029221_Add_new_field_in_VillasAvailable_Collect_Price_Over_together.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911191156514_udateTbl_message.cs" />
+    <Compile Include="Migrations\201911191156514_udateTbl_message.Designer.cs">
+      <DependentUpon>201911191156514_udateTbl_message.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911211209433_Add-Title-in-table-Message.cs" />
+    <Compile Include="Migrations\201911211209433_Add-Title-in-table-Message.Designer.cs">
+      <DependentUpon>201911211209433_Add-Title-in-table-Message.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911191408089_startMeiddatbase.cs" />
+    <Compile Include="Migrations\201911191408089_startMeiddatbase.Designer.cs">
+      <DependentUpon>201911191408089_startMeiddatbase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911191821235_addIsContractColumnToContractsTables.cs" />
+    <Compile Include="Migrations\201911191821235_addIsContractColumnToContractsTables.Designer.cs">
+      <DependentUpon>201911191821235_addIsContractColumnToContractsTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911191916337_addIsAgreementColumnToExpectedContractTable.cs" />
+    <Compile Include="Migrations\201911191916337_addIsAgreementColumnToExpectedContractTable.Designer.cs">
+      <DependentUpon>201911191916337_addIsAgreementColumnToExpectedContractTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911211400594_in-tbl-message-add-end-and-start-date.cs" />
+    <Compile Include="Migrations\201911211400594_in-tbl-message-add-end-and-start-date.Designer.cs">
+      <DependentUpon>201911211400594_in-tbl-message-add-end-and-start-date.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911241634261_WritePendingChangestodatabaseaftersync.cs" />
+    <Compile Include="Migrations\201911241634261_WritePendingChangestodatabaseaftersync.Designer.cs">
+      <DependentUpon>201911241634261_WritePendingChangestodatabaseaftersync.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911272001084_test.cs" />
+    <Compile Include="Migrations\201911272001084_test.Designer.cs">
+      <DependentUpon>201911272001084_test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911281406116_AddNewcolumnsInTableexpectedContract.cs" />
+    <Compile Include="Migrations\201911281406116_AddNewcolumnsInTableexpectedContract.Designer.cs">
+      <DependentUpon>201911281406116_AddNewcolumnsInTableexpectedContract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003231525237_makeBirthDateNullableinUsrTable.cs" />
+    <Compile Include="Migrations\202003231525237_makeBirthDateNullableinUsrTable.Designer.cs">
+      <DependentUpon>202003231525237_makeBirthDateNullableinUsrTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003241831206_Create Tbl_FellowupCalls.cs" />
+    <Compile Include="Migrations\202003241831206_Create Tbl_FellowupCalls.Designer.cs">
+      <DependentUpon>202003241831206_Create Tbl_FellowupCalls.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003251639102_AddPhoneNumber2ToFellowupCall.cs" />
+    <Compile Include="Migrations\202003251639102_AddPhoneNumber2ToFellowupCall.Designer.cs">
+      <DependentUpon>202003251639102_AddPhoneNumber2ToFellowupCall.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003251853516_ remove phone validation from cll tables.cs" />
+    <Compile Include="Migrations\202003251853516_ remove phone validation from cll tables.Designer.cs">
+      <DependentUpon>202003251853516_ remove phone validation from cll tables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003261803516_ Add isdone to fellowupcalls tbl.cs" />
+    <Compile Include="Migrations\202003261803516_ Add isdone to fellowupcalls tbl.Designer.cs">
+      <DependentUpon>202003261803516_ Add isdone to fellowupcalls tbl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\RealEstateDB.cs" />
+    <Compile Include="Repositories\CustomRepositories\AppartmentCustomRepository.cs" />
+    <Compile Include="Repositories\CustomRepositories\FilterService.cs" />
+    <Compile Include="Repositories\CustomRepositories\CustomPreviewRepository.cs" />
+    <Compile Include="Repositories\CustomRepositories\LandCustomRepository.cs" />
+    <Compile Include="Repositories\CustomRepositories\ScalarValsRepository.cs" />
+    <Compile Include="Repositories\CustomRepositories\ShopCustomRepository.cs" />
+    <Compile Include="Repositories\CustomRepositories\VillaCustomRepository.cs" />
+    <Compile Include="Repositories\Genericrepository.cs" />
+    <Compile Include="Repositories\Helpers\UnitUsages.cs" />
+    <Compile Include="Repositories\UnitOfWork.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3aqarak.BLL\3aqarak.BLL.csproj">
+      <Project>{8b13b147-258c-4681-ba33-9cf39a771425}</Project>
+      <Name>3aqarak.BLL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201911051817142_addVillaNumberAndGroupNumberInVillas.resx">
+      <DependentUpon>201911051817142_addVillaNumberAndGroupNumberInVillas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911051828374_AddMoreFieldsInCode.resx">
+      <DependentUpon>201911051828374_AddMoreFieldsInCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911061432311_remove.resx">
+      <DependentUpon>201911061432311_remove.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911061437431_adding3fields.resx">
+      <DependentUpon>201911061437431_adding3fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911091545080_removeCallumnFloreNumber.resx">
+      <DependentUpon>201911091545080_removeCallumnFloreNumber.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911091733261_removefieldinvalls.resx">
+      <DependentUpon>201911091733261_removefieldinvalls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911091544563_removingAddress.resx">
+      <DependentUpon>201911091544563_removingAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911112332248_createMigrationForAddingNewFieldsNamedTblAgreementContract.resx">
+      <DependentUpon>201911112332248_createMigrationForAddingNewFieldsNamedTblAgreementContract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911121324544_Add_new_field_in_Available_and_Villas.resx">
+      <DependentUpon>201911121324544_Add_new_field_in_Available_and_Villas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911121749054_removingMyPropertyAndAddingIsCanceled.resx">
+      <DependentUpon>201911121749054_removingMyPropertyAndAddingIsCanceled.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911121754504_removingMyProperty.resx">
+      <DependentUpon>201911121754504_removingMyProperty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911121839218_AddIsPostpondAndNoteInTblAgreement.resx">
+      <DependentUpon>201911121839218_AddIsPostpondAndNoteInTblAgreement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911121925165_AddPostpondInTblAgreement.resx">
+      <DependentUpon>201911121925165_AddPostpondInTblAgreement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911131559538_Add_new_field_in_Available_Collect_Price_Over_together.resx">
+      <DependentUpon>201911131559538_Add_new_field_in_Available_Collect_Price_Over_together.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911132029221_Add_new_field_in_VillasAvailable_Collect_Price_Over_together.resx">
+      <DependentUpon>201911132029221_Add_new_field_in_VillasAvailable_Collect_Price_Over_together.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911191156514_udateTbl_message.resx">
+      <DependentUpon>201911191156514_udateTbl_message.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911211209433_Add-Title-in-table-Message.resx">
+      <DependentUpon>201911211209433_Add-Title-in-table-Message.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911191408089_startMeiddatbase.resx">
+      <DependentUpon>201911191408089_startMeiddatbase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911191821235_addIsContractColumnToContractsTables.resx">
+      <DependentUpon>201911191821235_addIsContractColumnToContractsTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911191916337_addIsAgreementColumnToExpectedContractTable.resx">
+      <DependentUpon>201911191916337_addIsAgreementColumnToExpectedContractTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911211400594_in-tbl-message-add-end-and-start-date.resx">
+      <DependentUpon>201911211400594_in-tbl-message-add-end-and-start-date.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911241634261_WritePendingChangestodatabaseaftersync.resx">
+      <DependentUpon>201911241634261_WritePendingChangestodatabaseaftersync.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911272001084_test.resx">
+      <DependentUpon>201911272001084_test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911281406116_AddNewcolumnsInTableexpectedContract.resx">
+      <DependentUpon>201911281406116_AddNewcolumnsInTableexpectedContract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003231525237_makeBirthDateNullableinUsrTable.resx">
+      <DependentUpon>202003231525237_makeBirthDateNullableinUsrTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003241831206_Create Tbl_FellowupCalls.resx">
+      <DependentUpon>202003241831206_Create Tbl_FellowupCalls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003251639102_AddPhoneNumber2ToFellowupCall.resx">
+      <DependentUpon>202003251639102_AddPhoneNumber2ToFellowupCall.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003251853516_ remove phone validation from cll tables.resx">
+      <DependentUpon>202003251853516_ remove phone validation from cll tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003261803516_ Add isdone to fellowupcalls tbl.resx">
+      <DependentUpon>202003261803516_ Add isdone to fellowupcalls tbl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

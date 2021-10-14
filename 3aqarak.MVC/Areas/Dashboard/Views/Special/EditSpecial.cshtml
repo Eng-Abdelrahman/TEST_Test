@@ -1,0 +1,127 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.SpecialViewModel
+@{
+    ViewBag.Title = "AddSpecial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            font-size: 20px;
+        }
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item  " aria-current="page"><a href="@Url.Action("Special","Special")">التخصصات</a></li>
+        <li class="breadcrumb-item active " aria-current="page">تعديل </li>
+
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">تعديل </h4>
+    </div>
+    <div class="card-body">
+
+
+        <form id="addSpecial-form">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.PK_Specialization_Id, new { id = "id" })
+            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+            <div class="form-group">
+                <label class="text-right"> القســم:<abbr class="req">*</abbr></label>
+                @Html.DropDownListFor(m => m.FK_Specialization_Dept_DeptId, Model.Depts, new { id = "deptId", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.FK_Specialization_Dept_DeptId, "", new { @class = "text-danger " })
+            </div>
+            <div class="form-group  ">
+                <label for="first" class="text-right"> الاسم:<abbr class="req">*</abbr></label>
+                <input type="text" class="form-control" id="name" value="@Model.Name" placeholder="الاســم" name="Name" required>
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger " })
+            </div>
+
+            <div class="form-group" style="margin-top:5%">
+                <button id="save" type="submit" class="btn btn-default animation-on-hover " style="float:right">حفـــــظ</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $(document).ready(function () {
+
+            $("#addSpecial-form").submit(function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return false;
+                }
+                var Param = {
+                    PK_Specialization_Id: $("#id").val(),
+                    FK_Specialization_Dept_DeptId: $("#deptId").val(),
+                    Name: $("#name").val(),
+
+                };
+                $.ajax({
+                    url: "/dashboard/Special/UpdateSpecial",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        SpecialVM:Param,
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (result) {
+                            alertify.alert("تم الحفظ بنجاح", function () {
+                                location.href = "@Url.Action("Specials", "Special", new { area = "dashboard" })";
+                            });
+                        }
+                        else {
+                            alertify.alert("لم يتم الحفظ بنجاح!", function () {
+                            });
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

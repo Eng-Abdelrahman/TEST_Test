@@ -1,0 +1,632 @@
+﻿@model IEnumerable<_3aqarak.MVC.ViewModels.ImportDemandViewModel>
+@*@model _3aqarak.MVC.ViewModels.ImportDemandViewModel*@
+@{
+    ViewBag.Title = "ImportView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var lists = ViewBag.Lists;
+}
+
+
+@section styles{
+    <style>
+        .table-responsive {
+            width: 100%;
+            overflow: auto;
+            overflow-y: hidden;
+            overflow-x: scroll !important;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","DemandsIndex")">طلبات العملاء </a></li>
+                <li class="breadcrumb-item active" aria-current="page">عرض الطلبات المستورده </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <span class="text-danger" id="finishErr"></span>
+                    <span class="text-danger" id="accessError"></span>
+
+                    <div id="errorMsg" >@*<ul class="list-group-item list-group-item-danger"></ul>*@</div>
+
+                    <div class="form-group  ">
+                        <label for="first" class="text-right"> بحث عن موظف السيلز:<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="tele" placeholder="السيلز" name="FK_DemandUnits_Users_Sales" required data-val="true" data-val-required="الرجاء إختيار إسم موظف السيلز">
+                    </div>
+                    <div class="ex1">
+                        <table class="table" id="demandImportTable">
+                            <tr>
+                                <th rowspan="2">
+                                    @Html.DisplayNameFor(model => model.ClientName)
+                                </th>
+                                <th rowspan="2">
+                                    @Html.DisplayNameFor(model => model.ClientMobile)
+                                </th>
+                                <th colspan="2">
+                                    السعر
+                                </th>
+                                <th colspan="2">
+                                    المساحة
+                                </th>
+                                <th colspan="2">
+                                    الحمامات
+                                </th>
+                                <th colspan="2">
+                                    الغرف
+                                </th>
+                                <th colspan="2">
+                                    الطابق
+                                </th>
+                                <th colspan="2">
+                                    المصاعد
+                                </th>
+
+                                <th>
+                                    التشطيب
+                                </th>
+                                <th>
+                                    المنطقه من
+                                </th>
+                                <th>
+                                    المنطقه إلى
+                                </th>
+                                <th>
+                                    نوع الفرش
+                                </th>
+                                <th>
+                                    طريقة الدفع
+                                </th>
+                                <th>
+                                    الأقسام العقارية
+                                </th>
+                                <th>
+                                    إستخدام العقار
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>من</th>
+                                <th>إلى</th>
+                                <th>من</th>
+                                <th>إلى</th>
+                                <th>من</th>
+                                <th>إلى</th>
+                                <th>من</th>
+                                <th>إلى</th>
+                                <th>من</th>
+                                <th>إلى</th>
+                                <th>من</th>
+                                <th>إلى</th>
+                                <th>
+                                    <select id="Finishings" required class="form-control Master" data-attr="Finishings">
+                                        @{
+                                            <option value="0" selected="selected">إختر التشطيب</option>
+                                            foreach (var item2 in lists.Finishings)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="RegionsFrom" required class="form-control Master" data-attr="RegionsFrom">
+                                        @{
+                                            <option value="0" selected="selected">إختر المنطقه</option>
+                                            foreach (var item2 in lists.RegionsFrom)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="RegionsTo" required class="form-control Master" data-attr="RegionsTo">
+                                        @{
+                                            <option value="0" selected="selected">إختر المنطقه</option>
+                                            foreach (var item2 in lists.RegionsFrom)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    @Html.DropDownList("IsFurnished", new SelectList(new[] { new { value = true, text = "مفروش" }, new { value = false, text = "غير مفروش" } }.ToList(), "value", "text"), "نوع الفرش", new { @class = "form-control Master", id = "furnished", required = "required" })
+
+                                </th>
+                                <th>
+                                    <select id="Payments" required class="form-control Master" data-attr="Payments">
+                                        @{
+                                            <option value="0" selected="selected">إختر الدفع</option>
+                                            foreach (var item2 in lists.Payments)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="Transactions" required class="form-control Master" data-attr="Transactions">
+                                        @{
+                                            <option value="0" selected="selected">إختر القسم</option>
+                                            foreach (var item2 in lists.Transactions)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="Usages" required class="form-control Master" data-attr="Usages">
+                                        @{
+                                            <option value="0" selected="selected">إختر الإستخدام</option>
+                                            foreach (var item2 in lists.Usages)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ClientName">
+                                        @Html.DisplayFor(model => item.ClientName)
+                                    </td>
+                                    <td class="ClientMobile">
+                                        @Html.DisplayFor(modelItem => item.ClientMobile)
+                                    </td>
+                                    <td class="MinPrice">
+                                        @Html.DisplayFor(modelItem => item.MinPrice)
+                                    </td>
+                                    <td class="MinPrice">
+                                        @Html.DisplayFor(modelItem => item.MaxPrice)
+                                    </td>
+                                    <td class="MinSpace">
+                                        @Html.DisplayFor(modelItem => item.MinSpace)
+                                    </td>
+                                    <td class="MaxSpace">
+                                        @Html.DisplayFor(modelItem => item.MaxSpace)
+                                    </td>
+                                    <td class="MinBathRooms">
+                                        @Html.DisplayFor(modelItem => item.MinBathRooms)
+                                    </td>
+                                    <td class="MaxBathRooms">
+                                        @Html.DisplayFor(modelItem => item.MaxBathRooms)
+                                    </td>
+                                    <td class="MinRooms">
+                                        @Html.DisplayFor(modelItem => item.MinRooms)
+                                    </td>
+                                    <td class="MaxRooms">
+                                        @Html.DisplayFor(modelItem => item.MaxRooms)
+                                    </td>
+                                    <td class="MinFloor">
+                                        @Html.DisplayFor(modelItem => item.MinFloor)
+                                    </td>
+                                    <td class="MaxFloor">
+                                        @Html.DisplayFor(modelItem => item.MaxFloor)
+                                    </td>
+                                    <td class="NoElevatorsFrom">
+                                        @Html.DisplayFor(modelItem => item.NoElevatorsFrom)
+                                    </td>
+                                    <td class="NoElevatorsTo">
+                                        @Html.DisplayFor(modelItem => item.NoElevatorsTo)
+                                    </td>
+                                    <td class="Finishings">
+                                        <select id="Finishings" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر التشطيبات</option>*@
+                                                foreach (var item2 in lists.Finishings)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td class="RegionsFrom">
+                                        <select id="RegionsFrom" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر المنطقه</option>*@
+                                                foreach (var item2 in lists.RegionsFrom)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td class="RegionsTo">
+                                        <select id="RegionsTo" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر المنطقه</option>*@
+                                                foreach (var item2 in lists.RegionsFrom)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td class="IsFurnished">
+                                        @Html.DropDownList("IsFurnished", new SelectList(new[] { new { value = true, text = "مفروش" }, new { value = false, text = "غير مفروش" } }.ToList(), "value", "text"), "نوع الفرش", new { @class = "form-control", id = "furnished", required = "required" })
+                                    </td>
+                                    <td class="Payments">
+                                        <select id="Payments" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر الدفع</option>*@
+                                                foreach (var item2 in lists.Payments)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </td>
+                                    <td class="Transactions">
+                                        <select id="Transactions" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر الأقسام</option>*@
+                                                foreach (var item2 in lists.Transactions)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </td>
+                                    <td class="Usages">
+                                        <select id="Usages" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر الإستخدام</option>*@
+                                                foreach (var item2 in lists.Usages)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <input id="btnInsert" type="button" value="Insert" />
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        $("#btnInsert").click(function () {
+            var itemlist = [];
+            var viewArr = ["1", "2"];
+            var accessArr = ["1", "2"];
+            var finishArr = ["1", "2"];
+
+            if (teleId === "" || teleId === null) {
+                var errorMessage = "لا بد من إدخال موظف السيلز";
+                errorlist.push(errorMessage);
+            }
+            //***
+         
+                if ($("#furnished").children("option:selected").val() == "" || $("#furnished").children("option:selected").val() == null) {
+                    var errorMessage = "لا بد من إختيار نوع الفرش";
+                    errorlist.push(errorMessage);
+                }
+                 if ($("#Finishings").children("option:selected").val() == "0" || $("#Finishings").children("option:selected").val() == null) {
+                    var errorMessage = "لا بد من إختيار نوع التشطيب";
+                    errorlist.push(errorMessage);
+                }
+                 if ($("#RegionsFrom").children("option:selected").val() == "0" || $("#RegionsFrom").children("option:selected").val() == null) {
+                    var errorMessage = "لا بد من إختيار المنطقه";
+                    errorlist.push(errorMessage);
+                }
+                 if ($("#RegionsTo").children("option:selected").val() == "0" || $("#RegionsTo").children("option:selected").val() == null) {
+                    var errorMessage = "لا بد من إختيار المنطقه";
+                    errorlist.push(errorMessage);
+                }
+                 if ($("#Usages").children("option:selected").val() == "0" || $("#Usages").children("option:selected").val() == null) {
+                    var errorMessage = "لا بد من إختيار نوع الإستخدام";
+                    errorlist.push(errorMessage);
+                }
+                 if ($("#Payments").children("option:selected").val() == "0" || $("#Payments").children("option:selected").val() == null) {
+                    var errorMessage = "لا بد من إختيار نوع الدفع";
+                    errorlist.push(errorMessage);
+                }
+                 if ($("#Transactions").children("option:selected").val() == "0" || $("#Transactions").children("option:selected").val() == null) {
+                    var errorMessage = "لا بد من إختيار نوع العمليه";
+                    errorlist.push(errorMessage);
+                }
+                //***
+         
+            if (errorlist == null || errorlist.length == 0) {
+                //get cell values, instead of the header text.
+                //$("table tr:not(:first)").each(function () {
+                $("table tr:nth-child(n+3)").each(function () {
+                    var tdlist = $(this).find("td");
+                   
+                    var Item = {
+                        ClientName: $(tdlist[0]).html(),
+                        ClientMobile: $(tdlist[1]).html(),
+                        MinPrice: $(tdlist[2]).html(),
+                        MaxPrice: $(tdlist[3]).html(),
+                        MinSpace: $(tdlist[4]).html(),
+                        MaxSpace: $(tdlist[5]).html(),
+                        MinBathRooms: $(tdlist[6]).html(),
+                        MaxBathRooms: $(tdlist[7]).html(),
+                        MinRooms: $(tdlist[8]).html(),
+                        MaxRooms: $(tdlist[9]).html(),
+                        MinFloor: $(tdlist[10]).html(),
+                        MaxFloor: $(tdlist[11]).html(),
+                        NoElevatorsFrom: $(tdlist[12]).html(),
+                        NoElevatorsTo: $(tdlist[13]).html(),
+
+                        //Finishing: $(tdlist[14]).html(),
+                        FK_DemandUnits_Regions_FromId: $(tdlist[15]).find("option:selected").val(),
+                        FK_DemandUnits_Regions_ToId: $(tdlist[16]).find("option:selected").val(),
+                        IsFurnished: $(tdlist[17]).find("option:selected").val(),
+                        FK_DemandUnits_PaymentMethod_Id: $(tdlist[18]).find("option:selected").val(),
+                        FK_DemandUnits_Transactions_Id: $(tdlist[19]).find("option:selected").val(),
+                        FK_DemandUnits_Usage_Id: $(tdlist[20]).find("option:selected").val(),
+
+                        //***********************************************************************************************************************************
+                        // Old Code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  Not Working !!!!!!!!! 
+                        //FK_DemandUnits_Regions_FromId: $(tdlist[15]).children("select").children("option").val(),
+                        //FK_DemandUnits_Regions_ToId: $(tdlist[16]).children("select").children("option").val(),
+                        //IsFurnished: $(tdlist[17]).children("select").children("option").val(),
+                        //FK_DemandUnits_PaymentMethod_Id: $(tdlist[18]).children("select").children("option").val(),
+                        //FK_DemandUnits_Transactions_Id: $(tdlist[19]).children("select").children("option").val(),
+                        //FK_DemandUnits_Usage_Id: $(tdlist[20]).children("select").children("option").val(),
+                        //***********************************************************************************************************************************
+
+                        FK_DemandUnits_Users_Sales: teleId,
+                        DateOfBuildFrom: 1900,
+                        DateOfBuildTo:@DateTime.Now.Year,
+
+                        FinishArr: finishArr,
+                        AccessoriesArr: accessArr,
+                        ViewsArr: viewArr,
+                    };
+                    itemlist.push(Item);
+                })
+
+                $.ajax({
+                    url: '@Url.Action("SaveImportDemand", "Import")', //
+                    dataType: "json",
+                    data: JSON.stringify({ itemlist: itemlist }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        //alertify.alert("تم حفظ البيانات بنجاح", function () {
+                        //       location.href = "/Home/Index/";
+                        //});
+
+                        if (response.valid) {
+
+                            alertify.alert(response.message, function () {
+                                location.href = "/Home/Index/";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+                                location.href = "/Home/Index/";
+                            });
+                            //alert("success");
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("error");
+                    }
+                });
+            }//end of validation
+            //print validation here 
+             $("#errorMsg").empty();
+            for (var I = 0; I < errorlist.length; I++) {
+                ErrorList = "<li>" + errorlist[I] + "</li>";
+               // $("#errorMsg").innerHTML += ErrorList;
+                $("#errorMsg").append('<ul class="list-group-item list-group-item-danger">' + ErrorList + '</ul>')
+            }
+            errorlist = [];
+        });
+
+        $(document).ready(function () {
+            
+
+            //var col=2;
+            //var row=2;
+            //var element1 = $("#demandImportTable").children("tbody").children("tr:eq(2)").children("td:eq(2)").text();
+            //var getValFromList = $(".RegionsFrom").children("select").children("option").val();
+            //$("#demandImportTable").parent().css("overflow-x", "inherit");
+            //$(".table-responsive").removeClass();
+
+            //$("#demandImportTable").parent().css("overflow-x", "scroll");
+        });
+    
+            var teleId = "";
+            $("#tele").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/dashboard/admin/EmpAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    teleId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0]
+                },
+            });
+
+          //sales validation
+            //if (teleId === "" || teleId === null) {
+            //    $("#salesErr").html("الرجاء إدخال اسم البائع!");
+            //    $("#accessError").html("الرجاء إدخال الرجاء إدخال اسم البائع !");
+            //    return false;
+            //}
+            //else {
+            //    $("#salesErr").html("");
+            //    $("#accessError").html("");
+        //}
+         var errorlist = [];
+          $("#Finishings").change(function () {
+            $("table tr:nth-child(n+3)").each(function () {
+                var tdlist = $(this).find("td");
+           
+                var ItemValidation = {
+                    ClientName: $(tdlist[0]).html(),
+                    MinPrice: $(tdlist[2]).html(),
+                    MaxPrice: $(tdlist[3]).html(),
+                };
+                 $(".table-responsive").removeClass();
+                if (Number(ItemValidation.MaxPrice) < Number(ItemValidation.MinPrice)) {
+                    var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "القيمة الصغرى للسعر لا يمكن ان تزيد عن العظمى للعميل " + clientName + "";
+                    errorlist.push(errorMessage);
+                }
+            });
+        });
+
+          $("#RegionsFrom").change(function () {
+            $("table tr:nth-child(n+3)").each(function () {
+                var tdlist = $(this).find("td");
+              
+                var ItemValidation = {
+                    ClientName: $(tdlist[0]).html(),
+                    MinBathRooms: $(tdlist[6]).html(),
+                    MaxBathRooms: $(tdlist[7]).html(),
+
+                };
+
+                if (Number(ItemValidation.MaxBathRooms) < Number(ItemValidation.MinBathRooms)) {
+                    var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "القيمة الصغرى للحمامات لا يمكن ان تزيد عن العظمى للعميل " + clientName + "";
+                    errorlist.push(errorMessage);
+                }
+            });
+          });
+
+           $("#RegionsTo").change(function () {
+            $("table tr:nth-child(n+3)").each(function () {
+                var tdlist = $(this).find("td");
+           
+                var ItemValidation = {
+                    ClientName: $(tdlist[0]).html(),
+                    MinFloor: $(tdlist[10]).html(),
+                    MaxFloor: $(tdlist[11]).html(),
+                };
+
+                if (Number(ItemValidation.MaxFloor) < Number(ItemValidation.MinFloor)) {
+                    var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "القيمة الصغرى للطابق لا يمكن ان تزيد عن العظمى للعميل " + clientName + "";
+                    errorlist.push(errorMessage);
+                }
+                
+            });
+           });
+         $("#furnished").change(function () {
+            $("table tr:nth-child(n+3)").each(function () {
+                var tdlist = $(this).find("td");
+       
+                var ItemValidation = {
+                    ClientName: $(tdlist[0]).html(),
+                    IsFurnished: $(tdlist[17]).children("select").children("option").val(),
+                     Finishing: $(tdlist[14]).html(),
+                };
+               var furnishedVal = $("#furnished").children("option:selected").val();
+                var finishingVal=$("#Finishings").children("option:selected").val();
+
+
+                if ((Number(finishingVal)===1 || Number(finishingVal)===2) && furnishedVal == "True") {
+            
+                   
+               var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "لايمكن لشقه غير مشطبه ان تكون مفروشه! للعميل" + clientName + "";
+                    errorlist.push(errorMessage);
+
+                }
+
+
+
+            });
+           });
+
+        $("#Payments").change(function () {
+            $("table tr:nth-child(n+3)").each(function () {
+                var tdlist = $(this).find("td");
+
+                var ItemValidation = {
+                    ClientName: $(tdlist[0]).html(),
+                    NoElevatorsFrom: $(tdlist[12]).html(),
+                    NoElevatorsTo: $(tdlist[13]).html(),
+                };
+ 
+                if (Number(ItemValidation.NoElevatorsTo) < Number(ItemValidation.NoElevatorsFrom)) {
+                    var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "القيمة الصغرى للمصاعد لا يمكن ان تزيد عن العظمى للعميل " + clientName + "";
+                    errorlist.push(errorMessage);
+                }
+            });
+        });
+         $("#Transactions").change(function () {
+            $("table tr:nth-child(n+3)").each(function () {
+                var tdlist = $(this).find("td");
+                
+                var ItemValidation = {
+                    ClientName: $(tdlist[0]).html(),
+
+                    MinRooms: $(tdlist[8]).html(),
+                    MaxRooms: $(tdlist[9]).html(),
+                };
+
+                if (Number(ItemValidation.MaxRooms) < Number(ItemValidation.MinRooms)) {
+                    var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "القيمة الصغرى للغرف لا يمكن ان تزيد عن العظمى للعميل " + clientName + "";
+                    errorlist.push(errorMessage);
+                }
+            });
+         });
+
+         $("#Usages").change(function () {
+            $("table tr:nth-child(n+3)").each(function () {
+                var tdlist = $(this).find("td");
+               
+                var ItemValidation = {
+                    ClientName: $(tdlist[0]).html(),
+                    MinSpace: $(tdlist[4]).html(),
+                    MaxSpace: $(tdlist[5]).html(),
+                };
+
+                if (Number(ItemValidation.MaxSpace) < Number(ItemValidation.MinSpace)) {
+                    var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "القيمة الصغرى للمساحة لا يمكن ان تزيد عن العظمى للعميل " + clientName + "";
+                    errorlist.push(errorMessage);
+                }
+            });
+         });
+
+        $(".Master").change(function () {
+            var className = $(this).attr("data-attr");
+            var selector = '.' + className;
+            var valueSelector = $(this).children("option:selected").val();
+            $(selector).children("select").children("option[value=" + valueSelector + "]").attr('selected', 'selected');
+        });
+    </script>
+}

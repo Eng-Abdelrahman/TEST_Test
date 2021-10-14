@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "RentalEmpMonthAcheivementPage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header text-right">
+
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("reportsindex","report")" style="color:#0098f0">التقــارير </a></li>
+                <li class="breadcrumb-item active" aria-current="page"> تقرير الاداء لموظفي الايجار   </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @Html.DropDownList("Months",(SelectList)ViewBag.Months, new { id = "monthDrpDown", @class = "form-control" })
+            </div>
+            <div class="col">
+                <input type="button" id="btn_getReportData" class="btn btn-default" value="اظهرالتقرير" />
+            </div>
+        </div>
+        <div id="chartContainer">
+            <canvas id="chartDisplay"></canvas>
+            <div class="alert alert-default" id="error">
+                <p  style="font-size:20px;color:white ;text-align:center">لايوجد بيانات لعرضها</p>
+            </div>
+
+        </div>
+
+        <div id="catDetails" style="display:none">
+            <table id="details" class="table table-striped">
+                <thead>
+                    <tr> <th>اسم الموظــف</th> <th>نوع العفــار</th> <th>عدد العقود المنجزة</th></tr>
+                </thead>
+                <tbody id="detailsBody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        function drawChart(emps, pctgs) {
+          
+            let chartCanvas = document.getElementById("chartDisplay").getContext("2d");
+            let RentAchieveChart = new Chart(chartCanvas, {
+                type: "pie",
+                data: {
+                    labels: emps,
+                    datasets: [{
+                        label: "معدل الانجاز الشهري",
+                        data: pctgs,
+                        backgroundColor: ["#4e4ea4","#e9f16a","#f1b66a","#b8f7f9"],
+                    }],
+                },
+              
+                options: {
+                    title: {
+                        display: true,
+                        text: "معدل الانجاز الشهري للموظفين",
+                        fontSize: 22
+                    },
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            fontColor: "black",
+                        },
+                    },
+                    //layout: {
+                    //    margin: {
+                    //        left: 500,
+
+                    //    }
+                    //}
+                    //tooltips: {
+
+                    //}
+                },
+             
+            });
+        };
+        $(document).ready(function () {
+            var empCats = [];
+            $("#chartContainer").hide();
+            $("#btn_getReportData").on("click", function () {
+              
+                $.ajax({
+                    type: "GET",
+                    url: "/Report/GetRentalEmpMonthAcheivement",
+                    data: {
+                        month: $("#monthDrpDown").val(),
+                    },
+                    success: function (response) {
+                        if (response.emps.length > 0 && response.pctgs.length > 0) {
+                            empCats = response.empCatGroups; @*@Html.raw(Newtonsoft.Json.JsonConvert.DeserializeObject(response.empCatGroups));*@
+                            $("#error").hide();
+                            $("#chartDisplay").show();
+                            $("#chartContainer").show();
+                            $("#catDetails").show();
+                            $.each(empCats, function (index, value) {
+
+                                $("#detailsBody").append('<tr><td>' + value.EmpName + '</td><td>' + value.Category + '</td><td>' + value.Count+'</td></tr>')
+                            });                           
+                            drawChart(response.emps, response.pctgs);
+                        }
+                        else {                            
+                            $("#chartDisplay").hide();
+                            $("#chartContainer").show();
+                            $("#error").show();
+                        }
+
+                    },
+                    error: function () {
+                        alertify.alert(" حدث خطا ما في ارسال البيانات!", function () { });
+                    }
+                });
+            });
+        });
+    </script>
+    }
+

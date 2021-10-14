@@ -1,0 +1,387 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.ClientViewModel
+@{
+    ViewBag.Title = "EditClient";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        img {
+            border-radius: 50%;
+            margin-left: 43%;
+        }
+
+
+        input[type="text"], input[type="email"], textarea {
+            font-size: 1.4em;
+        }
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="@Url.Action("clients","client")">العملاء</a></li>
+        <li class="breadcrumb-item active " aria-current="page">تعديل عميل</li>
+
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">تعديل عميل </h4>
+    </div>
+    <div class="card-body">
+
+
+        <form id="addClient-form">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.PK_Client_Id, new { id = "id" })
+            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+            <div class="form-group">
+                <div class="show-img ">
+                    <input type="button" class="btn btn-block" data-toggle="modal" data-target="#myModal" value=" صوره البطاقة " />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group  ">
+                        <label for="first" class="text-right"> الاســـم  :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="name" placeholder="الاســم" name="Name" value="@Model.Name" required>
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger text-right" })
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        @*<input id="phone" name="phone" type="tel" onkeypress="return isNumberKey(event)">*@
+                        <label for="phone" class="text-right">الموبايل :<abbr class="req">*</abbr></label>
+                        <input type="tel" class="form-control" id="mobile" placeholder="الموبايل" name="Mobile" value="@Model.Mobile" required>
+                        @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "text-danger" })
+                        <span class="valid-msg hide text-danger"> </span>
+                        <span class="error-msg hide text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="last" class="text-right"> الرقم القومي :</label>
+                    <input type="text" class="form-control" id="idNumber" placeholder="الرقم القومي" name="IdNumber" value="@Model.IdNumber">
+                    @Html.ValidationMessageFor(m => m.IdNumber, "", new { @class = "text-danger text-right" })
+                </div>
+                <div class="form-group col-md-4 ">
+                    <label for="last" class="text-right"> الوظيفة :</label>
+                    <input type="text" class="form-control" id="job" placeholder="الوظيفة " name="Job" value="@Model.Job">
+                    @Html.ValidationMessageFor(m => m.Job, "", new { @class = "text-danger text-right" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group ">
+                        <label for="phone" class="text-right">التليفون :</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="التليفون" name="Phone" value="@Model.Phone">
+                        @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "text-danger" })
+                        <span class="valid-msg3 hide text-danger"> </span>
+                        <span class="error-msg3 hide text-danger"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label for="phone" class="text-right">2الموبايل :</label>
+                        <input type="tel" class="form-control" id="mobile2" placeholder="الموبايل2" name="Mobile2" value="@Model.Mobile2">
+                        @Html.ValidationMessageFor(m => m.Mobile2, "", new { @class = "text-danger" })
+                        <span class="valid-msg2 hide text-danger"> </span>
+                        <span class="error-msg2 hide text-danger"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group  ">
+                        <label for="last" class="text-right"> افضــل وقت للاتصــال :</label>
+                        <input type="text" class="form-control" id="contact" placeholder="ميعاد الاتصــال" value="@Model.BestContactHour" name="BestContactHour">
+                        @Html.ValidationMessageFor(m => m.BestContactHour, "", new { @class = "text-danger text-right" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group  ">
+                        <label for="last" class="text-right"> العنــوان :</label>
+                        <textarea class="form-control" id="address" placeholder="العنوان" name="Address">@Model.Address</textarea>
+                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger text-right" })
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group  ">
+                        <label for="last" class="text-right"> ملاحظات :</label>
+                        <textarea class="form-control" id="notes" placeholder="ملاحظات" name="Notes">@Model.Notes</textarea>
+                        @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger text-right" })
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="form-group" style="margin-top:5%">
+                <button id="save" type="submit" class="btn btn-default animation-on-hover " style="float:right">حفظ العميل </button>
+            </div>
+        </form>
+
+        <!-- Image Modal -->
+        <div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog .modal-dialog-centered" role="document">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="float:left">حمل صورة البطاقة</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <div class="jumbotron">
+                                <form action="/Dashboard/client/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                <button id="act-on-upload" class="btn btn-block">حمل الصورة</button>
+                            </div>
+                            <span class="alert alert-primary">حمل الوجه اولا ثم الظهر</span><br /><br />
+                            <span class="alert alert-default">مساحة الصورة لا تزيد عن 3 ميجا</span><br /><br />
+                            <span class="alert alert-default">يسمح فقط ب .jpg .jpeg .png</span><br /><br />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        Dropzone.options.dropzoneJsForm = {
+            autoProcessQueue: false,
+            maxFilesize: 3, // MB
+            maxFiles: 2,
+            parallelUploads: 2,
+            uploadMultiple: true,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+                })
+            },
+            //acceptedFiles: '.jpg,.jpeg,.JPEG,.JPG,.png,.PNG',
+            success: function (file, response) {
+
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $(document).ready(function () {
+
+
+            $("#addClient-form").submit(function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return false;
+                }
+                var clientParam = {
+                    BestContactHour: $("#contact").val(),
+                    PK_Client_Id: $("#id").val(),
+                    Name: $("#name").val(),
+                    Phone: $("#phone").val(),
+                    Mobile: $("#mobile").val(),
+                    Mobile2: $("#mobile2").val(),
+                    Job: $("#job").val(),
+                    Address: $("#address").val(),
+                    Notes: $("#notes").val(),
+                    IdNumber: $("#idNumber").val(),
+                };
+
+                $.ajax({
+                    url: "/dashboard/client/UpdateClient",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        clientVM: clientParam,
+                    },
+                    dataType: "json",
+                    success: function (result) {
+
+                        if (result.Valid) {
+
+                            alertify.alert("Profile saved successefully", function () {
+                                if ("@ViewBag.RedirectTo" !== null || "@ViewBag.RedirectTo" !== "") {
+                                    location.href = "@ViewBag.RedirectTo";
+                                }
+                                else {
+                                    location.href = "@Url.Action("clients", "client", new { area = "dashboard" })";
+                                }
+
+                            });
+                        }
+                        else {
+                            alertify.alert("profile Couldn't be saved successefully", function () {
+                            });
+                        }
+                    },
+                    error: function (result) {
+                        alertify.alert("profile Couldn't be saved successefully", function () {
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    <script src="/Theme/assets/Plugins/intl-tel-input-master/build/js/intlTelInput.js"></script>
+
+    <script>
+        var errorMsg = document.querySelector(".error-msg"),
+            validMsg = document.querySelector(".valid-msg");
+
+        // here, the index maps to the error code returned from getValidationError - see readme
+        var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input = document.querySelector(" #mobile ");
+        var iti = window.intlTelInput(input, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+        var reset = function () {
+            input.classList.remove("error");
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+
+        // on blur: validate
+        input.addEventListener('blur', function () {
+            reset();
+            if (input.value.trim()) {
+                if (iti.isValidNumber()) {
+                    validMsg.classList.remove("hide");
+                } else {
+                    input.classList.add("error");
+                    var errorCode = iti.getValidationError();
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    errorMsg.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input.addEventListener('change', reset);
+        input.addEventListener('keyup', reset);
+
+
+        //input 2
+        var errorMsg2 = document.querySelector(".error-msg2"),
+            validMsg2 = document.querySelector(".valid-msg2");
+        var errorMap2 = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input2 = document.querySelector(" #mobile2 ");
+        var iti2 = window.intlTelInput(input2, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+        var reset2 = function () {
+            input2.classList.remove("error");
+            errorMsg2.innerHTML = "";
+            errorMsg2.classList.add("hide");
+            validMsg2.classList.add("hide");
+        };
+
+        // on blur: validate
+        input2.addEventListener('blur', function () {
+            reset2();
+            if (input2.value.trim()) {
+                if (iti2.isValidNumber()) {
+                    validMsg2.classList.remove("hide");
+                } else {
+                    input2.classList.add("error");
+                    var errorCode2 = iti2.getValidationError();
+                    errorMsg2.innerHTML = errorMap2[errorCode2];
+                    errorMsg2.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input2.addEventListener('change', reset2);
+        input2.addEventListener('keyup', reset2);
+
+
+
+        //input3
+        var errorMsg3 = document.querySelector(".error-msg3"),
+            validMsg3 = document.querySelector(".valid-msg3");
+        var errorMap3 = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input3 = document.querySelector("#phone");
+        var iti3 = window.intlTelInput(input3, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+
+        var reset3 = function () {
+            input3.classList.remove("error");
+            errorMsg3.innerHTML = "";
+            errorMsg3.classList.add("hide");
+            validMsg3.classList.add("hide");
+        };
+
+        // on blur: validate
+        input3.addEventListener('blur', function () {
+            reset3();
+            if (input3.value.trim()) {
+                if (iti3.isValidNumber()) {
+                    validMsg3.classList.remove("hide");
+                } else {
+                    input3.classList.add("error");
+                    var errorCode3 = iti3.getValidationError();
+                    errorMsg3.innerHTML = errorMap3[errorCode3];
+                    errorMsg3.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input3.addEventListener('change', reset3);
+        input3.addEventListener('keyup', reset3);
+
+
+    </script>
+}
+
+
+
+
+

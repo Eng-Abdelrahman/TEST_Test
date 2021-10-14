@@ -1,0 +1,212 @@
+﻿@model _3aqarak.MVC.ViewModels.ShopAvailableViewModel
+@{
+    ViewBag.Title = "EditShopAvailable";
+}
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-header text-right">
+            <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index","AvailableLands")">عروض بيع العملاء </a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("EditAvailableLand","AvailableLands",new { id=Model.FK_ShopAvailable_Clients_ClientId})">عروض بيع عميل </a></li>
+                    <li class="breadcrumb-item active" aria-current="page">تعديل عرض بيع لعميل </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive ps">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="updateShopAvailable">
+                            @Html.AntiForgeryToken()
+                            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                            <div class="form-group  ">
+                                <label for="first" class="text-right"> موظف السيلز:<abbr class="req">*</abbr></label>
+                                <input type="text" value="@Model.salesName" class="form-control" id="tele" placeholder="السيلز" name="FK_ShopAvailable_Users_SalesId" required readonly>
+                                @Html.ValidationMessageFor(m => m.FK_ShopAvailable_Users_SalesId, "", new { @class = "text-danger " })
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label class="preLabel">السعر<abbr class="text-danger">*</abbr></label>
+                                    <input type="number" class="form-control" id="price" placeholder="السعر" min="1" value="@Model.Price" required readonly>
+                                    @Html.ValidationMessageFor(p => p.Price, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col">
+                                    <label class="preLabel">المساحة<abbr class="text-danger">*</abbr></label>
+                                    <input type="number" class="form-control" id="space" placeholder="المساحة" min="1" value="@Model.Space" required readonly>
+                                    @Html.ValidationMessageFor(p => p.Space, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col">
+                                    <label class="preLabel">العنوان<abbr class="text-danger">*</abbr></label>
+                                    <input type="text" class="form-control" id="address" placeholder="العنوان" value="@Model.Address" required readonly>
+                                    @Html.ValidationMessageFor(p => p.Address, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col">
+                                    <label> عدد الحمامات<abbr class="req">*</abbr></label>
+                                    <input id="Bath" type="number" min="0" class="form-control" placeholder="عدد الحمامات" value="@Model.BathRooms" name="Bath" style="border :1px solid #DDD" required readonly>
+                                    @*<span class="text-danger" id="minBathErr"></span>*@
+                                    @Html.ValidationMessageFor(p => p.BathRooms, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label class="preLabel">المنطقة<abbr class="text-danger">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.FK_ShopAvailable_Regions_Id, Model.Regions, "إختر المنطقة", new { @class = "form-control", id = "Region-dropdown" })
+                                    @Html.ValidationMessageFor(p => p.FK_ShopAvailable_Regions_Id, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col">
+                                    <label>الترخيص:<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.Islicense, new SelectList(new[] { new { value = true, text = "مرخص" }, new { value = false, text = "غير مرخص" } }.ToList(), "value", "text"), "نوع الترخيص", new { @class = "form-control", id = "Islicense", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.Islicense, "", new { @class = "text-danger", id = "licenseError" })
+                                </div>
+                                @*<div class="col">
+                                    <label>استخدام العقـــار:<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.FK_ShopAvailable_Usage_Id, Model.Usages, "اختر نوع العقار", new { @class = "form-control", id = "residence", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_ShopAvailable_Usage_Id, "", new { @class = "text-danger", id = "typeError" })
+                                </div>*@
+                                <div class="col">
+                                    <label>الاقسام العقارية<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.FK_ShopAvailable_Transactions_Id, Model.Transactions, "اختر نوع التعامل", new { @class = "form-control", id = "trans", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_ShopAvailable_Transactions_Id, "", new { @class = "text-danger", id = "transError" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label>طــريقة الدفع:<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.FK_ShopAvailable_PaymentMethod_Id, Model.Payments, "اختر طريقة الدفع", new { @class = "form-control", id = "payment", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_ShopAvailable_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                                </div>
+                                <div class="col">
+                                    <label>نوع المحل<abbr class="req">*</abbr></label>
+                                    <select id="ScaleNamber" required class="form-control" name="ScaleNumber" readonly>
+                                        <option value="" disabled>إختر نوع المحل</option>
+                                        <option value="1" @(Model.ScaleNumber == 1 ? "selected" : "")>ميزانين</option>
+                                        <option value="2" @(Model.ScaleNumber == 2 ? "selected" : "")>أرضي وميزانين</option>
+                                        <option value="3" @(Model.ScaleNumber == 3 ? "selected" : "")>أرضي</option>
+                                        <option value="4" @(Model.ScaleNumber == 4 ? "selected" : "")>الكل</option>
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.ScaleNumber, "", new { @class = "text-danger", id = "ScaleNamberError" })
+                                </div>
+                                <div class="col">
+                                    <label>سنه البناء<abbr class="req">*</abbr></label>
+                                    <input id="BuildYear" min="1900" max="@DateTime.Now.Year" type="number" class="form-control" value="@Model.DateOfBuild" name="DateOfBuild" placeholder="سنة البناء" required readonly />
+                                    @Html.ValidationMessageFor(d => d.DateOfBuild, "", new { @class = "text-danger" })
+                                    <span class="text-danger" id="BuildYearErr"></span>
+                                </div>
+                                <div class="col">
+                                    <label>تقسيم المحل:<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.IsDivider, new SelectList(new[] { new { value = true, text = "مقسم" }, new { value = false, text = "غير مقسم" } }.ToList(), "value", "text"), "نوع المحل", new { @class = "form-control", id = "IsDivider", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.IsDivider, "", new { @class = "text-danger", id = "DividerError" })
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col">
+                                    <label>نوع التجهيز:<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.IsFurnished, new SelectList(new[] { new { value = true, text = "مجهز" }, new { value = false, text = "غير مجهز" } }.ToList(), "value", "text"), "نوع التجهيز", new { @class = "form-control", id = "IsFurnisher", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.IsFurnished, "", new { @class = "text-danger", id = "FurnisherError" })
+                                </div>
+                                <div class="col">
+                                    <label>الاطــلالة:</label>
+                                    @Html.DropDownListFor(m => m.ViewsArr, Model.Views, "", new { @class = "form-control", id = "view", required = "required", multiple = "multiple" })
+                                    @Html.ValidationMessageFor(m => m.ViewsArr, "", new { @class = "text-danger", id = "viewError" })
+                                </div>
+                                <div class="col">
+                                    <label>الملاحظــات:</label>
+                                    <textarea class="form-control" id="notes" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px" readonly>@Model.Notes</textarea>
+                                    @Html.ValidationMessageFor(n => n.Notes, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>صـــــور الوحــده:</label>
+                                @if (Model.Images.Any())
+                                {
+                                    var counter = 0;
+                                    var index = 0;
+                                    int elementsInloop = 0;
+                                    var loops = (Model.Images.Length % 4 > 0) ? ((Model.Images.Length / 4) + 1) : ((Model.Images.Length / 4));
+                                    for (int i = 0; i < loops; i++)
+                                    {
+                                        <div>
+                                            @{
+                                                index = counter;
+                                                elementsInloop = (Model.Images.Length - counter) > 4 ? 4 : Model.Images.Length - counter;
+
+                                            }
+
+                                            @for (int j = index; j < index + elementsInloop; j++)
+                                            {
+
+                                                <img src="~/@Model.Images[j]" width="100" height="100" style="border:1px thin grey;margin-right:5px;" alt="">
+
+                                                counter = counter + 1;
+                                            }
+
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+
+                                    <div class="alert alert-danger text-right" role="alert">
+                                        لايوجد صور متاحة للوحده !
+                                    </div>
+                                }
+
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //CKEDITOR.replace('notes');
+    //CKEDITOR.replace('title');
+    $("document").ready(function () {
+        $("select").attr("disabled", "diasabled");
+    });
+</script>
+
+

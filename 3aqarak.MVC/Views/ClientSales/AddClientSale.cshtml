@@ -1,0 +1,618 @@
+﻿@model _3aqarak.MVC.ViewModels.AvailableViewModel
+
+@{
+                /**/
+
+                ViewBag.Title = "AddClientSale";
+                Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","ClientSales")">عروض  العملاء </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("ClientSales","ClientSales",new { id=Model.FK_AvaliableUnits_Clients_ClientId})">عروض  عميل </a></li>
+                <li class="breadcrumb-item active" aria-current="page">اضافة عرض  لعميل </li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="AddClientsaleForm">
+                        @Html.AntiForgeryToken()
+                        @*@Html.HiddenFor(m => m.FK_AvaliableUnits_Clients_ClientId, new { id = "clientId" })*@
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                        @Html.ValidationSummary()
+                        <div class="form-group  ">
+                            <div class="form-row">
+                                <div class=" col">
+                                    @*@Html.LabelFor(m => m.FK_AvaliableUnits_Users_SalesId, new { @class = "text-right" })*@
+                                    <label for="first" class="text-right"> موظف السيلز:<abbr class="req">*</abbr></label>
+                                    <input type="text" class="form-control" id="tele" placeholder="السيلز" name="FK_AvaliableUnits_Users_SalesId" required data-val="true" data-val-required="الرجاء إختيار إسم موظف السيلز">
+                                    @Html.ValidationMessageFor(m => m.FK_AvaliableUnits_Users_SalesId, "", new { @class = "text-danger " })
+                                </div>
+                                <div class=" col">
+                                    <div class="form-group">
+                                        <div class="show-img ">
+
+                                            <input type="button" class="btn btn-block" data-toggle="modal" style="margin-top:6.5%" data-target="#myModal" value=" تحميل صــور العــرض " />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>منطقة العقار<abbr class="req">*</abbr> </label>
+                                @Html.DropDownListFor(m => m.tbl_units.FK_Units_Regions_Id, Model.Regions, "اختر المنطقة", new { @class = "form-control", id = "region", @required = "required" })
+                                @Html.ValidationMessageFor(m => m.tbl_units.FK_Units_Regions_Id, "", new { @class = "text-danger", id = "regError" })
+                            </div>
+                            <div class="col">
+                                <label>فئه العقار<abbr class="req">*</abbr> </label>
+                                @Html.DropDownListFor(m => m.tbl_units.FK_Units_Categories_Id, Model.Categories, "اختر الفئه", new { @class = "form-control", id = "cats", required = "required" })
+                                @Html.ValidationMessageFor(m => m.tbl_units.FK_Units_Categories_Id, "", new { @class = "text-danger", id = "catError" })
+                            </div>
+                            <div class="col">
+                                <label>الاقسام العقارية<abbr class="req">*</abbr> </label>
+                                @Html.DropDownListFor(m => m.FK_AvaliableUnits_Transaction_TransactionId, Model.Transactions, "اختر نوع التعامل", new { @class = "form-control", id = "trans", required = "required" })
+
+                                @Html.ValidationMessageFor(m => m.FK_AvaliableUnits_Transaction_TransactionId, "", new { @class = "text-danger", id = "transError" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label>المساحة<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control" min="0" placeholder="المساحة" id="space" required data-val="true" data-val-required="الرجاء إدخال المساحه">
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Space, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>عدد الغرف<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control" placeholder="عدد الغرف" min="0" id="rooms" required data-val="true" data-val-required="الرجاء إدخال عدد الغرف">
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Rooms, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>عدد الحمامات<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control" placeholder="عدد الحمامات" min="0" id="baths" required data-val="true" data-val-required="الرجاء إدخال عدد الحمامات">
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Bathrooms, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>الطــابق<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control" placeholder="الطــابق" min="0" id="floor" required data-val="true" data-val-required="الرجاء إدخال الطابق">
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Floor, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label>تشطيب الوحدة<abbr class="req">*</abbr> </label>
+                                    @Html.DropDownListFor(m => m.tbl_units.FK_Units_Finishing_Id, Model.Finishings, "اختر نوع التشطيب", new { @class = "form-control", id = "finishing", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.tbl_units.FK_Units_Finishing_Id, "", new { @class = "text-danger", id = "finishError" })
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>الاطــــلاله</label>
+                                    @Html.DropDownListFor(m => m.tbl_units.FK_Units_Views_Id, Model.Views, new { @class = "form-control", id = "view", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.tbl_units.FK_Units_Views_Id, "", new { @class = "text-danger", id = "viewError" })
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>السعــر /الايجار المطــلوب<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control sty form-control" id="price" min="0" placeholder="السعر المطلوب" required data-val="true" data-val-required="الرجاء إدخال السعر المطلوب">
+                                    @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>طــريقة الدفع:<abbr class="req">*</abbr> </label>
+                                    @Html.DropDownListFor(m => m.FK_AvailableUnits_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_AvailableUnits_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-row">
+                                @*<div class="form-group col-md-4">
+                                    <label class="control-label" for="address">العنوان<abbr class="req">*</abbr> </label>
+                                    <textarea class="form-control sty" id="address" rows="3" required style="border :1px solid #2b3553  ; border-radius:10px"></textarea>
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Address, "", new { @class = "text-danger" })
+                                </div>*@
+                                <div class="form-group col-md-4">
+                                    <label>وصف الوحدة<abbr class="req">*</abbr></label>
+                                    <textarea class="form-control sty" id="unitDescrip" rows="3" style="border :1px solid #2b3553  ; border-radius:10px" required></textarea>
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Descreption, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <h5>الملاحظـــات</h5>
+                                    <textarea class="form-control sty" id="notes" rows="3" style="border :1px solid #2b3553  ; border-radius:10px"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group ">
+
+                                <label> <u>الكماليات المتاحة : </u><abbr class="req">*</abbr></label>
+                                <br /> <br />
+                                @*@Html.DropDownListFor(m => m.AccessoriesArr, Model.Accessories, new { @class = "form-control", id = "access", required = "required", multiple = "multiple" })
+                                    @Html.ValidationMessageFor(m => m.AccessoriesArr, "", new { @class = "text-danger", id = "accessError" })*@
+                                @foreach (var item in Model.Accessories)
+                                {
+                                    if (item.Selected)
+                                    {
+                                        <div class="checkbox icheck form-check form-check-inline  ">
+                                            <label>
+                                                <input class="access " type="checkbox" checked value="true" data-id="@item.Value">@item.Text
+                                            </label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="checkbox icheck form-check form-check-inline ">
+                                            <label>
+                                                <input class="access " type="checkbox" value="false" data-id="@item.Value">@item.Text
+                                            </label>
+                                        </div>
+
+                                    }
+
+                                }
+
+                            </div>
+                        </div>
+                        <span class="text-danger" id="accessError"></span>
+
+                        <label> <u> تفاصيل إضافية : </u></label>
+                        <br /> <br />
+                        <div class="row" style="float:right">
+
+                            <div class="checkbox icheck form-check form-check-inline">
+                                <label>
+                                    <input id="furnish" name="" type="checkbox" value="false"> مفروش
+                                </label>
+                            </div>
+
+                            <div class="checkbox icheck form-check form-check-inline">
+                                <label>
+                                    <input id="market" name="" type="checkbox" value="false"> بحث سوقي
+                                </label>
+                            </div>
+
+                            <div class="checkbox icheck form-check form-check-inline">
+                                <label>
+                                    <input id="negotiate" name="" type="checkbox" value="false"> قابل للنقاش
+                                </label>
+                            </div>
+
+                        </div>
+
+
+
+
+                        @*<div class="form-group ">
+                                <h5>عنوان العرض</h5>
+                                <textarea class="form-control sty form-control" id="title"></textarea>
+                                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger", id = "titleError" })
+                            </div>*@
+
+
+                        @*<div class="form-group ">
+                                <h5>وصــف العرض</h5>
+                                <textarea class="form-control sty form-control" id="description"></textarea>
+                                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger", id = "descError" })
+                            </div>*@
+
+                        <!--<div class="row" style="float:right">-->
+                        @*<div class="checkbox icheck form-check form-check-inline">
+                                <label>
+                                    <input id="install" name="" type="checkbox" value="false"> قابل للتقسيط
+                                </label>
+                            </div>*@
+
+                        <!--</div>-->
+
+                        <br /><br /><br />
+                        <!-- Notes Textarea -->
+
+
+                        <button type="submit" class="btn btn-default animation-on-hover" id="mybutton">حفــظ</button>
+                    </form>
+
+                    <!-- Image Modal -->
+                    <div id="myModal" class="modal fade " role="dialog">
+                        <div class="modal-dialog .modal-dialog-centered" role="document">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Choose image</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+
+                                        <div class="jumbotron">
+                                            <form action="/ClientSales/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                            <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                                        </div>
+                                        <span class="alert alert-primary">الصورة الاولى التي سيتم تحميلها هي الصورة الاساسيه لعنوان العرض</span><br /><br />
+                                        <span class="alert alert-warning">اقصى عدد للصور هو 9 صور فقط  </span>
+                                        <span class="alert alert-info">مساحة الصوره لا تزيد عن 3 ميجابايتس  </span>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1094px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        </div>
+    </div>  <!-- End of body-->
+
+    <div class="modal fade" id="matches" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">
+                        changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script>
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 3, // MB
+            maxFiles: 9,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 9,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+                })
+            },
+            successmultiple: function (file, response) {
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        //CKEDITOR.replace('title');
+        //CKEDITOR.replace('description');
+        $(function () {
+
+            var teleId = "";
+            $("#tele").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/dashboard/admin/EmpAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+
+                                teleId = item.PK_Users_Id;
+                                return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                            }))
+
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    teleId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0]
+                },
+            });
+
+            $('#install').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $('#install').val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $('#install').val(false);
+                });
+
+            $('#market').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $('#market').val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $('#market').val(false);
+                });
+
+            $('.access').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $(this).val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $(this).val(false);
+                });
+
+            $('#negotiate').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $('#negotiate').val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $('#negotiate').val(false);
+                });
+
+            $('#furnish').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $('#furnish').val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $('#furnish').val(false);
+                });
+
+            $("#AddClientsaleForm").submit(function (e) {
+                e.preventDefault();
+                if ($("#space").val() === "" || $("#space").val() === null) {
+                    $("#space").next("span.text-danger").html("الرجاء إدخال المساحه!");
+                    return false;
+                }
+                else {
+                    $("#space").next("span.text-danger").html("");
+                }
+
+                if ($("#price").val() === "" || $("#price").val() === null) {
+                    $("#price").next("span.text-danger").html("لابد من إدخال السعر");
+                    return false;
+                }
+                else {
+                    $("#price").next("span.text-danger").html("");
+                }
+                if ($("#view").val() === "" || $("#view").val() === null) {
+                    $("#view").next("span.text-danger").html("لابد من إختبار الإطلالة!");
+                    return false;
+                }
+                else {
+                    $("#view").next("span.text-danger").html("");
+                }
+                if ($("#floor").val() === "" || $("#floor").val() === null) {
+                    $("#floor").next("span.text-danger").html("لابد من إدخال الطابق!");
+                    return false;
+                }
+                else {
+                    $("#floor").next("span.text-danger").html("");
+                }
+                if ($("#address").val() === "" || $("#address").val() === null) {
+                    $("#address").next("span.text-danger").html("لابد من إدخال العنوان!");
+                    return false;
+                }
+                else {
+                    $("#address").next("span.text-danger").html("");
+                }
+
+                if ($("#rooms").val() === "" || $("#rooms").val() === null) {
+                    $("#rooms").next("span.text-danger").html("لابد من إدخال عدد الغرف!");
+                    return false;
+                }
+                else {
+                    $("#rooms").next("span.text-danger").html("");
+                }
+
+                if ($("#baths").val() === "" || $("#baths").val() === null) {
+                    $("#baths").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+                    return false;
+                }
+                else {
+                    $("#baths").next("span.text-danger").html("");
+                }
+
+                //Add val here
+                var accessArr = [];
+                $.each($(".access"), function (index, value) {
+
+                    if ($(this).is(":checked")) {
+                        accessArr.push($(this).attr("data-id"));
+                    };
+
+                });
+                if (accessArr.length < 1) {
+                    $("#accessError").html("لابد من إختيار أي من الكماليات المتاحة !");
+                    return false;
+                }
+                else {
+                    $("#accessError").html("");
+                }
+
+                if (!$(this).valid()) {
+                    return false;
+                }
+                //if (CKEDITOR.instances["title"].getData() === "" || CKEDITOR.instances["title"].getData() === null) {
+                //    $("#titleError").html("لابد من ملا هذا الحقل");
+                //    return false;
+                //}
+                //else {
+                //    $("#titleError").html("");
+                //}
+                //if (CKEDITOR.instances["description"].getData() === "" || CKEDITOR.instances["description"].getData() === null) {
+                //    $("#descError").html("لابد من ملا هذا الحقل");
+                //    return false;
+                //}
+                //else {
+                //    $("#descError").html("");
+                //}
+                if (($("#finishing").val() === "5" || $("#finishing").val() === "6") && $("#furnish").is(":checked")) {
+
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify("لايمكن لشقه بهذا النوع من التشطيب ان تكون مفروشه!", "error", function () { });
+                    return false;
+                }
+
+                var obj = {
+                    FK_AvaliableUnits_Users_SalesId: teleId,
+                    FK_AvaliableUnits_Clients_ClientId: $("#clientId").val(),
+                    FK_AvaliableUnits_Transaction_TransactionId: $("#trans").val(),
+                    FK_AvailableUnits_PaymentMethod_Id: $("#payment").val(),
+                    //Title: CKEDITOR.instances["title"].getData(),
+                    //Description: CKEDITOR.instances["description"].getData(),
+                    Notes: $("#notes").val(),
+                    Price: $("#price").val(),
+                    //IsInstallable: $("#install").is(":checked"),
+                    IsNegotiable: $("#negotiate").is(":checked"),
+                    AccessoriesArr: accessArr,
+                    tbl_units: {
+                        FK_Units_Client_Id: $("#clientId").val(),
+                        FK_Units_Views_Id: $("#view").val(),
+                        Space: $("#space").val(),
+                        Rooms: $("#rooms").val(),
+                        Floor: $("#floor").val(),
+                        BathRooms: $("#baths").val(),
+                        Address: $("#address").val(),
+                        /////////////////
+                        FlatNumber: $("#FlatNum").val(),
+                        ApartmentNumber: $("#ApartNum").val(),
+                        GroupNumber: $("#GroupNum").val(),
+                        ////////////////
+                        Descreption: $("#unitDescrip").val(),       
+                        FK_Units_Regions_Id: $("#region").val(),
+                        FK_Units_Finishing_Id: $("#finishing").val(),
+                        FK_Units_Categories_Id: $("#cats").val(),
+                        IsFurniture: $("#furnish").is(":checked"),
+                        FK_Units_Client_Id: $("#clientId").val(),
+                        IsMarketResearch: $("#market").is(":checked"),
+                    },
+
+                };
+                $.ajax({
+                    "url": "/ClientSales/SaveClientSale/",
+                    "type": "POST",
+                    accept: "application/json",
+                    dataType: "json",
+                    "data": {
+                        __RequestVerificationToken: token,
+                        saleVM: obj,
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+
+                            alertify.alert(response.message, function () {
+                                location.href = "/clientSales/DemandMatchesAfterAdd/";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+
+                            });
+                        };
+
+                    },
+                    error: function (response) {
+
+                        alertify.alert("حدث خطا ما عند تسجيل البيانات", function () {
+
+                        })
+
+                    }
+                });
+
+
+            });
+
+        });
+
+    </script>
+
+}

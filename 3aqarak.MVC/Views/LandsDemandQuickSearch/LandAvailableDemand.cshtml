@@ -1,0 +1,395 @@
+﻿@model _3aqarak.MVC.ViewModels.AvailableLandsViewModel
+@{
+    ViewBag.Title = "LandAvailableDemand";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section styles{
+    <style>
+        td.details-control {
+            background: url('../../Assets/Img/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('../../Assets/Img/details_close.png') no-repeat center center;
+        }
+
+        th, td {
+            text-align: center;
+        }
+
+        /*#availables .modal-content {
+            width: 136%;
+        }*/
+
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+<div class="card">
+    @Html.AntiForgeryToken()
+    <div class="card-header">
+        <div class="card-header text-right">
+            <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#">Library</a></li> -->
+                    <li class="breadcrumb-item active" aria-current="page"> حجز المعاينة  </li>
+                </ol>
+            </nav>
+        </div>
+
+    </div>
+    <div class="card-body">
+        <div class="form-group">
+            <input type="text" class="form-control" id="clientSearchTxt" placeholder="بحث عن 'عروض عميل معين بالاسم او الهاتف">
+            <div id="clientAvailablesDiv" style="display:none;">
+                <table id="availabletable" class="table text-right table-hover ">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>رقم العميل </th>
+                            <th>التــاريخ </th>
+                            <th>وصف الطلب </th>
+                            <th>التفاصيل</th>
+                            <th> تاريـــخ المعاينه</th>
+                            <th> بيانات الاتصال</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+
+                </table>
+                <button type="button" class="btn btn-primary" id="preview">حجز معاينة</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!--Modal details-->
+    <div class="modal fade" id="detailsModal" role="dialog">
+        <div class="modal-dialog modal-dialog-centered ">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--Modal Contacts-->
+    <div class="modal fade" id="calls" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--**********************************************-->
+    <div class="modal fade" id="dates" tabindex="-1" role="dialog" aria-labelledby="dates" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="My-Dates-Modal-Body">
+                    <div class="text-center">
+                        <h4 id="dateOfReservation">المواعيد المحجوزه مسبقا</h4>
+                        <button type="button" class="btn btn-success btn-sm" id="reservationDates">بحث</button>
+                        <input type="date" class="form-control-sm " value="@DateTime.Now.ToString("yyyy-MM-dd")" id="mydate" />
+                    </div>
+                    <div id="datesBody">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--**********************************************-->
+
+    <div id="myModal" class="modal fade " role="dialog">
+        <div class="modal-dialog .modal-dialog-centered modal-lg" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">تفاصيل العرض</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var clientId = 0;
+        var buyerId=0;
+        var demandId=0 ;
+        $(document).ready(function () {
+         //client auto complete
+
+            $("#clientSearchTxt").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/LandsDemandQuickSearch/ClientAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name, value: item.Name + "-" + item.PK_Client_Id };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#clientAvailablesDiv").show(1000);
+                    clientId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0];
+                    availableTable.draw();
+
+                },
+            });
+
+            availableTable = $("#availabletable").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+                "bFilter": false,
+                "bInfo": false,
+                "bLengthChange": false,
+                "stateSave": true,
+                select: {
+                    style: "multi",
+                },
+
+                "ajax": {
+                    "url": "/LandsDemands/LoadAvailableLandData/",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.id = clientId;
+                    },
+
+                },
+                "columns": [
+                    { "data": "PK_AvailableLands_Id", "name": "PK_AvailableLands_Id", "autoWidth": true },
+                    { "data": "FK_AvaliableLands_Clients_ClientId", "name": "FK_AvaliableLands_Clients_ClientId", "autoWidth": true },
+                    { "data": "DateString", "name": "DateString", "autoWidth": true },
+                    { "data": "ShortDescription", "name": "ShortDescription", "autoWidth": true },
+                     {
+                         "render": function (data, type, full, meta) { return ' <button type="button" title="تفاصيل العرض " rel="tooltip" class="btn btn-link details " data-id="' + full.PK_AvailableLands_Id + '">تفاصيل العرض</button>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return ' <input type="datetime-local" class="form-control date" autocomplete="off" required><span class="text-danger dateErr" ></span >'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return '<button class="btn btn-default call" id="search-button" data-id="'+clientId+'" data-offer="'+full.PK_AvailableLands_Id+'" data-type="sale"  data-catId="@_3aqarak.MVC.Helpers.Categories.Lands"> الاتصـــال  </button>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) { return '<button type="button" class="btn btn-success openDatesModal" data-toggle="modal" data-target="#dates" data-id="'+full.PK_AvailableLands_Id+'">اوقات الحجز</button>'; }
+                    },
+                ]
+            });
+
+            $("#availabletable").on("click", ".details", function () {
+
+                var Id = $(this).attr("data-id");
+                $.ajax({
+                    "url": "/AvailableLands/AvailableLandDetails/",
+                    accept: "applicaton/html",
+                    type: "post",
+                    dataType: "html",
+                    data: {
+                        saleId: Id,
+
+                    },
+                    success: function (response) {
+
+
+                        $("#detailsModal").find(".modal-body").html(response);
+                        $("#detailsModal").modal("show");
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+                });
+            });
+
+            $("#availabletable").on("click", ".call", function () {
+                var btn = $(this);
+                $.ajax({
+                    "url": "/ClientCalls/GeClientContact/",
+                    accept: "applicaton/html",
+                    type: "post",
+                    dataType: "html",
+                    data: {
+                        clientId: $(btn).attr("data-id"),
+                        offerId: $(btn).attr("data-offer"),
+                        OfferType: $(btn).attr("data-type"),
+                        catId:$(btn).attr("data-catId")
+                    },
+                    success: function (response) {
+                        $("#calls").find(".modal-body").html(response);
+                        $("#calls").modal("show");
+                    },
+                    error: function () {
+                        alertify.alert("حدث خطا في حفظ البيانات!")
+                    }
+
+                });
+
+
+            });
+            //**********************************************
+            $("#reservationDates").click(function () {
+
+                //var id = $(this).attr("data-id");
+                var id = $(".openDatesModal").attr("data-id");
+                var date = $("#mydate").val();
+                $("#datesBody").empty();
+                $.ajax({
+                    type: "get",
+                    url: "/Preview/getDatesRelated/",
+                    data: { id: id, date: date },
+                    success: function (dates) {
+
+                        if (dates.length === 0) {
+                            $("#datesBody").html("لا يوجد مواعيد لعرضها");
+                        }
+                        else {
+                            $("#datesBody").empty();
+                            $.each(dates, function (i, value) {
+                                $("#datesBody").append("<span>" + value + "</span>" + "<br/>");
+                            });
+                        }
+                    },
+                    error: function () {
+                        $("#datesBody").html("لا يوجد مواعيد لعرضها");
+                    }
+                });
+            });
+             //add Child rows here ****************************************************
+            $("#preview").click(function () {
+
+                var selectedData = availableTable.rows({ selected: true }).data();
+                var selected = availableTable.rows({ selected: true }).nodes();
+                if (selected.length < 1) {
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify('لم يتم  اختيار اي عرض!', 'error', 3, function () { });
+                    return false;
+                };
+
+                var availableList = [];
+                $.each(selectedData, function (index, value) {
+                    availableList.push(value["PK_AvailableUnits_Id"]);
+                });
+
+                var dateList = [];
+                $.each(selected, function (index, value) {
+                    var date = $(this).find(".date").val();
+                    if (date === "" || date === null) {
+                        $(this).find(".dateErr").html("لابد من تحديد تاريخ ووقت المعاينه!");
+                        alertify.set('notifier', 'position', 'top-left');
+                        alertify.notify('لم يتم  تحديد تاريخ ووقت احد المعاينات!', 'error', 3, function () { });
+                        stopProcessing = true;
+                    }
+                    else {
+                        $(this).find(".dateErr").html("");
+                        stopProcessing = false;
+                    }
+                    if (!stopProcessing) {
+                        dateList.push(date);
+                    };
+
+                });
+                if (stopProcessing) {
+                    dateList.length = 0;
+                    return false;
+                };
+
+                location.href = "/LandsDemands/SelectLandAvailables?availableIds=" + availableList +"&demandId=" + "@Model.DemandId" + "&buyerId=" + "@Model.BuyerId" + "&dates=" + dateList;
+
+
+            });
+
+
+
+            //SET THE DATE TIME PICKER TO TODAY DATE
+            var now = new Date();
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+            // $('.pdate').val(today);
+            // END SET DATE
+
+
+        });
+    </script>
+}
+
+

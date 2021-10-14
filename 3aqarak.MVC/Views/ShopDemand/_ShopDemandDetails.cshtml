@@ -1,0 +1,316 @@
+﻿
+@model _3aqarak.MVC.ViewModels.ShopDemandViewModel
+
+<
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+
+        .checkBoxDiv {
+            margin-top: 1.5%;
+            margin-bottom: 1.5%;
+        }
+    </style>
+}
+
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item active" aria-current="page">تعديل طلب فيللا  </li>
+
+            </ol>
+        </nav>
+    </div>
+
+
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="editDemand">
+
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.FK_ShopDemands_Clients_ClientId, new { id = "clientId" })
+                        @Html.HiddenFor(m => m.PK_ShopDemands_Id, new { id = "id" })
+                        @Html.HiddenFor(m => m.FK_ShopDemands_Categories_Id, new { id = "cat" })
+
+                        @*<div class="form-group  ">
+                            <label for="first" class="text-right"> بحث عن موظف السيلز:<abbr class="req">*</abbr></label>
+                            <input type="text" value="@ViewBag.salesName" class="form-control" id="tele" placeholder="السيلز" name="FK_ShopDemands_Users_SalesId" required>
+                            @Html.ValidationMessageFor(m => m.FK_ShopDemands_Users_SalesId, "", new { @class = "text-danger " })
+                        </div>*@
+                        <div class="row">
+                            <div class="col">
+                                <label>من منـــطقة:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_ShopDemands_Regions_FromId, Model.RegionsFrom, "مــن", new { @class = "form-control", id = "regFrom", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_ShopDemands_Regions_FromId, "", new { @class = "text-danger", id = "FromRegError" })
+                            </div>
+                            <div class="col">
+                                <label>الى منـــطقة:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_ShopDemands_Regions_ToId, Model.RegionsTo, "الــى", new { @class = "form-control", id = "regTo", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_ShopDemands_Regions_ToId, "", new { @class = "text-danger", id = "ToRegError" })
+                            </div>
+
+                            <div class="col">
+                                <label>استخدام العقـــار:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_ShopDemands_Usage_Id, Model.Usages, "اختر نوع العقار", new { @class = "form-control", id = "residence", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_ShopDemands_Usage_Id, "", new { @class = "text-danger", id = "typeError" })
+                            </div>
+                            <div class="col">
+                                <label>القسم الحالي للطلب<abbr class="req">*</abbr></label>
+                                <input type="text" class="form-control" id="transValue" value="@Model.TransType" data-id="@Model.FK_ShopDemands_Transactions_Id" readonly>
+                            </div>
+                            @*<div class="col">
+                                <label>الاقسام العقارية<abbr class="req">*</abbr></label>
+                                <select class="form-control" id="trans">
+                                    <option value="">يرجى اختيار قسم عقاري جديد لو احتجت</option>
+                                    @foreach (var item in Model.Transactions)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+                                @Html.ValidationMessageFor(m => m.FK_ShopDemands_Transactions_Id, "", new { @class = "text-danger", id = "transError" })
+                            </div>*@
+
+                            <div class="col">
+                                <label>نوع المحل<abbr class="req">*</abbr></label>
+                                <select id="ScaleNamber" required class="form-control" name="ScaleNumber">
+                                    <option value="" disabled selected>إختر نوع المحل</option>
+                                    <option value="1">ميزانين</option>
+                                    <option value="2">أرضي وميزانين</option>
+                                    <option value="3">أرضي</option>
+                                    <option value="4">الكل</option>
+                                </select>
+                                @*@Html.DropDownListFor(m => m.IsFurnished, new SelectList(new[] { new { value = true, text = "مفروش" } }.ToList(), "value", "text"), "نوع الفرش", new { @class = "form-control", id = "furnished", required = "required" })*@
+                                @Html.ValidationMessageFor(m => m.ScaleNumber, "", new { @class = "text-danger", id = "ScaleNamberError" })
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>السعر/الايجار<abbr class="req">*</abbr></label>
+                                    <input id="minPrice" type="number" min="0" value="@Model.MinPrice" class="form-control" placeholder="من" name="MinPrice" data-val="true" data-val-required="الرجاء إدخال السعر">
+                                    <span class="text-danger" id="minPriceErr"></span>
+                                    <input id="maxPrice" type="number" min="0" value="@Model.MaxPrice" class="form-control" placeholder="إلي" data-val="true" data-val-required="الرجاء إدخال السعر">
+                                    <span class="text-danger" id="maxPriceErr"></span>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>المساحة<abbr class="req">*</abbr></label>
+                                    <input id="minSpace" type="number" min="0" value="@Model.MinSpace" class="form-control" placeholder="من" data-val="true" data-val-required="الرجاء إدخال المساحة" />
+                                    <span class="text-danger" id="minSpaceErr"></span>
+                                    <input id="maxSpace" type="number" min="0" value="@Model.MaxSpace" class="form-control" placeholder="الى" data-val="true" data-val-required="الرجاء إدخال المساحة" />
+                                    <span class="text-danger" id="maxSpaceErr"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>سنه البناء<abbr class="req">*</abbr></label>
+                                    <input id="minBuildYear" min="1900" max="@DateTime.Now.Year" type="number" value="@Model.DateOfBuildFrom" class="form-control" placeholder="من" required data-val="true" data-val-required="الرجاء إدخال سنة البناء" />
+                                    <span class="text-danger" id="minBuildYearErr"></span>
+                                    <input id="maxBuildYear" min="1900" max="@DateTime.Now.Year" type="number" value="@Model.DateOfBuildTo" class="form-control" placeholder="الى" required data-val="true" data-val-required="الرجاء إدخال سنة البناء" />
+                                    <span class="text-danger" id="maxBuildYearErr"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label> عدد الحمامات</label>
+                                    <input id="minBath" type="number" min="0" value="@Model.MinBathRooms" class="form-control" placeholder="مــن" style="border :1px solid #DDD" required data-val="true" data-val-required="الرجاء إدخال عدد الحمامات">
+                                    <span class="text-danger" id="minBathErr"></span>
+                                    <input id="maxBath" type="number" min="0" value="@Model.MaxBathRooms" class="form-control" placeholder="الى" style="border :1px solid #DDD" required data-val="true" data-val-required="الرجاء إدخال عدد الحمامات">
+                                    <span class="text-danger" id="maxBathErr"></span>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="row">
+
+
+                            <!--*********************************-->
+                            <div class="col">
+                                <label>تقسيم المحل:<abbr class="req">*</abbr></label>
+
+                                @if (Model.IsDivider)
+                                {
+                                    @Html.DropDownListFor(m => m.IsDivider, new SelectList(new[] { new { value = true, text = "مقسم" }, new { value = false, text = "غير مقسم" } }.ToList(), "value", "text", new { value = true, text = "مقسم" }), "نوع التقسيم", new { @class = "form-control", id = "IsDivider", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.IsDivider, "", new { @class = "text-danger", id = "DividerError" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(m => m.IsDivider, new SelectList(new[] { new { value = true, text = "مقسم" }, new { value = false, text = "غير مقسم" } }.ToList(), "value", "text", new { value = true, text = "غير مقسم" }), "نوع التقسيم", new { @class = "form-control", id = "IsDivider", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.IsDivider, "", new { @class = "text-danger", id = "DividerError" })
+                                }
+                            </div>
+                            <div class="col">
+                                <label>نوع التجهيز:<abbr class="req">*</abbr></label>
+                                @if (Model.IsFurnisher)
+                                {
+                                    @Html.DropDownListFor(m => m.IsFurnisher, new SelectList(new[] { new { value = true, text = "مجهز" }, new { value = false, text = "غير مجهز" } }.ToList(), "value", "text", new { value = true, text = "مجهز" }), "نوع التجهيز", new { @class = "form-control", id = "IsFurnisher", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.IsFurnisher, "", new { @class = "text-danger", id = "FurnisherError" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(m => m.IsFurnisher, new SelectList(new[] { new { value = true, text = "مجهز" }, new { value = false, text = "غير مجهز" } }.ToList(), "value", "text", new { value = true, text = "غير مجهز" }), "نوع التجهيز", new { @class = "form-control", id = "IsFurnisher", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.IsFurnisher, "", new { @class = "text-danger", id = "FurnisherError" })
+                                }
+                            </div>
+                            <div class="col">
+                                <label>الترخيص:<abbr class="req">*</abbr></label>
+                                @if (Model.Islicense)
+                                {
+                                    @Html.DropDownListFor(m => m.Islicense, new SelectList(new[] { new { value = true, text = "مرخص" }, new { value = false, text = "غير مرخص" } }.ToList(), "value", "text", new { value = true, text = "مرخص" }), "نوع الترخيص", new { @class = "form-control", id = "IsFurnisher", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.Islicense, "", new { @class = "text-danger", id = "licenseError" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(m => m.Islicense, new SelectList(new[] { new { value = true, text = "مرخص" }, new { value = false, text = "غير مرخص" } }.ToList(), "value", "text", new { value = true, text = "غير مرخص" }), "نوع الترخيص", new { @class = "form-control", id = "IsFurnisher", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.Islicense, "", new { @class = "text-danger", id = "licenseError" })
+                                }
+                            </div>
+                            <!--*********************************-->
+
+                            <div class="col">
+                                <label>طــريقة الدفع:</label>
+                                @Html.DropDownListFor(m => m.FK_ShopDemands_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_ShopDemands_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col">
+                                <label>الاطــلالة:</label>
+                                @*@Html.DropDownListFor(m => m.ViewsArr, Model.Views, "", new { @class = "form-control", id = "view", required = "required", multiple = "multiple" })*@
+                                <select class="form-control valid" data-val="true" data-val-required="لابد من ملا هذا الحقل" id="view" multiple="multiple" name="ViewsArr" required="required">
+                                    @foreach (var item in Model.Views)
+                                    {
+                                        if (item.Selected)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+
+                                        }
+
+                                    }
+                                </select>
+                                @Html.ValidationMessageFor(m => m.ViewsArr, "", new { @class = "text-danger", id = "viewError" })
+                            </div>
+                            <div class="col">
+                                <label>الملاحظــات:</label>
+                                <textarea class="form-control" id="notes" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px">@Model.Notes</textarea>
+
+                            </div>
+                        </div>
+
+
+                        <br> <br>
+                             <div class="row">
+                                 <div class="col">
+                                     <label>الكماليات المطلوبه</label>
+                                     @*@Html.DropDownListFor(m => m.AccessoriesArr, Model.Accessories, new { @class = "form-control", id = "access", required = "required", multiple = "multiple" })*@
+                                     <select class="form-control valid" data-val="true" data-val-required="لابد من ملا هذا الحقل" id="access" multiple="multiple" name="AccessoriesArr" required="required">
+                                         @foreach (var item in Model.Accessories)
+                                         {
+                                             if (item.Selected)
+                                             {
+                                                 <option value="@item.Value" selected>@item.Text</option>
+                                             }
+                                             else
+                                             {
+                                                 <option value="@item.Value">@item.Text</option>
+
+                                             }
+
+                                         }
+                                     </select>
+                                 </div>
+                                 @*<div class="form-group ">
+
+            <label>الكماليات المتاحة : </label>
+            <br /> <br />
+
+            @foreach (var item in Model.Accessories)
+            {
+                if (item.Selected)
+                {
+                    <div class="checkbox icheck form-check form-check-inline ">
+                        <label>
+                            <input class="access" type="checkbox" checked value="true" data-id="@item.Value">@item.Text
+                        </label>
+                    </div>
+                }
+                else
+                {
+                    <div class="checkbox icheck form-check form-check-inline ">
+                        <label>
+                            <input class="access" type="checkbox" value="false" data-id="@item.Value">@item.Text
+                        </label>
+                    </div>
+                }
+
+            }
+
+        </div>*@
+                             </div>
+
+
+                    </form>
+                </div>
+            </div>
+
+</div></div></div>
+            <script>
+                //CKEDITOR.replace('notes');
+                //CKEDITOR.replace('title');
+                $("document").ready(function () {
+                    $("select").attr("disabled", "diasabled");
+                });
+            </script>

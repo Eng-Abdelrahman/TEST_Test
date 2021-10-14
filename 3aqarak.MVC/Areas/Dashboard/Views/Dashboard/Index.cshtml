@@ -1,0 +1,276 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        .myStyle {
+            /*background-color: #27293d;*/
+            background-color:#14bff3;
+            color: white;
+            height: 100px;
+            width: 250px;
+            margin: 20px;
+            border-radius: 10px;
+        }
+
+        .linkColor {
+            padding-right: 90px;
+            padding-top: 40px;
+            color: white;
+            float: right;
+        }
+
+        .main-panel {
+            border-top: 1px solid #27293d;
+            float: right;
+        }
+
+        .sidebar-wrapper .ps {
+            top: -35px;
+        }
+ 
+            #myCardBody .card{
+              direction:rtl;
+            }
+            /* width */
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+ 
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #27293d;
+            border-radius: 10px;
+        }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #27293d;
+            }
+
+        a {
+            color: #005f81;
+        }
+        .imageDashstyly {
+            width: 27%;
+            display: block;
+            position: absolute;
+            top: 16%;
+            left:5%;
+            height: 60%;
+        }
+
+        p {
+            /*width: 66%;*/
+            width: 75%;
+        }
+
+        a {
+            text-shadow: #e8dee1 2px 2px 10px;
+            color:#005f81;
+        }
+        
+    </style>
+
+}
+ 
+<div class="card">
+<div class="container-fluid">
+<div class="card-body" id="myCardBody">
+    <div class="row">
+     
+        <div class="card algo col-sm-3 offset-1  " style="background-color:#d5e2ebeb">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">
+
+                    <a href="/Dashboard/Access/Accessories" class="card-link" style="float:right;">الكماليات</a>
+                </h4>
+                <div class="clearfix"></div>
+                <p class="card-text" style="text-align:right ;color:#1691addb ;font-weight:bold"> للتحكم في بيانات كماليات الوحدات</p>
+
+
+                <img class="imageDashstyly img-fluid"src="~/Assets/dashImage/icons8-shopping-bag-512.png" />
+            </div>
+        </div>
+
+        <div class="card algo col-sm-3 offset-1" style="background-color:#d5e2ebeb">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right"> <a href="/Dashboard/Admin/Users" class="card-link" style="float:right"> المستخدمين </a></h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right  ;  color:#1691addb ;font-weight:bold">للتحكم في بيانات المستخدمين</p>
+                <img class="imageDashstyly img-fluid" src="~/Assets/image Units/icons8-team-512.png" />
+            </div>
+        </div>
+
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#d5e2ebeb">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right"> <a href="/Dashboard/basis/basis" class="card-link" style="float:right"> أسس الدفع </a></h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right  ;  color:#1691addb ;font-weight:bold">للتحكم في تحديد طريقة الدفع</p>
+
+                <img class="imageDashstyly img-fluid"src="~/Assets/dashImage/icons8-payment-history-512.png" />
+            </div>
+        </div>
+
+
+
+    </div> <!-- Row End-->
+    <div class="row">
+        
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#e7eff599;">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">  <a href="/Dashboard/Commission/Commissions" class="card-link" style="float:right"> نسب العمولات</a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right  ;  color:#949090 ;font-weight:bold">للتحكم في نسب العمولات</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-payroll-512.png" />
+            </div>
+        </div>
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#e7eff599;">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right"> <a href="/Dashboard/client/clients" class="card-link" style="float:right"> العملاء </a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ; color:#949090 ;font-weight:bold"> للتحكم في بيانات العملاء</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-business-building-512.png" />
+            </div>
+        </div>
+     
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#e7eff599;">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">  <a href="/Dashboard/ContractArchives/Index" class="card-link" style="float:right"> ارشــفة العقـــود</a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ;  color:#949090 ;font-weight:bold"> اضافة العقود القديمة للارشيف</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-renew-512.png" />
+            </div>
+        </div>
+
+    </div> <!-- End Row-->
+    <div class="row">
+     
+        <div class="card algo col-sm-3 offset-1" style="background-color:#d5e2ebeb">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">  <a href="/Dashboard/EventLog/Index" class="card-link" style="float:right"> نشاط المستخدم</a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ;  color:#1691addb ;font-weight:bold"> عرض أنشطة المستخدمين</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-find-user-male-512.png" />
+            </div>
+        </div>
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#d5e2ebeb">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right"> <a href="/Dashboard/view/views" class="card-link" style="float:right"> الإطلالات </a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ;  color:#1691addb ;font-weight:bold">للتحكم في بيانات اطلالات الوحدات</p>
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-google-maps-512.png" />
+
+            </div>
+        </div>
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#d5e2ebeb;">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">  <a href="/Dashboard/region/regions" class="card-link" style="float:right"> المناطق </a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style="text-align:right ;  color:#1691addb ;font-weight:bold">للتحكم في بيانات منطقة الوحدات</p>
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-map-512.png" />
+            </div>
+        </div>
+
+    </div> <!-- End of Row -->
+    <div class="row">
+
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#e7eff599">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right"> <a href="/Dashboard/template/templates" class="card-link" style="float:right"> صيغ العقود </a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ;  color:#949090 ;font-weight:bold">للتحكم في بيانات العقود</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-paste-special-512.png" />
+            </div>
+        </div>
+
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#e7eff599;">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">  <a href="/Dashboard/branch/branches" class="card-link" style="float:right"> الفروع</a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ;  color:#949090 ;font-weight:bold">للتحكم في بيانات الفروع</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-company-100.png" />
+            </div>
+        </div>
+
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#e7eff599">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">  <a href="/Dashboard/dept/depts" class="card-link" style="float:right">الاقسام الوظيفيه </a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ; color:#949090 ;font-weight:bold"> للتحكم في بيانات الاقسام الوظيفيه</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-video-conference-512.png" />
+            </div>
+        </div>
+
+
+
+    </div> <!-- End of Row -->     
+    <div class="row">
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#d5e2ebeb;">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">  <a href="/Dashboard/special/Specials" class="card-link" style="float:right"> التخصصات الوظيفيه </a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ;color:#1691addb ;font-weight:bold">للتحكم في التخصصات الوظيفيه</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/icons8-profile-512.png" />
+            </div>
+        </div>
+
+        <div class="card algo col-sm-3 offset-1" style=" background-color:#e7eff599;">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align:right">  <a href="/Message/Index" class="card-link" style="float:right"> مهمات الموظفين</a> </h4>
+                <div class="clearfix"></div>
+
+                <p class="card-text" style=" text-align:right ;  color:#949090 ;font-weight:bold">لمتابعة المهمات وإرسال مهمات</p>
+
+                <img class="imageDashstyly img-fluid" src="~/Assets/dashImage/To-do_List-512.png" />
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</div> <!--container -->
+</div> <!-- card -->
+
+@section scripts{
+    <script>
+        $("document").ready(function () {
+            $(".linkColor").mouseenter(function () {
+                $(this).css("fontSize", "24px");
+                $(this).css("color", "#005f81");
+            });
+            $(".linkColor").mouseleave(function () {
+                $(this).css("fontSize", "15px");
+                $(this).css("color", "white");
+            });
+        });
+    </script>
+
+
+  
+}
+

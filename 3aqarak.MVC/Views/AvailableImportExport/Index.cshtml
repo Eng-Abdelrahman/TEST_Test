@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>إستيراد عروض شقق</h2>
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item active" aria-current="page">إستيراد ملف Excel </li>
+
+            </ol>
+        </nav>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="container">
+                        <div class="tab-content">
+                            <div class="tab-pane active">
+                                <div class="row">
+                                    @using (Html.BeginForm("Upload", "AvailableImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        <div class="form-group">
+
+                                            @Html.Label("File Upload", new { @class = "col-md-6 file-upload" })
+
+
+                                            <div class="col-sm-7">
+                                                <input type="file" id="postedFile" name="postedFile" class="form-control" accept=".xls,.xlsx" />
+                                            </div>
+                                        </div>
+                                        <!--****************************-->
+
+
+                                        <!--******************-->
+                                        <div class="form-group">
+
+                                            <div class="col-md-offset-3 col-md-10">
+                                                <br />
+                                                <input type="submit" title="Upload" value="Upload" class="btn btn-default" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <div class="col-md-offset-3 col-md-10">
+                                                <br />
+                                                <span style="color:red;">
+                                                    @ViewBag.Message
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1374 @@
+﻿@*sidebar*@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Theme/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/Theme/assets/img/favicon.png">
+    <title>
+        @ViewBag.Title
+    </title>
+    <link rel="stylesheet" href="/Theme/assets/Plugins/intl-tel-input-master/build/css/demo.css">
+    <link rel="stylesheet" href="/Theme/assets/Plugins/intl-tel-input-master/build/css/intlTelInput.css">
+    @*<link rel="stylesheet" href="/Theme/assets/Plugins/build/css/demo.css">*@
+    @*<link rel="stylesheet" href="/Theme/assets/Plugins/build/css/intlTelInput.css">*@
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.14/css/intlTelInput.css" rel="stylesheet" />*@
+
+
+    <!--  Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Tajawal&display=swap" rel="stylesheet">
+
+    <!-- Nucleo Icons -->
+    <link href="~/Theme/assets/css/nucleo-icons.css" rel="stylesheet" />
+
+    <!-- CSS Files -->
+
+    <link href="~/Theme/assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.4.0/css/bootstrap-rtl.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/icheck-1.x/icheck-1.x/skins/flat/pink.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/DataTables/datatables.min.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/DataTables/Select-1.2.6/css/select.jqueryui.min.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/dropzone-master/dist/min/dropzone.min.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/alertifyjs/css/alertify.rtl.min.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/datepicker/bootstrap-datepicker.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/jquery-ui-1.12.1.custom/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/bootstrap-treeview-master/bootstrap-treeview-master/dist/bootstrap-treeview.min.css" rel="stylesheet" />
+    <link href="~/Theme/assets/Plugins/ckeditor/contents.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="~/Theme/assets/demo/demo.css" />*@
+
+    <link href="~/Theme/IntroJS/introjs.css" rel="stylesheet" />
+
+    @RenderSection("styles", false)
+    <style>
+
+        .intl-tel-input {
+            display: inline;
+        }
+
+        /*.table-responsive {
+            overflow: hidden;
+        }*/
+
+        .flag-container {
+            direction: ltr;
+        }
+
+
+        .table-responsive {
+            overflow: hidden;
+            /*max-width:800px ;*/
+            /*overflow-x:scroll;*/
+        }
+
+        .preLabel {
+            float: right;
+        }
+
+        .sidebar {
+            background: #ebda8973;
+        }
+
+            .sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
+                direction: ltr;
+            }
+
+        /*@@media screen and (max-width: 991.98px) {
+            #mybtn {
+                display: none;
+            }
+        }*/
+
+
+        #mybtn {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        /*.toggleSidebar{
+
+        }*/
+
+
+
+
+        * {
+            font-Family: 'Tajawal', sans-serif;
+        }
+
+        .breadcrumb {
+            direction: rtl;
+        }
+
+        .breadcrumb-item {
+            font-size: 1.3em;
+        }
+
+        .breadcrumb {
+            background-color: #95a252d1;
+        }
+
+        .badge-default {
+            float: left;
+        }
+
+        .nav-link a {
+            padding: 10px;
+        }
+
+        a #notificationSpan {
+            line-height: 175%
+        }
+
+        .white-content .footer .copyright {
+            color: white;
+        }
+
+        /*#xy {
+            padding: 20px;
+            direction: ltr;
+        }*/
+
+        .modal-backdrop {
+            z-index: -1;
+        }
+
+        .sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
+            background-color: #ebda8973;
+        }
+
+        .main-panel {
+            border-top: 1px solid #27293d;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            float: right;
+        }
+
+        select option {
+            font-size: 1.3em;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="date"] {
+            font-size: 1.6em;
+        }
+
+        th, td {
+            font-size: 1.4em;
+            text-align: right;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+            li a:hover {
+                color: dodgerblue;
+            }
+
+        .modal-header button {
+            display: none;
+        }
+
+        .badge {
+            margin-right: 5%;
+        }
+
+        /*start side bar font size*/
+        .nav a p {
+            font-size: 1.6em;
+        }
+        /*end side bar font size*/
+
+        .white-content .main-panel {
+            background-color: #c4d0e21f;
+        }
+
+        .white-content .card:not(.card-white) {
+            background-color: #fffeea61;
+            direction: rtl;
+        }
+
+        body {
+            margin: 0px;
+        }
+
+        /*start Background Responsive image*/
+        .white-content .main-panel {
+            background-image: url('/Assets/RealEstateImage/731844-PS62QX-464.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        /*end Background Responsive image*/
+
+        /* Scroll Bar Style*/
+
+
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px grey;
+            border-radius: 10px;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #7c8454;
+            border-radius: 10px;
+        }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #7c8454;
+            }
+
+        /* End Scroll Bar Style*/
+
+        /*start side bar colors*/
+        .sidebar .nav li:not(.active) > a p {
+            color: #c5230f;
+            font-weight: bold;
+        }
+
+        .sidebar .nav li:hover:not(.active) > a p {
+            font-weight: bold;
+            color: #7c8454;
+        }
+
+        .sidebar .nav i, .off-canvas-sidebar .nav i {
+            color: #5b6529;
+            font-weight: bold;
+        }
+
+        .sidebar .nav li:hover:not(.active) > a i {
+            color: #c5230f;
+        }
+        /*end side bar colors*/
+
+        /* raise top of sidebar */
+        /*.sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
+            top: -37px;
+        }*/
+
+        /* Decrease Line height of side bar */
+        .sidebar .nav p, .off-canvas-sidebar .nav p {
+            line-height: 20px;
+            font-weight: bold;
+        }
+
+        /*sidebar last paragraph */
+        .rtl .sidebar .nav p, .rtl .bootstrap-navbar .nav p {
+            margin-right: 25px;
+        }
+
+        /*increase font of cards*/
+        .card-text, .card-title {
+            font-size: 1.4em;
+        }
+
+        /* hide alertify js message*/
+        .alertify .ajs-header {
+            display: none;
+        }
+
+
+        /*hide grey scrollbar middle screen*/
+        .ps--active-x > .ps__rail-x, .ps--active-y > .ps__rail-y {
+            display: none;
+        }
+
+        @@media (max-width: 480px) {
+
+            .sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
+                top: 0px;
+            }
+        }
+
+        @@media (max-width: 995px) {
+
+            .sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
+                top: 0px;
+            }
+        }
+        /*
+        @@media (min-width: 768px) and (max-width: 1199.98px) {
+
+            .sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
+                top: -37px;
+            }
+        }*/
+
+        html {
+            overflow-y: hidden;
+        }
+
+        /*Add new stile here*/
+        .reqAlignment {
+            text-align: right;
+        }
+
+        .req {
+            position: relative;
+            top: 0;
+            color: #ce1a1a;
+            right: 2px;
+        }
+
+        .field-validation-error {
+            text-align: right;
+            display: flex;
+            color: #fd5d93;
+        }
+
+        .input-validation-error {
+            border: 2px solid red;
+        }
+
+        .validation-summary-errors {
+            color: red;
+            text-align: right;
+            display: flex;
+            -webkit-text-fill-color: #fd5d93;
+        }
+
+        .field-validation-valid {
+            color: red;
+            text-align: right;
+            display: flex;
+            -webkit-text-fill-color: #fd5d93;
+        }
+
+        /*.overlay {
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            background: #222;
+            opacity: 0.8;
+            z-index: 10000;
+        }
+
+        .overlay__inner {
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .overlay__content {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .spinner {
+            width: 75px;
+            height: 75px;
+            display: inline-block;
+            border-width: 2px;
+            border-color: rgba(255, 255, 255, 0.05);
+            border-top-color: #fff;
+            animation: spin 1s infinite linear;
+            border-radius: 100%;
+            border-style: solid;
+        }
+
+        @@keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }*/
+
+        .algo {
+            border-radius: 20px;
+        }
+    </style>
+</head>
+@using _3aqarak.MVC.ViewModels;
+@using _3aqarak.BLL.Dto;
+@using System.Web.Caching;
+@using System.Configuration;
+@using _3aqarak.BLL.Interfaces;
+@using _3aqarak.BLL.Dto;
+@{
+
+    var user = (_3aqarak.BLL.Dto.UserDto)Session["User"];
+    var _noteService = DependencyResolver.Current.GetService<_3aqarak.BLL.Interfaces.INotificationService>();
+    var _noteDto = DependencyResolver.Current.GetService<_3aqarak.BLL.Interfaces.INotificationDto>();
+    var _noteCache = DependencyResolver.Current.GetService<_3aqarak.MVC.Interfaces.INotificationCacheClasses>();
+
+    var DB = ConfigurationManager.ConnectionStrings["RealEstateDB"].ToString().Split(';')[1].Split('=')[1];
+    if (HttpContext.Current.Cache["expectedNotes"] == null)
+    {
+        SqlCacheDependency sqlDepend = new SqlCacheDependency(DB, "tbl_ExpectedContracts");
+        CacheItemRemovedCallback onExpectedcacheRemoved = new CacheItemRemovedCallback(_noteCache.GetExpectedNotifications);
+        HttpContext.Current.Cache.Insert("expectedNotes", _noteService.GetExpectedNotificationsWithoutAsync().ExpectedContracts, sqlDepend, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Default, onExpectedcacheRemoved);
+    }
+    if (HttpContext.Current.Cache["endedRentContracts"] == null)
+    {
+        SqlCacheDependency sqlDepend = new SqlCacheDependency(DB, "tbl_RentAgreementHeaders");
+        CacheItemRemovedCallback onRentContractscacheRemoved = new CacheItemRemovedCallback(_noteCache.GetRentcontractsNotifications);
+        HttpContext.Current.Cache.Insert("endedRentContracts", _noteService.GetFinishedRentalsNotificationsWithoutAsync().EndedContracts, sqlDepend, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Default, onRentContractscacheRemoved);
+    }
+    if (HttpContext.Current.Cache["callNotes"] == null)
+    {
+        SqlCacheDependency sqlDepend = new SqlCacheDependency(DB, "tbl_PostbonedCalls");
+        CacheItemRemovedCallback onCallscacheRemoved = new CacheItemRemovedCallback(_noteCache.GetCallsNotifications);
+        HttpContext.Current.Cache.Insert("callNotes", _noteService.GetCallsNotificationsWithoutAsync().Calls, sqlDepend, DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration, CacheItemPriority.Default, onCallscacheRemoved);
+    }
+     if (HttpContext.Current.Cache["FellowcallNotes"] == null)
+    {
+        SqlCacheDependency sqlDepend = new SqlCacheDependency(DB, "tbl_FellowupCall");
+        CacheItemRemovedCallback onFellowCallscacheRemoved = new CacheItemRemovedCallback(_noteCache.GetFellowCallsNotifications);
+        HttpContext.Current.Cache.Insert("FellowcallNotes", _noteService.GetFellowupCallsNotificationsWithoutAsync().FellowupCalls, sqlDepend, DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration, CacheItemPriority.Default, onFellowCallscacheRemoved);
+    }
+    if (HttpContext.Current.Cache["previewNotes"] == null)
+    {
+        SqlCacheDependency sqlDepend = new SqlCacheDependency(DB, "tbl_PreviewHeaders");
+        CacheItemRemovedCallback onPreviewCacheRemoved = new CacheItemRemovedCallback(_noteCache.GetPreviewNotifications);
+        HttpContext.Current.Cache.Insert("previewNotes", _noteService.GetPreviewNotificationsWithoutAsync().Previews, sqlDepend, DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration, CacheItemPriority.Default, onPreviewCacheRemoved);
+    }
+    if (HttpContext.Current.Cache["rentalsToCollect"] == null)
+    {
+        SqlCacheDependency sqlDepend = new SqlCacheDependency(DB, "tbl_RentAgreementHeaders");
+        CacheItemRemovedCallback onRentalsToCollectRemoved = new CacheItemRemovedCallback(_noteCache.GetRentalsToCollectNotifications);
+        HttpContext.Current.Cache.Insert("rentalsToCollect", _noteService.GetFinishedRentalsToCollectNotificationsWithoutAsync().RentalsToCollect, sqlDepend, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Default, onRentalsToCollectRemoved);
+    }
+    if (HttpContext.Current.Cache["salesToCollect"] == null)
+    {
+        SqlCacheDependency sqlDepend = new SqlCacheDependency(DB, "tbl_SaleAgreementHeaders");
+        CacheItemRemovedCallback onSaleToCollectRemoved = new CacheItemRemovedCallback(_noteCache.GetSaleToCollectNotifications);
+        HttpContext.Current.Cache.Insert("salesToCollect", _noteService.GetFinishedSaleToCollectNotificationsWithoutAsync().SaleToCollect, sqlDepend, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Default, onSaleToCollectRemoved);
+    }
+    _noteDto.ExpectedContracts = HttpContext.Current.Cache["expectedNotes"] as List<ExpectedContractDto>;
+    _noteDto.Calls = HttpContext.Current.Cache["callNotes"] as List<PostponedCallDto>;
+    _noteDto.Previews = HttpContext.Current.Cache["previewNotes"] as List<PreviewHeaderDto>;
+    _noteDto.EndedContracts = HttpContext.Current.Cache["endedRentContracts"] as List<RentHeaderDto>;
+    _noteDto.RentalsToCollect = HttpContext.Current.Cache["rentalsToCollect"] as List<RentHeaderDto>;
+    _noteDto.SaleToCollect = HttpContext.Current.Cache["salesToCollect"] as List<SaleHeaderDto>;
+    _noteDto.FellowupCalls=HttpContext.Current.Cache["FellowcallNotes"] as List<FellowCallDto>;
+    //var notifications = AutoMapper.Mapper.Map<NotificationDto, NotificationViewModel>(notificationDto);
+    //for (int i = 0; i < notifications.Calls.Count; i++)
+    //{
+    //    notifications.Calls[i].Clients_Id = notificationDto.Calls[i].FK_PostponedCalls_Clients_ClientId;
+    //}
+    //var notesCount = (@notifications.Calls.Count + @notifications.ExpectedContracts.Count + @notifications.Previews.Count);
+}
+<body class=" rtl menu-on-right white-content ">
+    @Html.Hidden("callList", Newtonsoft.Json.JsonConvert.SerializeObject(_noteDto.Calls), new { id = "callList" })
+    @Html.Hidden("FellowcallList", Newtonsoft.Json.JsonConvert.SerializeObject(_noteDto.FellowupCalls), new { id = "FellowcallList" })
+    @Html.Hidden("expect", Newtonsoft.Json.JsonConvert.SerializeObject(_noteDto.ExpectedContracts), new { id = "expect" })
+    @Html.Hidden("previews", Newtonsoft.Json.JsonConvert.SerializeObject(_noteDto.Previews), new { id = "previews" })
+    @Html.Hidden("rentals", Newtonsoft.Json.JsonConvert.SerializeObject(_noteDto.EndedContracts), new { id = "rentals" })
+    @Html.Hidden("rentalsToCollect", Newtonsoft.Json.JsonConvert.SerializeObject(_noteDto.RentalsToCollect), new { id = "rentalsToCollectHidden" })
+    @Html.Hidden("salesToCollect", Newtonsoft.Json.JsonConvert.SerializeObject(_noteDto.SaleToCollect), new { id = "salesToCollectHidden" })
+
+    <form id="demandMatches" method="post" action="@Url.Action("ShowDemandMatchesNotifications","DemandMatchesNotifications")">
+        <input type="hidden" value="" id="demandNote" name="demands" />
+        <input type="hidden" value="" id="availableNote" name="availables" />
+        <input type="hidden" value="" id="catNote" name="categories" />
+    </form>
+
+    <div class="wrapper">
+        <div class="sidebar">
+            <!--
+                Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+            -->
+            <div class="sidebar-wrapper">
+
+                <div class="logo">
+                    @*<img src="/Assets/Img/Users/img.jpg" style="height:40px ; margin-top:5px ;margin-left:20px  ; width:80px" class="rounded float-right" alt="myimg" title="myimg">*@
+
+                    <a href="/Home/index" class="simple-text logo-normal text-center mx-auto mt-3" style="font-size:20px;  font-weight:bolder ">الصفحة الرئيسية</a>
+                    @*<a href="#" id="mybtn"><i class="tim-icons icon-simple-remove"></i> </a>*@
+
+
+                    @*<a href="" class="simple-text logo-mini">*@
+                    @*<a href="" class="simple-text logo-normal"  style="font-size:20px">عقــارك</a>*@
+                    @*</a>*@
+                    @*<a href="javascript:void(0)" class="simple-text logo-normal">
+                            زيارة الموقــع على الانترنت
+                        </a>*@
+                </div>
+                <ul class="nav">
+
+                    <li>
+
+                        <a href="@Url.Action("Index","dashboard",new { area="dashboard"})">
+                            <i class="tim-icons icon-chart-pie-36"></i>
+                            <p>لوحة التحكم</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index","QuickSearch",new { area=""})">
+                            <i class="tim-icons icon-zoom-split"></i>
+                            <p>بحــــث سريــــع</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index","FellowupCall",new { area=""})">
+                            <i class="tim-icons icon-mobile"></i>
+                            <p>مكالمات المتابعة</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("AvailableCat","SelectCategories",new { area=""})">
+                            <i class="tim-icons icon-pin"></i>
+                            <p>العــروض</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("DemandCat","SelectCategories",new { area=""})">
+                            <i class="tim-icons icon-tap-02"></i>
+                            <p>الطلبات</p>
+                        </a>
+                    </li>
+
+                    @*<li>
+            <a href="@Url.Action("index","clientSales",new { area=""})">
+                <i class="tim-icons icon-pin"></i>
+                <p>العــروض</p>
+            </a>
+        </li>
+
+        <li>
+            <a href="@Url.Action("index","clientdemand",new { area=""})">
+                <i class="tim-icons icon-tap-02"></i>
+                <p>الطلبات</p>
+            </a>
+        </li>*@
+
+                    <li>
+                        <a href="@Url.Action("PreviewsList","Preview",new { area=""})">
+                            <i class="tim-icons icon-single-02"></i>
+                            <p>المعاينـــات</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("ExpectedContracts","Expectedcontract",new { area=""})">
+                            <i class="far fa-handshake"></i>
+                            <p>الاتفــاقات</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("index","Rentcontract",new { area=""})">
+                            <i class="tim-icons icon-paper"></i>
+                            <p>عقود الايجار</p>
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="@Url.Action("index","Salecontract",new { area=""})">
+                            <i class="tim-icons icon-paper tim-icons icon-paper"></i>
+                            <p>عقود البيع</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("index","FinancialItems",new { area=""})">
+                            <i class="tim-icons icon-coins"></i>
+                            <p>الحســـابات</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index","AdvertiseCategories",new { area=""})">
+                            <i class="tim-icons icon-image-02"></i>
+                            <p>الإعلانــات</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("ReportsIndex","Report",new { area=""})">
+                            <i class="tim-icons icon-single-copy-04"></i>
+                            <p>التقاريــــر</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("Posts","Post",new { area=""})">
+                            <i class="tim-icons icon-email-85"></i>
+                            <p>الرسائل</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="@Url.Action("ViewMessage","Message",new { area=""})">
+                            <i class="tim-icons icon-single-copy-04"></i>
+                            <p>مهمات الموظف</p>
+                        </a>
+                    </li>
+
+
+                    @*<li>
+            <a href="@Url.Action("AddClientSale","ApartmentAvailables",new { area=""})">
+                <i class="tim-icons icon-single-copy-04"></i>
+                <p>إضافه عرض</p>
+            </a>
+        </li>*@
+                    <li>
+
+                        <a href="http://www.venice-eg.com" class="text-center">
+                            <p> زيارة الموقــع على الانترنت </p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent mx-4">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <div class="navbar-toggle d-inline">
+                            <button type="button" class="navbar-toggler">
+                                <span class="navbar-toggler-bar bar1"></span>
+                                <span class="navbar-toggler-bar bar2"></span>
+                                <span class="navbar-toggler-bar bar3"></span>
+                            </button>
+                        </div>
+                        @*<a class="navbar-brand" href="javascript:void(0)"><strong>عقارك</strong></a>*@
+                    </div>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navigation">
+                        <ul class="navbar-nav  mr-auto">
+                            @*<li class="search-bar input-group">
+                                    <button class="btn btn-link" id="search-button" data-toggle="modal" data-target="#searchModal">
+                                        <i class="tim-icons icon-zoom-split"></i>
+                                        <span class="d-lg-none d-md-block">Search</span>
+                                    </button>
+                                </li>*@
+                            <li class="search-bar input-group">
+                                <button class="btn btn-link" id="flexi_form_start" href="javascript:void(0);">
+                                    <i class="tim-icons icon-book-bookmark"></i>
+                                    <span class="d-lg-none d-md-block">Search</span>
+                                </button>
+                            </li>
+                            @* ************************** *@
+                            <li class="dropdown nav-item">
+                                <a href="javascript:void(0)" class="dropdown-toggle nav-link  " data-toggle="dropdown">
+                                    @*<div class="notification d-none d-lg-block d-xl-block"></div>*@
+                                    @*<i class="tim-icons icon-sound-wave"></i>*@
+                                    <span class="badge badge-pill badge-default" style="border-radius:50%; width:31px;height:31px;font-size: 1.1em;" id="notificationSpan">0</span>
+                                    <p class="d-lg-none">
+                                        Notifications
+                                    </p>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right dropdown-navbar">
+                                    <li class="nav-link">
+                                        <a id="callLink" href="@Url.Action("PostponedCallsIndex","clientCalls",new { area=""})" class="nav-item dropdown-item">المكالمات المؤجلة<span class="badge badge-pill badge-default" id="callSpan"></span></a>
+                                    </li>
+                                    <li class="nav-link">
+                                        <a id="fellowCallLink" href="@Url.Action("FellowupCallsIndex","Fellowupcall",new { area=""})" class="nav-item dropdown-item">مكالمات المنابعة الدوريه<span class="badge badge-pill badge-default" id="fellowCallSpan"></span></a>
+                                    </li>
+                                    <li class="nav-link">
+                                        <a href="@Url.Action("PreviewsList","preview",new { area=""})" class="nav-item dropdown-item">المعاينات<span class="badge badge-pill badge-default" id="previewSpan"></span></a>
+                                    </li>
+                                    <li class="nav-link">
+                                        <a href="@Url.Action("Expectedcontracts","ExpectedContract",new { area=""})" class="nav-item dropdown-item">الاتفــاقات<span class="badge badge-pill badge-default" id="expectSpan"></span></a>
+                                    </li>
+                                    <li class="nav-link">
+                                        <a id="endedRentalsLink" href="@Url.Action("EndedRentalsIndex","RentContract",new { area=""})" class="nav-item dropdown-item">عقـــود الايجــار المنتهيه<span class="badge badge-pill badge-default" id="rentSpan"></span></a>
+                                    </li>
+                                    <li class="nav-link">
+                                        <a id="RentalsToCollectLink" href="@Url.Action("CollectRentals","RentContract",new { area=""})" class="nav-item dropdown-item">تحصيل ايجار الشهر<span class="badge badge-pill badge-default" id="rentalsToCollectSpan"></span></a>
+                                    </li>
+                                    <li class="nav-link">
+                                        <a id="SaleToCollectLink" href="@Url.Action("CollectSales","SaleContract",new { area=""})" class="nav-item dropdown-item">تحصيل قسط الشهر<span class="badge badge-pill badge-default" id="salesToCollectSpan"></span></a>
+                                    </li>
+                                    <li class="nav-link">
+                                        <button class="btn btn-link dropdown-item nav-item dropdown-item" style="color: rgb(0, 95, 129); font-weight: bold;padding: 10px;font-family:'Tajawal', sans-serif" id="matchedDemandsPost">طلباتك التي وجدت ترشيحات<span class="badge badge-pill badge-default" id="matchedDemandsSpan">0</span></button>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown nav-item">
+                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                    <div class="photo">
+                                        <img src="~/@user.PhotoUrl" alt="Profile Photo">
+                                    </div>
+                                    <b class="caret d-none d-lg-block d-xl-block"></b>
+                                    <p class="d-lg-none">
+                                        Log out
+                                    </p>
+                                </a>
+                                <ul class="dropdown-menu dropdown-navbar">
+                                    <li class="nav-link">
+                                        <a href="/dashboard/admin/ViewProfile/@user.PK_Users_Id" class="nav-item dropdown-item">السجل الشخصي</a>
+                                    </li>
+
+                                    <li class="dropdown-divider"></li>
+                                    <li class="nav-link">
+                                        <a href="@Url.Action("Logout","account",new { area=""})" class="nav-item dropdown-item">تسجيل الخروج</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="separator d-lg-none"></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <i class="tim-icons icon-simple-remove"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Navbar -->
+            <div class="content">
+                <div class="row" id="xy">
+                    <div class="col-12">
+                        <div class="overlay" style="display:none;">
+                            <div class="overlay__inner">
+                                <div class="overlay__content"><span class="spinner"></span></div>
+                            </div>
+                        </div>
+                        @RenderBody()
+
+                    </div>
+                </div>
+
+            </div>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="javascript:void(0)" class="nav-link">
+                                Algorithm
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:void(0)" class="nav-link">
+                                About Us
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:void(0)" class="nav-link">
+                                Blog
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="copyright">
+                        ©
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script> made with <i class="tim-icons icon-heart-2"></i> by
+                        <a href="javascript:void(0)" target="_blank">Algorithm</a> for a better web.
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Chart JS -->
+    <script src="~/Theme/assets/js/plugins/chartjs.min.js"></script>
+
+    <!--   Core JS Files   -->
+    <script src="~/Theme/assets/js/core/jquery.min.js"></script>
+    <script src="~/Theme/assets/js/core/popper.min.js"></script>
+    <script src="~/Theme/assets/js/core/bootstrap.min.js"></script>
+    <script src="~/Theme/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!--  Google Maps Plugin    -->
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+
+    <!--  Notifications Plugin    -->
+    <script src="~/Theme/assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="~/Theme/assets/js/black-dashboard.min.js?v=1.0.0"></script>
+    <script src="~/Theme/assets/Plugins/icheck-1.x/icheck-1.x/icheck.min.js"></script>
+    <script src="~/Theme/assets/Plugins/DataTables/datatables.min.js"></script>
+    <script src="~/Theme/assets/Plugins/DataTables/Select-1.2.6/js/select.jqueryui.js"></script>
+    <script src="~/Theme/assets/Plugins/dropzone-master/dist/min/dropzone.min.js"></script>
+    <script src="~/Theme/assets/Plugins/alertifyjs/alertify.min.js"></script>
+    <script src="~/Theme/assets/Plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/Theme/assets/Plugins/jquery-ui-1.12.1.custom/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="~/Theme/assets/Plugins/bootstrap-treeview-master/bootstrap-treeview-master/dist/bootstrap-treeview.min.js"></script>
+    <script src="~/Theme/assets/Plugins/intl-tel-input-master/build/js/intlTelInput.js"></script>
+    <script src="~/Theme/assets/Plugins/ckeditor/ckeditor.js"></script>
+    <script src="~/Theme/assets/Plugins/ckeditor/styles.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="/signalr/hubs" type="text/javascript"></script>
+    <script src="~/Scripts/Chart.min.js"></script>
+
+    <script src="~/theme/assets/demo/demo.js"></script>
+    <script src="~/Theme/IntroJS/intro.js"></script>
+
+    @Scripts.Render("~/bundles/jqueryval");
+    @RenderSection("scripts", false)
+    <script>
+
+         //  $('#flexi_form_start').click(function () {
+         //   introJs().start().oncomplete(function () {
+         //       //window.location.href = 'complete.html';
+         //   }).onexit(function () {
+         //       //window.location.href = 'complete.html';
+         //   }).onbeforechange(function (targetElement) {
+         //       $(".steps").hide();
+
+
+         //       //$(".left").css("float", "left");
+         //       //$("input").removeClass("error");
+         //       //$(".right").hide();
+         //   });
+         //});
+        //**Start/Stop Loader on Every AJAX Call
+         //$(document)
+        //    .ajaxStart(function () {
+        //        $('.overlay').show(500);
+        //    })
+        //    .ajaxStop(function () {
+        //        $('.overlay').hide(500);
+        //    });
+        //$(window).on("unload", function () {
+        //    $('.overlay').show(500);
+        //});
+        function setLocalStorage(demands, avaialble, cat) {
+            localStorage.setItem("AlldemandsPerUser", JSON.stringify(demands));
+            localStorage.setItem("availables",JSON.stringify(avaialble));
+            localStorage.setItem("categories", JSON.stringify(cat));
+        }
+
+        function publishNotifications() {
+          
+            var demands = $("#matchedDemandsSpan").html();
+            var calls = JSON.parse($("#callList").val());
+            var fellowCalls = JSON.parse($("#FellowcallList").val());
+            var previews = JSON.parse($("#previews").val());
+            var expected = JSON.parse($("#expect").val());
+            var rentals = JSON.parse($("#rentals").val());
+            var rentalsToCollect = JSON.parse($("#rentalsToCollectHidden").val());
+            var saleToCollect = JSON.parse($("#salesToCollectHidden").val());
+
+            //if (demands !== null) {
+            //    $("#matchedDemandsSpan").text(demands.length);
+            //}
+            //else {
+            //    $("#matchedDemandsSpan").text(0);
+            //}
+
+            if (calls !== null) {
+                $("#callSpan").text(calls.length);
+            }
+            else {
+                $("#callSpan").text(0);
+            }
+
+            if (fellowCalls !== null) {
+               
+                $("#fellowCallSpan").text(fellowCalls.length);
+            }
+            else {
+               
+                $("#fellowCallSpan").text(0);
+            }
+            if (previews !== null) {
+                $("#previewSpan").text(previews.length);
+            }
+            else {
+                $("#previewSpan").text(0);
+            }
+            if (rentals !== null) {
+                $("#rentSpan").text(rentals.length);
+            }
+            else {
+                $("#rentSpan").text(0);
+            }
+
+            if (expected !== null) {
+                $("#expectSpan").text(expected.length);
+            }
+            else {
+                $("#expectSpan").text(0);
+            }
+            if (rentalsToCollect !== null) {
+                $("#rentalsToCollectSpan").text(rentalsToCollect.length);
+            }
+            else {
+
+                $("#rentalsToCollectSpan").text(0);
+            }
+            if (saleToCollect !== null) {
+                $("#salesToCollectSpan").text(saleToCollect.length);
+            }
+            else {
+
+                $("#salesToCollectSpan").text(0);
+            }
+
+            var total = fellowCalls.length + calls.length + previews.length + expected.length + rentals.length + rentalsToCollect.length + saleToCollect.length + Number(demands);
+            if (isNaN(total) || total === null) {
+                total = 0;
+            }
+            $("#notificationSpan").text(total);
+            $("#callLink").attr("href", "/clientCalls/PostponedCallsIndex?calls="+ $("#callList").val());
+             $("#fellowCallLink").attr("href","/Fellowupcall/FellowupCallsIndex?calls="+$("#FellowcallList").val());
+            $("#endedRentalsLink").attr("href", "/RentContract/EndedRentalsIndex?rentals=" + $("#rentals").val());
+            $("#RentalsToCollectLink").attr("href", "/RentContract/RentalsToCollect?rentcollects=" + $("#rentalsToCollectHidden").val());
+            $("#SaleToCollectLink").attr("href", "/SaleContract/SalesToCollect?salescollects=" + $("#salesToCollectHidden").val());
+        };
+
+        $(document).ready(function () {
+            setLocalStorage([], [], []);
+            //$('.overlay').show();
+            //setTimeout(function () {
+            //    $('.overlay').hide();
+            //}, 2000);
+            publishNotifications();
+
+            //create the proxy
+            var con = $.connection.notificationHub;
+
+            //create the client functions the hub will call
+            con.client.pushCallsNotifications = function () {
+                debugger;
+                $.ajax({
+                    type: 'GET',
+                    url: '/Notifications/CallsNotifications',
+                    success: function (response) {
+
+                        $("#callList").val(JSON.stringify(response.calls));
+                        publishNotifications();
+                    },
+                    error: function () {
+
+                        //alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                })
+            };
+            con.client.pushFellowupCallsNotifications = function () {
+                debugger;
+                $.ajax({
+                    type: 'GET',
+                    url: '/Notifications/FellowCallsNotifications',
+                    success: function (response) {
+
+                        $("#FellowcallList").val(JSON.stringify(response.calls));
+                        publishNotifications();
+                    },
+                    error: function () {
+
+                        //alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                })
+            };
+            con.client.pushExpectNotifications = function () {
+                
+                $.ajax({
+                    type: 'GET',
+                    url: '/Notifications/ExpectedNotifications',
+                    success: function (response) {
+
+                        $("#expect").val(JSON.stringify(response.expect));
+                        publishNotifications();
+                    },
+                    error: function () {
+
+                        //alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                })
+            };
+            con.client.pushPreviewNotifications = function () {
+               
+                $.ajax({
+                    type: 'GET',
+                    url: '/Notifications/PreviewsNotification',
+                    success: function (response) {
+
+                        $("#previews").val(JSON.stringify(response.previews));
+                        publishNotifications();
+                    },
+                    error: function () {
+
+                        //alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                })
+            };
+            con.client.pushRentalNotifications = function () {
+              
+                $.ajax({
+                    type: 'GET',
+                    url: '/Notifications/RentalNotifications',
+                    success: function (response) {
+
+                        $("#rentals").val(JSON.stringify(response.rentals));
+                        publishNotifications();
+                    },
+                    error: function () {
+
+                        //alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                })
+            };
+            con.client.pushRentalsToCollectNotifications = function () {
+              
+                $.ajax({
+                    type: "GET",
+                    url: "/Notifications/RentalsToCollectNotifications",
+                    success: function (response) {
+                        $("#rentalsToCollectHidden").val(JSON.stringify(response.rentalsToCollect));
+                        publishNotifications();
+                    },
+                    error: function () {
+                        //alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                });
+            };
+            con.client.pushSaleToCollectNotifications = function () {
+              
+                $.ajax({
+                    type: "GET",
+                    url: "/Notifications/SaleToCollectNotifications",
+                    success: function (response) {
+
+                        $("#salesToCollectHidden").val(JSON.stringify(response.salesToCollect));
+                        publishNotifications();
+                    },
+                    error: function () {
+                        //alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                });
+            };
+
+           //////////////////////////////////vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv////////////////////////////////////////////////////////////////////////////// /
+            con.client.pushDemandMatchedNotifications = function (demands, category, availableId) {
+                var userDemands = [];
+                var userId = Number("@user.PK_Users_Id");
+                var AlldemandsPerUser = JSON.parse(localStorage.getItem("AlldemandsPerUser"));
+                var availables = JSON.parse(localStorage.getItem("availables"));
+                var categories = JSON.parse(localStorage.getItem("categories"));
+                var demandArr = demands;
+
+                if (category === 1) {
+
+                    for (var i = 0; i < demandArr.length; i++) {
+                        if (demandArr[i].FK_DemandUnits_Users_CreatedBy === userId) {
+                            userDemands.push(demandArr[i].PK_DemandUnits_Id);
+
+                        }
+                    }
+                }
+
+                //////////////////////////////////////////^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^/////////////////////////////////////////////////////////////////////
+                if (category === 2) {
+                    for (var i = 0; i < demandArr.length; i++) {
+                        if (demandArr[i].FK_ShopDemands_Users_CreatedBy === userId) {
+                            userDemands.push(demandArr[i].PK_ShopDemands_Id);
+                        }
+                    }
+                }
+                if (category === 3) {
+                    for (var i = 0; i < demandArr.length; i++) {
+                        if (demandArr[i].FK_VillasDemands_Users_CreatedBy === userId) {
+                            userDemands.push(demandArr[i].PK_VillasDemands_Id);
+                        }
+                    }
+                }
+
+                if (category === 4) {
+                    for (var i = 0; i < demandArr.length; i++) {
+                        if (demandArr[i].FK_LandsDemands_Users_CreatedBy === userId) {
+                            userDemands.push(demandArr[i].PK_LandsDemands_Id);
+                        }
+                    }
+                }
+                /////////////////////////////////////////vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv//////////////////////////////////////////////////////////////////////////////////////
+                if (userDemands.length > 0) {
+                    availables.push(availableId);
+                    categories.push(category);
+                    AlldemandsPerUser.push(userDemands);
+                    setLocalStorage(AlldemandsPerUser, availables, categories);
+                    var counter = Number($("#matchedDemandsSpan").html());
+                    if (isNaN(counter) || counter === 0 || counter !== 1 || counter === null) {
+                        $("#matchedDemandsSpan").html(1);
+                    }
+                    else {
+                        $("#matchedDemandsSpan").html(counter++);
+                    }
+                    publishNotifications();
+                }
+                   ////////////////////////////////////^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^////////////////////////////////////////////////////////////////////////////////////////
+
+            //      $("#matchedDemands").click(function () {
+            //          var available = $("#demandNote").attr("data-availableId");
+            //          var demandList = JSON.parse($("demandNote").attr("data-demands"));
+            //           $.ajax({
+            //       type: 'POST',
+            //       url: '/DemandMatchesNotifications/ShowDemandMatchesNotifications',
+            //               data: {
+            //                   availableId: available,
+            //                   demands: demandList,
+            //               },
+            //        success: function (response) {
+
+            //            $("#expect").val(JSON.stringify(response.expect));
+            //            publishNotifications();
+            //        },
+            //        error: function () {
+
+            //            //alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+            //        }
+            //    })
+
+            //});
+
+            };
+            //start the connection
+            $.connection.hub.start();
+
+            $("span.text-danger").css("float", "right");
+            $sidebar = $('.sidebar');
+            $navbar = $('.navbar');
+            $main_panel = $('.main-panel');
+
+            $full_page = $('.full-page');
+
+            $sidebar_responsive = $('body > .navbar-collapse');
+            sidebar_mini_active = true;
+            white_color = false;
+
+            window_width = $(window).width();
+
+            fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+
+
+            $('.fixed-plugin a').click(function (event) {
+                if ($(this).hasClass('switch-trigger')) {
+                    if (event.stopPropagation) {
+                        event.stopPropagation();
+                    } else if (window.event) {
+                        window.event.cancelBubble = true;
+                    }
+                }
+            });
+
+            $('.fixed-plugin .background-color span').click(function () {
+                $(this).siblings().removeClass('active');
+                $(this).addClass('active');
+
+                var new_color = $(this).data('color');
+
+                if ($sidebar.length != 0) {
+                    $sidebar.attr('data', new_color);
+                }
+
+                if ($main_panel.length != 0) {
+                    $main_panel.attr('data', new_color);
+                }
+
+                if ($full_page.length != 0) {
+                    $full_page.attr('filter-color', new_color);
+                }
+
+                if ($sidebar_responsive.length != 0) {
+                    $sidebar_responsive.attr('data', new_color);
+                }
+            });
+
+            $('.switch-sidebar-mini input').on("switchChange.bootstrapSwitch", function () {
+                var $btn = $(this);
+
+                if (sidebar_mini_active == true) {
+                    $('body').removeClass('sidebar-mini');
+                    sidebar_mini_active = false;
+                    blackDashboard.showSidebarMessage('Sidebar mini deactivated...');
+                } else {
+                    $('body').addClass('sidebar-mini');
+                    sidebar_mini_active = true;
+                    blackDashboard.showSidebarMessage('Sidebar mini activated...');
+                }
+
+                // we simulate the window Resize so the charts will get updated in realtime.
+                var simulateWindowResize = setInterval(function () {
+                    window.dispatchEvent(new Event('resize'));
+                }, 180);
+
+                // we stop the simulation of Window Resize after the animations are completed
+                setTimeout(function () {
+                    clearInterval(simulateWindowResize);
+                }, 1000);
+            });
+
+            $('.switch-change-color input').on("switchChange.bootstrapSwitch", function () {
+                var $btn = $(this);
+
+                if (white_color == true) {
+
+                    $('body').addClass('change-background');
+                    setTimeout(function () {
+                        $('body').removeClass('change-background');
+                        $('body').removeClass('white-content');
+                    }, 900);
+                    white_color = false;
+                } else {
+
+                    $('body').addClass('change-background');
+                    setTimeout(function () {
+                        $('body').removeClass('change-background');
+                        $('body').addClass('white-content');
+                    }, 900);
+
+                    white_color = true;
+                }
+
+
+            });
+
+            $('.light-badge').click(function () {
+                $('body').addClass('white-content');
+            });
+
+            $('.dark-badge').click(function () {
+                $('body').removeClass('white-content');
+            });
+        });
+
+    </script>
+
+    <script>
+        $("document").ready(function () {
+            $("#matchedDemandsPost").click(function () {
+
+                if (JSON.parse(localStorage.getItem("AlldemandsPerUser")).length >= 0) {
+                    $("#demandNote").val(localStorage.getItem("AlldemandsPerUser"));
+                    $("#availableNote").val(localStorage.getItem("availables"));
+                    $("#catNote").val(localStorage.getItem("categories"));
+                }
+                setLocalStorage([], [], []);
+                $("#matchedDemandsSpan").html("");
+                publishNotifications();
+                $("#demandMatches").submit();
+            });
+            //For table mosrafa
+            $("#demandImportTable").parent().css("overflow-x", "scroll");
+
+            if ($("input[type='button']").hasClass("btn-primary") || $("input[type='button']").hasClass("btn-default")) {
+                $("input[type='button']").removeClass("btn-primary btn-default").addClass("btn-success animation-on-hover");
+            }
+            if ($("button").hasClass("btn-primary") || $("button").hasClass("btn-default")) {
+                $("button").removeClass("btn-primary btn-default").addClass("btn-success animation-on-hover");
+            }
+            if ($("a").hasClass("btn-primary")) {
+                var anchors = $("a.btn-primary");
+                $.each(anchors, function () {
+                    $(this).addClass("btn-success animation-on-hover").removeClass("btn-primary")
+                });
+            }
+            if ($("a").hasClass("btn-default")) {
+                var anchors = $("a.btn-default");
+                $.each(anchors, function () {
+                    $(this).addClass("btn-success animation-on-hover").removeClass("btn-default")
+                });
+            }
+            if ($("a").hasClass("btn-block")) {
+                var anchors = $("a.btn-block");
+                $.each(anchors, function () {
+                    $(this).addClass("btn-success animation-on-hover").removeClass("btn-primary btn-default")
+                });
+
+            }
+
+            if ($("button").hasClass("btn-block")) {
+                $("button").removeClass("btn-primary btn-default").addClass("btn-success animation-on-hover");
+            }
+            if ($("input[type='button']").hasClass("btn-block")) {
+                $("input[type='button']").removeClass("btn-primary btn-default").addClass("btn-success animation-on-hover");
+            }
+            //$("button").addClass("btn-success animation-on-hover");
+            $("input").focus(function () {
+                //$(this).css("border-color", "#e6f5ff");
+                $(this).css("border-color", "#00008B");
+            });
+
+            $("input").blur(function () {
+                //$(this).css("border-color", "#2b3553")
+                $(this).css("border-color", "grey");
+            });
+
+            $("textarea").focus(function () {
+                $(this).css("border-color", "#00008B");
+            });
+
+            $("textarea").blur(function () {
+                $(this).css("border-color", "grey");
+            });
+
+            $("select").focus(function () {
+                $(this).css("border-color", "#00008B");
+            });
+            $("select").blur(function () {
+                $(this).css("border-color", "grey");
+            });
+
+            $("a").css("color", "#005f81");
+            $("a").css("font-weight", "bold");
+
+            $("a").mouseenter(function () {
+                $(this).css("color", "white");
+            });
+
+            $("a").mouseleave(function () {
+                $(this).css("color", "#005f81");
+            });
+
+            $(".dropdown-menu .dropdown-item, .bootstrap-select .dropdown-menu.inner li a").mouseenter(function () {
+                $(this).css("color", "#7a9a65");
+            });
+            //$("textarea").click(function () {
+            $("textarea").css("fontSize", 20);
+            $("input").css("padding", 1);
+            //});
+            $(".badge-default").css("background-color", "#ffe56e");
+            //$(".catbtn").css("color", "#ff9900");
+            $(".dropdown-menu").css("min-width", "13rem");
+        });
+
+    </script>
+
+
+    <script>
+        $("document").ready(function () {
+            $("table").wrap("<div class='table-responsive'></div>");
+            //$("div").hasClass("modal-dialog").removeClass("modal-lg");
+            $("button , a[role='button'] , .catbtn , input[type='button'] , button[type='button'] ").addClass("animation-on-hover");
+            $("a:has(.btn) , button:has(.btn)").addClass("animation-on-hover");
+
+        });
+    </script>
+</body>
+
+</html>

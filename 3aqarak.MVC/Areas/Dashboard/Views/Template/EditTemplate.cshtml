@@ -1,0 +1,154 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.StaticViewModel
+@{
+    ViewBag.Title = "EditTemplate";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+
+@section styles{
+
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            font-size: 20px;
+        }
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index", "dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item  " aria-current="page"><a href="@Url.Action("templates", "template")">صيغ العقود</a></li>
+        <li class="breadcrumb-item active " aria-current="page">تعديـــل </li>
+
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">تعديـــل </h4>
+    </div>
+    <div class="card-body">
+
+        <form id="editTemplate-form">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.PK_StatContract_Id, new { id = "id" })
+            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        @*@Html.LabelFor(m => m.FK_StaticContract_Categories_CatId, new { @class = "control-label" })*@
+                        <label for="first" class="text-right"> الفئــــه:<abbr class="req">*</abbr></label>
+                        @Html.DropDownListFor(m => m.FK_StaticContract_Categories_CatId, Model.Cats, "اختر الفئه", new { id = "cat", required = "required", @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.FK_StaticContract_Categories_CatId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        @*@Html.LabelFor(m => m.FK_StaticContract_Transaction_Transid, new { @class = "control-label" })*@
+                        <label for="first" class="text-right"> التعامـــل:<abbr class="req">*</abbr></label>
+                        @Html.DropDownListFor(m => m.FK_StaticContract_Transaction_Transid, Model.Trans, "اختر الفئه", new { id = "trans", required = "required", @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.FK_StaticContract_Transaction_Transid, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group  ">
+                <textarea class="form-control" id="ckContainer" placeholder="كتابة الصيغة..." name="ContactContent" required>@Model.ContactContent</textarea>
+                @Html.ValidationMessageFor(m => m.ContactContent, "", new { @class = "text-danger ", id = "text" })
+            </div>
+
+            <div class="form-group" style="margin-top:5%">
+                <button id="save" type="submit" class="btn btn-default animation-on-hover " style="float:right">حفـــــظ</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        CKEDITOR.replace('ckContainer');
+    
+
+        $(document).ready(function () {
+
+            $("#editTemplate-form").submit(function (e) {
+
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return false;
+                }
+                if (CKEDITOR.instances["ckContainer"].getData() === "" || CKEDITOR.instances["ckContainer"].getData() === null) {
+                    $("#text").html("لابد من ملا هذا الحقل");
+                    return false;
+                }
+                else {
+                    $("#text").html("");
+                }
+                var Param = {
+                    PK_StatContract_Id: $("#id").val(),
+                    FK_StaticContract_Categories_CatId: $("#cat").val(),
+                    FK_StaticContract_Transaction_Transid: $("#trans").val(),
+                    ContactContent: CKEDITOR.instances["ckContainer"].getData(),
+                };
+                $.ajax({
+                    url: "/dashboard/template/updatetemplate",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        tempVM:Param,
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (result) {
+                            alertify.alert("تم الحفظ بنجاح", function () {
+                                location.href = "@Url.Action("templates", "template", new { area = "dashboard" })";
+                            });
+                        }
+                        else {
+                            alertify.alert("لم يتم الحفظ بنجاح!", function () {
+                            });
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

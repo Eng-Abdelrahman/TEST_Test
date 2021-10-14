@@ -1,0 +1,673 @@
+﻿ @model _3aqarak.MVC.ViewModels.DemandViewModel
+
+@{
+    ViewBag.Title = "AddClientDemand";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","ClientDemand")">طلبات العملاء </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("ClientDemands","ClientDemand",new { id=Model.FK_DemandUnits_Clients_ClientId})">طلبات عميل </a></li>
+                <li class="breadcrumb-item active" aria-current="page">اضافة طلب لعميل </li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="addDemand">
+
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.FK_DemandUnits_Clients_ClientId, new { id = "clientId" })
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                        <span class="text-danger" id="finishErr"></span>
+                        <span class="text-danger" id="accessError"></span>
+                        @Html.ValidationSummary()
+
+                        <div class="form-group  ">
+                            @*@Html.LabelFor(m => m.FK_DemandUnits_Users_Sales, new { @class = "text-right" })*@
+                            <label for="first" class="text-right"> بحث عن موظف السيلز:<abbr class="req">*</abbr></label>
+                            <input type="text" class="form-control" id="tele" placeholder="السيلز" name="FK_DemandUnits_Users_Sales" required data-val="true" data-val-required="الرجاء إختيار إسم موظف السيلز">
+                            @Html.ValidationMessageFor(m => m.FK_DemandUnits_Users_Sales)
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>من منـــطقة:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_DemandUnits_Regions_FromId, Model.RegionsFrom, "مــن", new { @class = "form-control", id = "regFrom", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_DemandUnits_Regions_FromId, "", new { @class = "text-danger", id = "FromRegError" })
+                            </div>
+                            <div class="col">
+                                <label>الى منـــطقة:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_DemandUnits_Regions_ToId, Model.RegionsTo, "الــى", new { @class = "form-control", id = "regTo", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_DemandUnits_Regions_ToId, "", new { @class = "text-danger", id = "ToRegError" })
+                            </div>
+                            <div class="col">
+                                <label>فئه العقار<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_DemandUnits_Categories_Id, Model.Categories, "اختر الفئه", new { @class = "form-control", id = "cat", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_DemandUnits_Categories_Id, "", new { @class = "text-danger", id = "catError" })
+                            </div>
+                            <div class="col">
+                                <label>الاقسام العقارية<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_DemandUnits_Transactions_Id, Model.Transactions, "اختر نوع التعامل", new { @class = "form-control", id = "trans", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_DemandUnits_Transactions_Id, "", new { @class = "text-danger", id = "transError" })
+                            </div>
+                            <div class="col">
+                                <label>طــريقة الدفع:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_DemandUnits_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_DemandUnits_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>السعر/الايجار <abbr class="req">*</abbr></label>
+                                    <input id="minPrice" min="0" type="number" class="form-control" placeholder="من" name="MinPrice">
+                                    <span class="text-danger" id="minPriceErr"></span>
+
+                                    <input id="maxPrice" min="0" type="number" class="form-control" placeholder="إلي">
+                                    <span class="text-danger" id="maxPriceErr"></span>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>المساحة<abbr class="req">*</abbr></label>
+                                    <input id="minSpace" min="0" type="number" class="form-control" placeholder="من" />
+                                    <span class="text-danger" id="minSpaceErr"></span>
+                                    <input id="maxSpace" min="0" type="number" class="form-control" placeholder="الى" />
+                                    <span class="text-danger" id="maxSpaceErr"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label> عدد الحمامات<abbr class="req">*</abbr></label>
+                                    <input id="minBath" type="number" min="0" class="form-control" placeholder="مــن" style="border :1px solid #DDD" required>
+                                    <span class="text-danger" id="minBathErr"></span>
+                                    <input id="maxBath" type="number" min="0" class="form-control" placeholder="الى" style="border :1px solid #DDD" required>
+                                    <span class="text-danger" id="maxBathErr"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label> عدد الغــرف<abbr class="req">*</abbr></label>
+                                    <input id="minRoom" type="number" min="0" placeholder="مــن" class="form-control" style="border :1px solid #DDD" required>
+                                    <span class="text-danger" id="minRoomErr"></span>
+                                    <input id="maxRoom" min="0" type="number" placeholder="الى" class="form-control" style="border :1px solid #DDD" required>
+                                    <span class="text-danger" id="maxRoomErr"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label> الطـــــابق<abbr class="req">*</abbr></label>
+                                    <input id="minFloor" type="number" min="0" class="form-control" placeholder="مــن" style="border :1px solid #DDD" required>
+                                    <span class="text-danger" id="minFloorErr"></span>
+                                    <input id="maxFloor" type="number" min="0" class="form-control" placeholder="الى" style="border :1px solid #DDD" required>
+                                    <span class="text-danger" id="maxFloorErr"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        @*<div class="from-group">
+        <div class="advancedSearch">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group ">
+                        <label> عدد الحمامات<abbr class="req">*</abbr></label>
+                        <input id="minBath" type="number" min="0" class="form-control" placeholder="مــن" style="border :1px solid #DDD" required>
+                        <span class="text-danger" id="minBathErr"></span>
+                        <input id="maxBath" type="number" min="0" class="form-control" placeholder="الى" style="border :1px solid #DDD" required>
+                        <span class="text-danger" id="maxBathErr"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label> عدد الغــرف<abbr class="req">*</abbr></label>
+                        <input id="minRoom" type="number" min="0" class="form-control" style="border :1px solid #DDD" required>
+                        <span class="text-danger" id="minRoomErr"></span>
+                        <input id="maxRoom" min="0" type="number" class="form-control" style="border :1px solid #DDD" required>
+                        <span class="text-danger" id="maxRoomErr"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label> الطـــــابق<abbr class="req">*</abbr></label>
+                        <input id="minFloor" type="number" min="0" class="form-control" placeholder="مــن" style="border :1px solid #DDD" required>
+                        <span class="text-danger" id="minFloorErr"></span>
+                        <input id="maxFloor" type="number" min="0" class="form-control" placeholder="الى" style="border :1px solid #DDD" required>
+                        <span class="text-danger" id="maxFloorErr"></span>
+                    </div>
+                </div>
+            </div>*@
+
+                        <div class="form-group ">
+
+                            <label>التشطيب المطلوب : <abbr class="req">*</abbr></label>
+                            <br />
+
+                            @foreach (var item in Model.Finishings)
+                            {
+                                if (item.Selected)
+                                {
+                                    <div class="checkbox icheck form-check form-check-inline ">
+                                        <label>
+                                            <input class="finish" type="checkbox" checked value="true" data-id="@item.Value">@item.Text
+                                        </label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="checkbox icheck form-check form-check-inline ">
+                                        <label>
+                                            <input class="finish" type="checkbox" value="false" data-id="@item.Value">@item.Text
+                                        </label>
+                                    </div>
+                                }
+
+                            }
+
+                        </div>
+                        @*@Html.ValidationMessageFor(m => m.FinishArr, "", new { @class = "text-danger", id = "finishErr" })*@
+                        <br /> @Html.ValidationMessageFor(m => m.FinishArr, "", new { @class = "text-danger", id = "finishErr" })<br />
+
+                        <div class="row">
+                            @*<div class="col">
+                <label>التشــطيب:</label>
+                @Html.DropDownListFor(m => m.FK_DemandUnits_Finishings_Id, Model.Finishings, "", new { @class = "form-control", id = "finish", required = "required" })
+                @Html.ValidationMessageFor(m => m.FK_DemandUnits_Finishings_Id, "", new { @class = "text-danger", id = "finishError" })
+            </div>*@
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>الاطــلالة:</label>
+                                @Html.DropDownListFor(m => m.ViewsArr, Model.Views, "", new { @class = "form-control", id = "view", required = "required", multiple = "multiple" })
+                                @Html.ValidationMessageFor(m => m.ViewsArr, "", new { @class = "text-danger", id = "viewError" })
+                            </div>
+                            <div class="col">
+                                <label>الملاحظــات:</label>
+                                <textarea class="form-control" id="notes" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group ">
+
+                                <label>الكماليات المتاحة : <abbr class="req">*</abbr></label>
+                                <br /> <br />
+                                @*@Html.DropDownListFor(m => m.AccessoriesArr, Model.Accessories, new { @class = "form-control", id = "access", required = "required", multiple = "multiple" })
+                @Html.ValidationMessageFor(m => m.AccessoriesArr, "", new { @class = "text-danger", id = "accessError" })*@
+
+                                @foreach (var item in Model.Accessories)
+                                {
+                                    if (item.Selected)
+                                    {
+                                        <div class="checkbox icheck form-check form-check-inline ">
+                                            <label>
+                                                <input class="access" type="checkbox" checked value="true" data-id="@item.Value">@item.Text
+                                            </label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="checkbox icheck form-check form-check-inline ">
+                                            <label>
+                                                <input class="access" type="checkbox" value="false" data-id="@item.Value">@item.Text
+                                            </label>
+                                        </div>
+                                    }
+
+                                }
+
+                            </div>
+                        </div>
+                        <br />
+
+                        @Html.ValidationMessageFor(m => m.Accessories, "", new { @class = "text-danger", id = "access" })
+
+
+
+                        <div class="form-group">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="furnished">مفــــروش
+                                    <span class="form-check-sign">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                            </div>
+                        </div>
+
+
+
+                   
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="row">
+                        <input type="submit" form="addDemand" class="btn btn-default" role="button" />
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    
+
+    <div class="modal fade" id="matches" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="preview">حجز معاينة</button>
+                    <button class="btn btn-default" id="search-button"> اتصال بالعميل </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $("document").ready(function () {
+            var teleId = "";
+            $("#tele").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/dashboard/admin/EmpAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+
+                                teleId = item.PK_Users_Id;
+                                return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                            }))
+
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    teleId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0]
+                },
+
+            });
+            $('.access').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+            .on('ifChecked', function (event) {
+              $(this).val(true);
+              })
+            .on('ifUnchecked', function (event) {
+              $(this).val(false);
+             });
+
+            $('.finish').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+         .on('ifChecked', function (event) {
+             $(this).val(true);
+         })
+         .on('ifUnchecked', function (event) {
+             $(this).val(false);
+         });
+
+
+            $("#addDemand").submit(function (e) {
+                e.preventDefault();
+                
+                if ($("#minPrice").val() === "" || $("#minPrice").val() === null) {
+                    $("#minPriceErr").html("الرجاء إدخال أقل سعر!");
+                     $("#accessError").html("لابد ان تدخل رقم في خانة السعر !");
+                    return false;
+                }
+                else {
+                    $("#minPriceErr").html("");
+                    $("#accessError").html("");
+                }
+                if ($("#maxPrice").val() === "" || $("#maxPrice").val() === null) {
+                    $("#maxPriceErr").html("الرجاء إدخال أعلى سعر!");
+                    $("#accessError").html("لابد ان تدخل رقم في خانة السعر !");
+                    return false;
+                }
+                else {
+                    $("#maxPriceErr").html("");
+                    $("#accessError").html("");
+                }
+
+                if ($("#maxSpace").val() === "" || $("#maxSpace").val() === null) {
+                    $("#maxSpaceErr").html("الرجاء إدخال أقل مساحة!");
+                    $("#accessError").html("لابد ان تدخل أقل مساحة !");
+                    return false;
+                }
+                else {
+                    $("#maxSpaceErr").html("");
+                    $("#accessError").html("");
+                }
+
+                if ($("#minSpace").val() === "" || $("#minSpace").val() === null) {
+                    $("#minSpaceErr").html("الرجاء إدخال أكبر مساحة!");
+                    $("#accessError").html("لابد ان تدخل أكبر مساحة !");
+                    return false;
+                }
+                else {
+                    $("#minSpaceErr").html("");
+                    $("#accessError").html("");
+                }
+
+                if ($("#minBath").val() === "" || $("#minBath").val() === null) {
+                    $("#minBathErr").html("الرجاء إدخال أقل عدد من الحمامات!");
+                    $("#accessError").html("لابد ان تدخل أقل عدد من الحمامات !");
+                    return false;
+                }
+                else {
+                    $("#minBathErr").html("");
+                    $("#accessError").html("");
+                }
+
+                if ($("#maxBath").val() === "" || $("#maxBath").val() === null) {
+                    $("#maxBathErr").html("الرجاء إدخال أكبر عدد من الحمامات!");
+                    $("#accessError").html("لابد ان تدخل أكبر عدد من الحمامات !");
+                    return false;
+                }
+                else {
+                    $("#maxBathErr").html("");
+                    $("#accessError").html("");
+                }
+
+                if ($("#minRoom").val() === "" || $("#minRoom").val() === null) {
+                    $("#minRoomErr").html("الرجاء إدخال أقل عدد من الغرف!");
+                    $("#accessError").html("لابد ان تدخل أقل عدد من الغرف !");
+                    return false;
+                }
+                else {
+                    $("#minRoomErr").html("");
+                    $("#accessError").html("");
+                }
+
+                if ($("#maxRoom").val() === "" || $("#maxRoom").val() === null) {
+                    $("#maxRoomErr").html("الرجاء إدخال أكبر عدد من الغرف!");
+                    $("#accessError").html("لابد ان تدخل أكبر عدد من الغرف !");
+                    return false;
+                }
+                else {
+                    $("#maxRoomErr").html("");
+                    $("#accessError").html("");
+                }
+
+                if ($("#minFloor").val() === "" || $("#minFloor").val() === null) {
+                    $("#minFloorErr").html("لابد ان تدخل رقم في خانة الطابق!");
+                     $("#accessError").html("لابد ان تدخل رقم في خانة الطابق !");
+                    return false;
+                }
+                else {
+                    $("#minFloorErr").html("");
+                    $("#accessError").html("");
+                }
+
+                if ($("#maxFloor").val() === "" || $("#maxFloor").val() === null) {
+                    $("#maxFloorErr").html("لابد ان تدخل رقم في خانة الطابق!");
+                    $("#accessError").html("لابد ان تدخل رقم في خانة الطابق !");
+                    return false;
+                }
+                else {
+                    $("#maxFloorErr").html("");
+                    $("#accessError").html("");
+                }
+                //if (($("#finish").val() === "5" || $("#finish").val() === "6") && $("#furnished").is(":checked")) {
+
+                //    alertify.set('notifier', 'position', 'top-left');
+                //    alertify.notify("لايمكن لشقه بهذا النوع من التشطيب ان تكون مفروشه!", "error", function () { });
+                //    return false;
+                //}
+                //if ($("#title").val() === "" || $("#title").val() === null) {
+                //    $("#titleErr").html("لابد من ملا هذا الحقل!");
+                //    return false;
+                //}
+                //else {
+                //    $("#titleErr").html("");
+                //}
+            
+
+                if (isNaN($("#minPrice").val()) || isNaN($("#maxPrice").val())) {
+                    alertify.notify("لابد ان تدخل رقم في خانة السعر", 'error', 3, function () { })
+                    return false;
+                }
+
+                if (isNaN($("#minRoom").val()) || isNaN($("#maxRoom").val())) {
+                    alertify.notify("لابد ان تدخل رقم في خانة عدد الغرف", 'error', 3, function () { })
+                    return false;
+                }
+
+                if (isNaN($("#minBath").val()) || isNaN($("#maxBath").val())) {
+                    alertify.notify("لابد ان تدخل رقم في خانة عدد الحمامات", 'error', 3, function () { })
+                    return false;
+                }
+
+                if (isNaN($("#minSpace").val()) || isNaN($("#maxSpace").val())) {
+                    alertify.notify("لابد ان تدخل رقم في خانة المساحة", 'error', 3, function () { })
+                    return false;
+                }            
+
+                 if (isNaN($("#minFloor").val()) || isNaN($("#maxFloor").val())) {
+                     alertify.notify("لابد ان تدخل رقم في خانة الطابق", 'error', 3, function () { })
+                     return false;
+                 }
+
+
+                if (Number($("#minPrice").val()) > Number($("#maxPrice").val())) {
+                    alertify.notify(" القيمة الصغرى لا يمكن ان تزيد عن العظمى", 'error', 3, function () { })
+                    return false;
+                }
+                if (Number($("#minRoom").val()) >Number($("#maxRoom").val())) {
+                    alertify.notify("القيمة الصغرى لا يمكن ان تزيد عن العظمى", 'error', 3, function () { })
+                    return false;
+                }
+                if (Number($("#minBath").val()) > Number($("#maxBath").val())) {
+                    alertify.notify("القيمة الصغرى لا يمكن ان تزيد عن العظمى", 'error', 3, function () { })
+                    return false;
+                }
+                if (Number($("#minSpace").val()) >Number($("#maxSpace").val())) {
+                    alertify.notify("القيمة الصغرى لا يمكن ان تزيد عن العظمى", 'error', 3, function () { })
+                    return false;
+                }
+                if (Number($("#minFloor").val()) > Number($("#maxFloor").val())) {
+                    alertify.notify("القيمة الصغرى لا يمكن ان تزيد عن العظمى", 'error', 3, function () { })
+                    return false;
+                }
+
+                if (!$(this).valid()) {
+                    return false;
+                }
+                var accessArr = [];
+                $.each($(".access"), function (index, value) {
+                    if ($(this).is(":checked")) {
+                        accessArr.push($(this).attr("data-id"));
+                    };
+                });
+                //Add validation here
+                
+                   if (accessArr.length < 1) {
+                       $("#accessError").html("لابد من إختيار أي من الكماليات المتاحة !");
+                    return false;
+                }
+                 else {
+                    $("#accessError").html("");
+                }
+                var viewArr = [];
+                $.each($("#view option:selected"), function (index, value) {
+                    viewArr.push($(this).val());
+                });
+              
+                var finishArr = [];
+                $.each($(".finish"), function (index, value) {
+                  
+                    if ($(this).is(":checked")) {
+                        finishArr.push($(this).attr("data-id"));
+                    }
+                   
+                });
+                if (finishArr.length == 0) {
+                  
+                    $("#finishErr").html("لابد من اختيار نوع التشطيب!");
+                    return false;
+                }
+                else {
+                   
+                    $("#finishErr").html("");
+                }
+                if ((finishArr.includes("6") || finishArr.includes("5")) && $("#furnished").is(":checked")) {
+
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify("لايمكن لشقه غير مشطبه ان تكون مفروشه!", "error", function () { });
+                    return false;
+                }
+                var obj = {
+                    FK_DemandUnits_Users_Sales:teleId,
+                    FK_DemandUnits_Clients_ClientId: $("#clientId").val(),
+                    FK_DemandUnits_Categories_Id: $("#cat").val(),
+                    FinishArr: finishArr,
+                    FK_DemandUnits_Regions_FromId: $("#regFrom").val(),
+                    FK_DemandUnits_Regions_ToId: $("#regTo").val(),
+                    FK_DemandUnits_Transactions_Id: $("#trans").val(),
+                    FK_DemandUnits_PaymentMethod_Id: $("#payment").val(),
+                    AccessoriesArr: accessArr,
+                    ViewsArr: viewArr,
+                    //Title: $("#title").val(),
+                    Notes: $("#notes").val(),
+                    MinPrice: $("#minPrice").val(),
+                    MaxPrice: $("#maxPrice").val(),
+                    MinSpace: $("#minSpace").val(),
+                    MaxSpace: $("#maxSpace").val(),
+                    MinRooms: $("#minRoom").val(),
+                    MaxRooms: $("#maxRoom").val(),
+                    MaxBathRooms: $("#maxBath").val(),
+                    MinBathRooms: $("#minBath").val(),
+                    MinFloor: $("#minFloor").val(),
+                    MaxFloor: $("#maxFloor").val(),
+                    IsFurnished: $("#furnished").is(":checked"),
+
+                };
+                debugger;
+                $.ajax({
+                    "url": "/ClientDemand/SaveClientDemand/",
+                    "type": "POST",
+                    dataType: "json",
+                    "data": {
+                        __RequestVerificationToken:token,
+                        demandVM: obj,
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+                            alertify.alert(response.message, function () {
+                                location.href = "/clientDemand/availablematchesafteradd/";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+
+                            });
+                        };
+
+                    },
+                    error: function (response) {
+                        alertify.alert("حدث خطا ما عند حفظ البيانات!", function () {
+
+                        })
+                    }
+                });
+
+
+            });
+
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

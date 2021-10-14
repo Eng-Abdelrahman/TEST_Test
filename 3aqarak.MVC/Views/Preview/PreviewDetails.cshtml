@@ -1,0 +1,240 @@
+﻿@model _3aqarak.MVC.ViewModels.PreviewScreenViewModel
+
+@{
+    ViewBag.Title = "PreviewDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","Home")">الرئيسية</a></li>
+        <li class="breadcrumb-item "><a href="@Url.Action("PreviewList","Preview")">صفحة المعاينات</a></li>
+        <li class="breadcrumb-item active " aria-current="page">تفاصيل المعاينه</li>
+    </ol>
+</nav>
+<div class="card">
+  
+    <div class="card-header">
+        <h4 class="title text-right">التفاصــيل</h4>
+    </div>
+    <div class="card-body">
+        @if (Model.Header == null)
+        {
+            <div class="alert alert-danger text-right" role="alert">
+                لايوجد بيانات لاستعراضهم !
+            </div>
+        }
+        else
+        {
+            <form style="float :right">
+                @Html.AntiForgeryToken()
+                <div class="row">
+
+                    <div class="form-group  col">
+                        <label class="preLabel"> اسم الموظف : </label>
+                        <input type="text" class="form-control" placeholder="اسم الموظف" disabled="" value="@Model.Header.EmpName">
+                    </div>
+
+                    <div class="form-group  col">
+                        <label class="preLabel"> اسم المشتري : </label>
+                        <input type="text" class="form-control" placeholder="اسم العميل" disabled="" value="@Model.Header.BuyerName">
+                    </div>
+
+                    <div class="form-group  col">
+                        <label class="preLabel"> كود العميل : </label>
+                        <input type="text" class="form-control" placeholder="كود العميل" disabled="" value="@Model.Header.FK_PreviewHeaders_Clients_BuyerId">
+                    </div>
+
+                    <div class="form-group col">
+                        <label class="preLabel"> تاريخ المعاينة </label>
+                        <input type="text" class="form-control" placeholder="تاريخ المعاينة" disabled="" value="@Model.Header.ReviewDate.ToShortDateString()">
+                    </div>
+
+                    <div class="form-group col">
+                        <label class="preLabel"> كود المعاينة </label>
+                        <input type="text" class="form-control" placeholder="كود المعاينة" disabled="" value="@Model.Header.PK_PreviewHeaders_Id">
+                    </div>
+
+                </div>
+
+            </form>
+
+            <table class="table text-right table-hover ">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th> اسم البائــع</th>
+                        <th> تفاصيل الوحده</th>
+                        <th>وقــــت المعاينـــه</th>
+                        <th>نتيجة المعاينة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Details)
+                {
+                        <tr>
+                            <td class="text-center">@item.PK_PreviewDetails_Id</td>
+                            <td>@item.SellerName</td>
+                            <td>
+                                <button type="button" title="التفاصيــل " rel="tooltip" class="btn btn-success btn-sm btn-icon edit" data-id="@item.AvailableUnits_Id" data-catId="@item.Category_Id">
+                                    <i class="tim-icons icon-notes"></i>
+                                </button>
+                            </td>
+                            <td>@item.PreviewTime</td>
+                            <td>@item.DetailStatus</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a class="btn btn-default animation-on-hover" data-step="1" data-intro="هذا الزر للدخول إلى صفحة نتيجة المعاينه هل تمت أم تم تأجيلها ..." href="@Url.Action("SetPreviewResult", "Preview",new {id=Model.Header.PK_PreviewHeaders_Id })">عرض المعاينات وتيجة المعاينة ككل </a>
+        }
+       
+        <!--Modal-->
+        <div class="modal fade" id="matches" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    <script>
+        
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+
+            $('table').DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+            });
+
+            $(".edit").click(function () {
+                var id = $(this).attr("data-id");
+                var catId = $(this).attr("data-catId");
+                // fro Apartment *****
+                if (catId === "@_3aqarak.MVC.Helpers.Categories.Apartements") {
+                    $.ajax({
+                        "url": "/ClientSales/SaleDetails/",
+                        accept: "applicaton/html",
+                        type: "post",
+                        dataType: "html",
+                        data: {
+                            saleId: id,
+                            demandId: "@Model.Header.DemandUnit_Id",
+                        },
+                        success: function (response) {
+                            $("#matches").find(".modal-body").html(response);
+                            $("#matches").modal("show");
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                }
+                // for Villas *****
+                else if (catId === "@_3aqarak.MVC.Helpers.Categories.Villas"){
+                     $.ajax({
+                        "url": "/VillasAvailable/SaleDetails/",
+                        accept: "applicaton/html",
+                        type: "post",
+                        dataType: "html",
+                        data: {
+                            saleId: id,
+                            demandId: "@Model.Header.DemandUnit_Id",
+                        },
+                        success: function (response) {
+                            $("#matches").find(".modal-body").html(response);
+                            $("#matches").modal("show");
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+                    });
+                }
+                    //for Land ******
+                else if (catId === "@_3aqarak.MVC.Helpers.Categories.Lands") {
+                     $.ajax({
+                        "url": "/AvailableLands/AvailableLandDetails/",
+                        accept: "applicaton/html",
+                        type: "post",
+                        dataType: "html",
+                        data: {
+                            availableLandId: id,
+                            landdemandid: "@Model.Header.DemandUnit_Id",
+                        },
+                        success: function (response) {
+                            $("#matches").find(".modal-body").html(response);
+                            $("#matches").modal("show");
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                }
+                    // for shop ************
+                else if (catId === "@_3aqarak.MVC.Helpers.Categories.Shops") {
+                     $.ajax({
+                        "url": "/ShopAvailable/AvailableShopDetails/",
+                        accept: "applicaton/html",
+                        type: "post",
+                        dataType: "html",
+                        data: {
+                            availableShopId: id,
+                            shopDemandId: "@Model.Header.DemandUnit_Id",
+                        },
+                        success: function (response) {
+                            $("#matches").find(".modal-body").html(response);
+                            $("#matches").modal("show");
+                        },
+                        error: function () {
+                            alertify.alert("حدث خطا في حفظ البيانات!")
+                        }
+
+                    });
+                }
+               
+            });
+        });
+          $('#flexi_form_start').click(function () {
+                introJs().start().oncomplete(function() {
+                }).onexit(function() {
+                }).onbeforechange(function(targetElement) {
+                   $(".steps").hide();
+    			
+
+                    // $(".left").css("float","left");
+                    // $("input").removeClass("error");
+                    // $(".right").hide();
+
+                    
+                   
+                 });
+            });
+    </script>
+}
+
+
+
+
+
+
+
+
+

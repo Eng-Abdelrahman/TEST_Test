@@ -1,0 +1,836 @@
+﻿@model _3aqarak.MVC.ViewModels.AvailableViewModel
+
+@{
+    ViewBag.Title = "EditClientSale";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","ClientSales")">عروض بيع العملاء </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("ClientSales","ClientSales",new { id=Model.FK_AvaliableUnits_Clients_ClientId})">عروض بيع عميل </a></li>
+                <li class="breadcrumb-item active" aria-current="page">تعديل عرض بيع لعميل </li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="AddClientsaleForm">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.PK_AvailableUnits_Id, new { id = "id" })
+                        @Html.HiddenFor(m => m.FK_AvaliableUnits_Units_UnitId, new { id = "unit" })
+                        @Html.HiddenFor(m => m.tbl_units.FK_Units_Categories_Id, new { id = "cats" })
+                        @Html.HiddenFor(m => m.FK_AvaliableUnits_Clients_ClientId, new { id = "clientId" })
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                        <div class="form-group  ">
+                            @*@Html.LabelFor(m => m.FK_AvaliableUnits_Users_SalesId, new { @class = "text-right" })*@
+                            <label for="first" class="text-right"> موظف السيلز:<abbr class="req">*</abbr></label>
+                            <input type="text" value="@ViewBag.salesName" class="form-control" id="tele" placeholder="السيلز" name="FK_AvaliableUnits_Users_SalesId" required>
+                            @Html.ValidationMessageFor(m => m.FK_AvaliableUnits_Users_SalesId, "", new { @class = "text-danger " })
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="show-img ">
+                                <input type="button" class="btn btn-block" data-toggle="modal" data-target="#myModal" value=" تحميل صــور العــرض " />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>القسم الحالي للعقار<abbr class="req">*</abbr></label>
+                                <input type="text" class="form-control" id="transValue" value="@Model.TransType" data-id="@Model.FK_AvaliableUnits_Transaction_TransactionId" readonly>
+                            </div>
+                            <div class="col">
+                                <label>الاقسام العقارية<abbr class="req">*</abbr></label>
+                                @*@Html.DropDownListFor(m => m.FK_AvaliableUnits_Transaction_TransactionId, Model.Transactions, new { @class = "form-control", id = "trans", required = "required" })*@
+                                <select class="form-control" id="trans">
+                                    <option value="">يرجى اختيار قسم عقاري جديد لو احتجت</option>
+                                    @foreach (var item in Model.Transactions)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+
+                                @Html.ValidationMessageFor(m => m.FK_AvaliableUnits_Transaction_TransactionId, "", new { @class = "text-danger", id = "transError" })
+                            </div>
+                            <div class="col">
+                                <label for="Residential">استخدام العقار</label>
+                                @Html.DropDownListFor(m => m.FK_AvailableUnits_Usage_Id, Model.Usages, "اختر استخام الوحدة", new { @class = "form-control", id = "usages" })
+                                @Html.ValidationMessageFor(m => m.FK_AvailableUnits_Usage_Id, "", new { @class = "text-danger " })
+
+                            </div>
+                            <div class="col">
+                                <label>منطقة العقار<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.tbl_units.FK_Units_Regions_Id, Model.Regions, new { @class = "form-control", id = "region", required = "required" })
+                                @Html.ValidationMessageFor(m => m.tbl_units.FK_Units_Regions_Id, "", new { @class = "text-danger", id = "regError" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>المساحة<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" placeholder="المساحة" min="0" value="@Model.tbl_units.Space" id="space" required>
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Space, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>عدد الغرف<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" placeholder="عدد الغرف" min="0" value="@Model.tbl_units.Rooms" id="rooms" required>
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Rooms, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>عدد الحمامات<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" placeholder="عدد الحمامات" min="0" value="@Model.tbl_units.Bathrooms" id="baths" required>
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Bathrooms, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label>سنه البناء<abbr class="req">*</abbr> </label>
+                                <input type="number" step="1" min="1900" max="@DateTime.Now.Year" class="form-control sty form-control" id="DateOfBuild" value="@Model.DateOfBuild" required data-val="true" data-val-required="الرجاء اختيار سنه البناء" name="DateOfBuild">
+                                @Html.ValidationMessageFor(m => m.DateOfBuild, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>عدد المصاعد<abbr class="req">*</abbr> </label>
+                                <input type="number" min="0" placeholder="عدد المصاعد" class="form-control sty form-control" id="NoOfElevators" value="@Model.NoOfElevators" required data-val="true" data-val-required="الرجاء ادخال عدد المصاعد" name="NoOfElevators">
+                                @Html.ValidationMessageFor(m => m.NoOfElevators, "", new { @class = "text-danger", required = "required" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>الطــابق<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control" placeholder="الطــابق" min="0" value="@Model.tbl_units.Floor" id="floor" required>
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Floor, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label>تشطيب الوحدة<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.tbl_units.FK_Units_Finishing_Id, Model.Finishings, new { @class = "form-control", id = "finishing", required = "required" })
+                                @Html.ValidationMessageFor(m => m.tbl_units.FK_Units_Finishing_Id, "", new { @class = "text-danger", id = "finishError" })
+                            </div>
+
+
+                            <div class="col">
+                                <label>الاطــــلاله</label>
+                                @Html.DropDownListFor(m => m.tbl_units.FK_Units_Views_Id, Model.Views, new { @class = "form-control", id = "view", required = "required" })
+                                @Html.ValidationMessageFor(m => m.tbl_units.FK_Units_Views_Id, "", new { @class = "text-danger", id = "viewError" })
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>طــريقة الدفع:<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.FK_AvailableUnits_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_AvailableUnits_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label id="priceName">السعــر /الايجار المطــلوب<abbr class="req">*</abbr></label>
+                                    <input type="number" class="form-control sty form-control" id="price" min="0" placeholder="السعر المطلوب" value="@Model.Price" required>
+                                    @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row" id="hiddenDivForInstallment">
+                            <div class="form-group col">
+                                <label>المتبقي<abbr class="req">*</abbr> </label>
+                                <input type="number" class="form-control sty form-control" value="@Model.Remaining" id="Remaining" min="0" placeholder="المبلغ المتبقي" required data-val="true" data-val-required="الرجاء إدخال المبلغ المتبقي" name="Remaining">
+                                @Html.ValidationMessageFor(m => m.Remaining, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group col">
+                                <label>المكسب<abbr class="req">*</abbr> </label>
+                                <input type="number" class="form-control sty form-control" value="@Model.Over" id="Over" min="0" placeholder="المكسب" required data-val="true" data-val-required="الرجاء إدخال المكسب المطلوب" name="Over">
+                                @Html.ValidationMessageFor(m => m.Over, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group col">
+                                <label>عدد سنوات الأقساط </label>
+                                <input type="number" class="form-control sty form-control" value="@Model.YearOfInstallment" id="YearOfInstallment" min="0" placeholder="عدد سنوات التقسيط" name="YearOfInstallment">
+                            </div>
+                            <!--This's from Mostafa and i think it's so easy Thank you -->
+                            <div class="form-group col">
+                                <label class="preLabel">نظام الأقساط</label>
+                                <select id="BasisOfInstallmentDropdown" class="form-control">
+
+                                    @{
+                                        if (Model.BasisOfInstallment == 1)
+                                        {
+                                            <option> اختر نظام القسط </option>
+                                            <option value="1" selected>سنوي</option>
+                                            <option value="2">نصف سنوي</option>
+                                            <option value="3">ربع سنوي</option>
+                                            <option value="4">شهري</option>
+                                        }
+                                        else if (Model.BasisOfInstallment == 2)
+                                        {
+                                            <option> اختر نظام القسط </option>
+                                            <option value="1">سنوي</option>
+                                            <option value="2" selected>نصف سنوي</option>
+                                            <option value="3">ربع سنوي</option>
+                                            <option value="4">شهري</option>
+                                        }
+                                        else if (Model.BasisOfInstallment == 3)
+                                        {
+                                            <option> اختر نظام القسط </option>
+                                            <option value="1">سنوي</option>
+                                            <option value="2">نصف سنوي</option>
+                                            <option value="3" selected>ربع سنوي</option>
+                                            <option value="4">شهري</option>
+                                        }
+                                        else if (Model.BasisOfInstallment == 4)
+                                        {
+                                            <option> اختر نظام القسط </option>
+                                            <option value="1">سنوي</option>
+                                            <option value="2">نصف سنوي</option>
+                                            <option value="3">ربع سنوي</option>
+                                            <option value="4" selected>شهري</option>
+                                        }
+                                        else
+                                        {
+                                            <option> اختر نظام القسط </option>
+                                            <option value="1">سنوي</option>
+                                            <option value="2">نصف سنوي</option>
+                                            <option value="3">ربع سنوي</option>
+                                            <option value="4">شهري</option>
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+
+                        </div>
+
+
+                            <div class="form-row">
+                                <div class="form-group col">
+                                    <label>رقم الشقه<abbr class="req">*</abbr> </label>
+                                    <input type="text" placeholder="رقم الشقه" class="form-control sty form-control" value="@Model.tbl_units.FlatNumber" id="FlatNumber" required data-val="true" data-val-required="الرجاء ادخال رقم الشقه" name="tbl_units.FlatNumber">
+                                    @Html.ValidationMessageFor(m => m.tbl_units.FlatNumber, "", new { @class = "text-danger", required = "required" })
+                                </div>
+
+                                <div class="form-group col">
+                                    <label>رقم العقار<abbr class="req">*</abbr> </label>
+                                    <input type="text" placeholder="رقم العقار" class="form-control sty form-control" value="@Model.tbl_units.ApartmentNumber"  id="ApartmentNumber" required data-val="true" data-val-required="الرجاء ادخال رقم العقار" name="tbl_units.ApartmentNumber">
+                                    @Html.ValidationMessageFor(m => m.tbl_units.ApartmentNumber, "", new { @class = "text-danger", required = "required" })
+                                </div>
+
+                                <div class="form-group col">
+                                    <label>رقم المجموعه<abbr class="req">*</abbr> </label>
+                                    <input type="text" placeholder="رقم المجموعه" class="form-control sty form-control"  value="@Model.tbl_units.GroupNumber"  id="GroupNumber" required data-val="true" data-val-required="الرجاء ادخال رقم المجموعه" name="tbl_units.GroupNumber">
+                                    @Html.ValidationMessageFor(m => m.tbl_units.GroupNumber, "", new { @class = "text-danger", required = "required" })
+                                </div>
+                                @* //////////////////////////////////!!!!!!!!!!!!!!!!!!!!////***********/////////////////////////////////////// *@
+                            </div>
+                  
+
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="form-group ">
+                                    <h5>وصف الوحدة</h5>
+                                    <textarea class="form-control sty" id="unitDescrip" rows="3" style="border :1px solid #2b3553  ; border-radius:10px" required>@Model.tbl_units.Descreption</textarea>
+                                    @Html.ValidationMessageFor(m => m.tbl_units.Descreption, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <h5>الملاحظـــات</h5>
+                                    <textarea class="form-control sty" id="notes" rows="3" cols="300" style="border :1px solid #2b3553  ; border-radius:10px">@Model.Notes</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label>تفاصيل اضافيه</label>
+
+                            <div class="row" style="float:right">
+
+                                <div class="checkbox icheck form-check form-check-inline">
+                                    <label>
+                                        @if (Model.tbl_units.IsFurniture)
+                                        {
+                                            <input id="furnish" name="" type="checkbox" value="true" checked>
+                                        }
+                                        else
+                                        {
+                                            <input id="furnish" name="" type="checkbox" value="false">
+                                        }
+                                        مفروش
+                                    </label>
+                                </div>
+
+                                <div class="checkbox icheck form-check form-check-inline">
+                                    <label>
+                                        <input id="market" name="" type="checkbox" value="false"> بحث سوقي
+                                    </label>
+                                </div>
+                                <div class="checkbox icheck form-check form-check-inline">
+                                    <label>
+                                        @if (Model.IsNegotiable)
+                                        {
+                                            <input id="negotiate" name="" type="checkbox" value="true" checked>
+                                        }
+                                        else
+                                        {
+                                            <input id="negotiate" name="" type="checkbox" value="false">
+                                        }
+                                        قابل للنقاش
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<label>الكماليات المتاحة</label>*@
+                        @*@Html.DropDownListFor(m => m.AccessoriesArr, Model.Accessories, new { @class = "form-control", id = "access", required = "required", multiple = "multiple" })
+        <select class="form-control valid" data-val="true" data-val-required="لابد من ملا هذا الحقل" id="access" multiple="multiple" name="AccessoriesArr" required="required">
+            @foreach (var item in Model.Accessories)
+            {
+                if (item.Selected)
+                {
+                    <option value="@item.Value" selected>@item.Text</option>
+                }
+                else
+                {
+                    <option value="@item.Value">@item.Text</option>
+
+                }
+
+            }
+        </select>
+        @Html.ValidationMessageFor(m => m.AccessoriesArr, "", new { @class = "text-danger", id = "accessError" })*@
+                        <div class="form-group ">
+                            <div class="row">
+
+
+                                <label>الكماليات المتاحة : </label>
+
+                                <div class="row">
+                                    @*@Html.DropDownListFor(m => m.AccessoriesArr, Model.Accessories, new { @class = "form-control", id = "access", required = "required", multiple = "multiple" })
+                    @Html.ValidationMessageFor(m => m.AccessoriesArr, "", new { @class = "text-danger", id = "accessError" })*@
+                                    @foreach (var item in Model.Accessories)
+                                    {
+                                        if (item.Selected)
+                                        {
+                                            <div class="checkbox icheck form-check form-check-inline ">
+                                                <label>
+                                                    <input class="access" type="checkbox" checked value="true" data-id="@item.Value">@item.Text
+                                                </label>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="checkbox icheck form-check form-check-inline ">
+                                                <label>
+                                                    <input class="access" type="checkbox" value="false" data-id="@item.Value">@item.Text
+                                                </label>
+                                            </div>
+                                        }
+
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <button type="submit" class="btn btn-default animation-on-hover" id="mybutton">حفــظ</button>
+                    </form>
+
+                    <!-- Image Modal -->
+                    <div id="myModal" class="modal fade " role="dialog">
+                        <div class="modal-dialog .modal-dialog-centered modal-lg" role="document">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Choose image</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        @if (Model.Images.Any())
+                                        {
+                                            var counter = 0;
+                                            var index = 0;
+                                            int elementsInloop = 0;
+                                            var loops = (Model.Images.Length % 4 > 0) ? ((Model.Images.Length / 4) + 1) : ((Model.Images.Length / 4));
+                                            for (int i = 0; i < loops; i++)
+                                            {
+                                                <div>
+                                                    @{
+                                                        index = counter;
+                                                        elementsInloop = (Model.Images.Length - counter) > 4 ? 4 : Model.Images.Length - counter;
+
+                                                    }
+
+                                                    @for (int j = index; j < index + elementsInloop; j++)
+                                                    {
+
+                                                        <img src="~/@Model.Images[j]" width="100" height="100" style="border:1px thin grey;margin-right:5px;" alt="">
+
+                                                        counter = counter + 1;
+                                                    }
+
+                                                </div>
+                                            }
+                                        }
+                                        <div class="jumbotron">
+                                            <form action="/ClientSales/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                            <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                                        </div>
+                                        <span class="alert alert-primary">الصورة الاولى التي سيتم تحميلها هي الصورة الاساسيه لعنوان العرض</span><br /><br />
+                                        <span class="alert alert-warning">اقصى عدد للصور هو 9 صور فقط  </span>
+                                        <span class="alert alert-info">مساحة الصوره لا تزيد عن 3 ميجابايتس  </span>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1094px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        </div>
+    </div>  <!-- End of body-->
+
+    <div class="modal fade" id="matches" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script>
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 3, // MB
+            maxFiles: 9,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 9,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+                })
+            },
+            successmultiple: function (file, response) {
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+    var token = $('input[name="__RequestVerificationToken"]').val();
+    //CKEDITOR.replace('title');
+    //CKEDITOR.replace('description');
+        $(function () {
+        $("#payment option[value='6']").hide();
+         $("#payment").on('change', function () {
+                if ($('#payment').val() == 4) {
+                    $("#hiddenDivForInstallment").show(1000);
+         
+                    $("#priceName").html("ما تم دفعه <abbr class='req'>*</abbr>");
+                }
+                else if ($('#payment').val() == 3) {
+                    $("#hiddenDivForInstallment").hide(1000);
+                   
+                    $("#priceName").html("السعــر /الايجار المطــلوب<abbr class='req'>*</abbr>");
+                    $("#BasisOfInstallmentDropdown").val(null);
+                    $("#Over").val(0) ;
+                    $("#Remaining").val(0) ;
+                    $("#YearOfInstallment").val(0) ;
+                }
+                 else if ($('#payment').val() == null||$('#payment').val() == "") {
+                    $("#hiddenDivForInstallment").hide(1000);
+                     $("#priceHedin").hide(1000);
+                }
+             });
+
+        if("@ViewBag.Disable"==="True"){
+                $("input").prop("disabled", true);
+                $("select").prop("disabled", true);
+                $("textarea").prop("disabled", true);
+                $(".breadcrumb").hide();
+                $("input[type='checkbox']").prop("disabled", false);
+                $(".req").hide();
+                $(".btn").hide();
+            }
+
+        var teleId = "@Model.FK_AvaliableUnits_Users_SalesId";
+        $("#tele").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/dashboard/admin/EmpAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { text: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+
+                            teleId = item.PK_Users_Id;
+                            return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                        }))
+
+                    }
+                })
+            },
+            select: function (event, ui) {
+                mgrId = ui.item.value.split("-")[1];
+                ui.item.value = ui.item.value.split("-")[0]
+            },
+
+        });
+
+        $('#install').iCheck({
+            checkboxClass: 'icheckbox_flat-pink',
+            radioClass: 'iradio_square-pink',
+            increaseArea: '20%' /* optional */
+        })
+            .on('ifChecked', function (event) {
+                $('#install').val(true);
+            })
+            .on('ifUnchecked', function (event) {
+                $('#install').val(false);
+            });
+
+        $('#market').iCheck({
+            checkboxClass: 'icheckbox_flat-pink',
+            radioClass: 'iradio_square-pink',
+            increaseArea: '20%' /* optional */
+        })
+       .on('ifChecked', function (event) {
+           $('#market').val(true);
+       })
+       .on('ifUnchecked', function (event) {
+           $('#market').val(false);
+       });
+
+        $('#negotiate').iCheck({
+            checkboxClass: 'icheckbox_flat-pink',
+            radioClass: 'iradio_square-pink',
+            increaseArea: '20%' /* optional */
+        })
+           .on('ifChecked', function (event) {
+               $('#negotiate').val(true);
+           })
+           .on('ifUnchecked', function (event) {
+               $('#negotiate').val(false);
+           });
+
+        $('.access').iCheck({
+            checkboxClass: 'icheckbox_flat-pink',
+            radioClass: 'iradio_square-pink',
+            increaseArea: '20%' /* optional */
+        })
+       .on('ifChecked', function (event) {
+           $(this).val(true);
+       })
+       .on('ifUnchecked', function (event) {
+           $(this).val(false);
+       });
+
+        $('#furnish').iCheck({
+            checkboxClass: 'icheckbox_flat-pink',
+            radioClass: 'iradio_square-pink',
+            increaseArea: '20%' /* optional */
+        })
+           .on('ifChecked', function (event) {
+               $('#furnish').val(true);
+           })
+           .on('ifUnchecked', function (event) {
+               $('#furnish').val(false);
+           });
+
+        $("#AddClientsaleForm").submit(function (e) {
+            e.preventDefault();
+
+
+            if ($("#DateOfBuild").val() === "" || $("#DateOfBuild").val() === null) {
+                $("#DateOfBuild").next("span.text-danger").html("لابد من إدخال سنه البناء!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال  سنه البناء!");
+
+                return false;
+            }
+            else {
+                $("#DateOfBuild").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+            if ($("#NoOfElevators").val() === "" || $("#NoOfElevators").val() === null) {
+                $("#NoOfElevators").next("span.text-danger").html("لابد من إدخال عدد المصاعد!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال  عدد المصاعد!");
+
+                return false;
+            }
+            else {
+                $("#NoOfElevators").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+            if ($("#usages").val() === "" || $("#usages").val() === null) {
+                $("#usages").next("span.text-danger").html("لابد من اختيار نوع العقار إدارى ام سكنى!");
+                $("#accessError").next("span.text-danger").html("لابد من اختيار نوع العقار إدارى ام سكنى!");
+
+                return false;
+            }
+            else {
+                $("#usages").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("لابد من اختيار نوع العقار إدارى ام سكنى!");
+
+            }
+            if ($("#space").val() === "" || $("#space").val() === null) {
+                $("#space").next("span.text-danger").html("لابد من ملا هذا الحقل!");
+            }
+            else {
+                $("#space").next("span.text-danger").html("");
+            }
+
+            if ($("#price").val() === "" || $("#price").val() === null) {
+                $("#price").next("span.text-danger").html("لابد من ملا هذا الحقل!");
+            }
+            else {
+                $("#price").next("span.text-danger").html("");
+            }
+            if ($("#floor").val() === "" || $("#floor").val() === null) {
+                $("#floor").next("span.text-danger").html("لابد من ملا هذا الحقل!");
+            }
+            else {
+                $("#floor").next("span.text-danger").html("");
+            }
+            if ($("#view").val() === "" || $("#view").val() === null) {
+                $("#view").next("span.text-danger").html("لابد من ملا هذا الحقل!");
+            }
+            else {
+                $("#view").next("span.text-danger").html("");
+            }
+
+
+            if ($("#rooms").val() === "" || $("#rooms").val() === null) {
+                $("#rooms").next("span.text-danger").html("لابد من ملا هذا الحقل!");
+            }
+            else {
+                $("#rooms").next("span.text-danger").html("");
+            }
+
+            if ($("#baths").val() === "" || $("#baths").val() === null) {
+                $("#baths").next("span.text-danger").html("لابد من ملا هذا الحقل!");
+            }
+            else {
+                $("#baths").next("span.text-danger").html("");
+            }
+
+            if (!$(this).valid()) {
+                return false;
+            }
+            //if (CKEDITOR.instances["title"].getData() === "" || CKEDITOR.instances["title"].getData() === null) {
+            //    $("#titleError").html("لابد من ملا هذا الحقل");
+            //    return false;
+            //}
+            //else {
+            //    $("#titleError").html("");
+            //}
+            //if (CKEDITOR.instances["description"].getData() === "" || CKEDITOR.instances["description"].getData() === null) {
+            //    $("#descError").html("لابد من ملا هذا الحقل");
+            //    return false;
+            //}
+            //else {
+            //    $("#descError").html("");
+            //}
+            if (($("#finishing").val() === "1" || $("#finishing").val() === "2") && $("#furnish").is(":checked")) {
+               
+                alertify.set('notifier', 'position', 'top-left');
+                alertify.notify("لايمكن لشقه بهذا النوع من التشطيب ان تكون مفروشه!","error", function () { });
+                return false;
+            }
+                 
+            if (($("#trans").val() === "2") && $("#payment").val() === "4") {
+
+                alertify.set('notifier', 'position', 'top-left');
+                alertify.notify("لايمكن تأجير عقار عليه أقساط!", "error", function () { });
+                return false;
+            }
+            var accessArr = [];
+            $.each($(".access"), function (index, value) {
+                if ($(this).is(":checked")) {
+                    accessArr.push($(this).attr("data-id"));
+                };
+            });
+            /*********************************************************************************************************************************************************/
+            
+
+            var obj = {
+                FK_AvaliableUnits_Users_SalesId: teleId,
+                PK_AvailableUnits_Id: $("#id").val(),
+                FK_AvaliableUnits_Units_UnitId: $("#unit").val(),
+                FK_AvaliableUnits_Clients_ClientId: $("#clientId").val(),
+                FK_AvailableUnits_Usage_Id: $("#usages").val(),
+                DateOfBuild: $("#DateOfBuild").val(),
+                NoOfElevators: $("#NoOfElevators").val(),
+                //FK_AvaliableUnits_Transaction_TransactionId: $("#trans").val(),
+                //Title: CKEDITOR.instances["title"].getData(),
+                //Description: CKEDITOR.instances["description"].getData(),
+                Notes: $("#notes").val(),
+                Price: $("#price").val(),
+                  BasisOfInstallment:$("#BasisOfInstallmentDropdown").val(),
+                    Over:$("#Over").val(),
+                    Remaining:$("#Remaining").val(),
+                    YearOfInstallment:$("#YearOfInstallment").val(),
+
+                FK_AvailableUnits_PaymentMethod_Id: $("#payment").val(),
+                IsNegotiable: $("#negotiate").is(":checked"),
+                AccessoriesArr: accessArr,
+                tbl_units: {
+                    FK_Units_Client_Id: $("#clientId").val(),
+                    FK_Units_Views_Id: $("#view").val(),
+                    Space: $("#space").val(),
+                    Rooms: $("#rooms").val(),
+                    Floor: $("#floor").val(),
+                    BathRooms: $("#baths").val(),
+                    ApartmentNumber: $("#ApartmentNumber").val(),
+                    FlatNumber: $("#FlatNumber").val(),
+                    GroupNumber: $("#GroupNumber").val(),
+
+                    Descreption: $("#unitDescrip").val(),
+                    FK_Units_Regions_Id: $("#region").val(),
+                    FK_Units_Finishing_Id: $("#finishing").val(),
+                    FK_Units_Categories_Id: $("#cats").val(),
+                    IsFurniture: $("#furnish").is(":checked"),
+                    FK_Units_Client_Id: $("#clientId").val(),
+                    IsMarketResearch: $("#market").is(":checked"),
+                   
+                },
+            };
+            if ($("#trans").val() !== "" && $("#trans").val() !== null) {
+                obj.FK_AvaliableUnits_Transaction_TransactionId = $("#trans").val();
+            }
+            else {
+                obj.FK_AvaliableUnits_Transaction_TransactionId = $("#transValue").attr("data-id");
+            };
+
+            $.ajax({
+                "url": "/ClientSales/UpdateClientSale/",
+                "type": "POST",
+                accept: "application/json",
+                dataType: "json",
+                "data": {
+                    __RequestVerificationToken:token,
+                    saleVM: obj,
+                },
+                success: function (response) {
+                    if (response.valid) {
+                        alertify.alert(response.message, function () {
+                            location.href = "/clientSales/DemandMatchesAfterUpdate/";
+                        });
+                    }
+                    else {
+                        alertify.alert(response.message, function () {
+                        });
+                    };
+
+                },
+                error: function (response) {
+                    alertify.alert("حدث خطا ما عند تسجيل البيانات", function () {
+
+                    })
+
+                }
+            });
+
+
+        });
+
+    });
+
+    </script>
+
+}

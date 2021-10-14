@@ -1,0 +1,1257 @@
+﻿@model _3aqarak.MVC.ViewModels.MixedVillasAvailableViewModel
+@{
+    ViewBag.Title = "AddVillasClientSalse";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = (_3aqarak.BLL.Dto.UserDto)Session["User"];
+}
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item active" aria-current="page">اضافة عرض فيلا لعميل </li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="AddClientsaleForm">
+                        @Html.AntiForgeryToken()
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                        <span class="text-danger" id="finishErr"></span>
+                        <span class="text-danger" id="accessError"></span>
+                        @Html.ValidationSummary()
+
+                        <div class="row">
+                            <div class=" col">
+                                @*@Html.LabelFor(m => m.FK_AvaliableUnits_Users_SalesId, new { @class = "text-right" })*@
+                                <label for="first" class="text-right"> موظف السيلز :<abbr class="req">*</abbr></label>
+                                <input type="text" class="form-control" id="tele" placeholder="السيلز" name="FK_VillasAvailables_Users_SalesId" required data-val="true" data-val-required="الرجاء إختيار إسم موظف السيلز">
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_Users_SalesId, "", new { @class = "text-danger " })
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class=" col">
+                                <div class="form-group">
+                                    <div class="show-img ">
+                                        <input type="button" class="btn btn-block" data-toggle="modal" style="margin-top:6.5%" data-target="#myModal" value=" تحميل صــور العــرض " />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <input type="hidden" name="catId" id="catId" value="@Model.FK_VillasAvailables_Categories_Id" />
+
+                            <div class="col">
+                                <label for="Residential">استخدام العقار</label>
+                                @Html.DropDownListFor(m => m.FK_VillasAvailables_Usage_Id, Model.Usages, "اختر استخام الوحدة", new { @class = "form-control", id = "usages" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_Usage_Id, "", new { @class = "text-danger " })
+
+                            </div>
+                            <div class="col">
+                                <label>الاقسام العقارية</label>
+                                @Html.DropDownListFor(m => m.FK_VillasAvailables_Transactions_Id, Model.Transactions, "اختر القسم", new { @class = "form-control", id = "trans", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_Transactions_Id, "", new { @class = "text-danger", id = "transError" })
+                            </div>
+                            <div class="col">
+                                <label>المنطقة</label>
+                                @Html.DropDownListFor(m => m.FK_VillasAvailables_Regions_Id, Model.Regions, "اختر القسم", new { @class = "form-control", id = "Regions", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_Regions_Id, "", new { @class = "text-danger", id = "RegionsError" })
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="form-group col-md-3">
+                                <label>الاطلاله<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_VillasAvailables_View_Id, Model.Views, "اختر الاطلاله", new { @class = "form-control", id = "view", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_View_Id, "", new { @class = "text-danger", id = "viewError" })
+                            </div>
+                            <div class="col">
+                                <label for="Furniture">نوع الفرش</label>
+                                <select name="Furniture" id="Furniture" class="form-control select">
+                                    <option value="false" class="select-item">غير مفروش</option>
+                                    <option value="true" class="select-item">مفروش</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label>تشطيب الوحدة<abbr class="req">*</abbr> </label>
+                                @Html.DropDownListFor(m => m.FK_VillasAvailables_Finishings_Id, Model.Finishings, "اختر نوع التشطيب", new { @class = "form-control", id = "finishing", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasAvailables_Finishings_Id, "", new { @class = "text-danger", id = "finishError" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="form-group col">
+                                    <label>مساحة الفيلا <abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control" min="0" placeholder="مساحة الفيلا" id="space" required data-val="true" data-val-required="الرجاء إدخال المساحه" name="Space">
+                                    @Html.ValidationMessageFor(m => m.Space, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group col">
+                                    <label>عدد الغرف<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control" placeholder="عدد الغرف" min="0" id="rooms" required data-val="true" data-val-required="الرجاء إدخال عدد الغرف" name="Rooms">
+                                    @Html.ValidationMessageFor(m => m.Rooms, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group col">
+                                    <label>عدد الحمامات<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control" placeholder="عدد الحمامات" min="0" id="baths" required data-val="true" data-val-required="الرجاء إدخال عدد الحمامات" name="BathRooms">
+                                    @Html.ValidationMessageFor(m => m.BathRooms, "", new { @class = "text-danger" })
+                                </div>
+                                @*<div class="form-group col">
+                    <label>عدد الطوابق <abbr class="req">*</abbr> </label>
+                    <input type="number" class="form-control" placeholder="الطــابق" min="0" id="floor" required data-val="true" data-val-required="الرجاء عدد الطوابق" name="FloorNumber">
+                    @Html.ValidationMessageFor(m => m.FloorNumber, "", new { @class = "text-danger" })
+                </div>*@
+                                <div class="form-group col">
+                                    <label>مساحة الأرض<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control" placeholder="مساحة الأرض" min="0" id="AreaSpace" required data-val="true" data-val-required="الرجاء إدخال مساحة محيط الفيلا" name="AreaSpace">
+                                    @Html.ValidationMessageFor(m => m.AreaSpace, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="form-row">
+
+                                <div class="col">
+                                    <label>طــريقة الدفع</label>
+                                    @Html.DropDownListFor(m => m.FK_VillasAvailables_PaymentMethod_Id, Model.Payments, "اختر طريقه الدفع", new { @class = "form-control", id = "payment", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_VillasAvailables_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                                </div>
+
+                                @*<div class="form-group col-md-3">
+                                    <label id="priceName">السعــر /الايجار المطــلوب<abbr class="req">*</abbr> </label>
+                                    <input type="number" class="form-control sty form-control" id="price" min="0" placeholder="السعر المطلوب" required data-val="true" data-val-required="الرجاء إدخال السعر المطلوب" name="Price">
+                                    @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
+                                </div>*@
+                                <div class="form-group col-md-3">
+                                    <label>سنه البناء </label>
+                                    <input type="number" step="1" min="1900" value="1900" max="@DateTime.Now.Year" class="form-control sty" id="DateOfBuild">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>عدد المصاعد<abbr class="req">*</abbr> </label>
+                                    <input type="number" min="0" placeholder="عدد المصاعد" class="form-control sty form-control" id="NoOfElevators" required data-val="true" data-val-required="الرجاء ادخال عدد المصاعد" name="NoOfElevators">
+                                    @Html.ValidationMessageFor(m => m.NoOfElevators, "", new { @class = "text-danger", required = "required" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6" id="priceHedin">
+                                <label id="priceName">السعــر /الايجار المطــلوب<abbr class="req">*</abbr> </label>
+                                <input type="number" class="form-control sty form-control" id="price" min="0" placeholder="السعر المطلوب" required data-val="true" data-val-required="الرجاء إدخال السعر المطلوب" name="Price">
+                                @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-row" id="hiddenDivForInstallment">
+                            <div class="form-group col">
+                                <label>المتبقي<abbr class="req">*</abbr> </label>
+                                <input type="number" class="form-control sty form-control" id="Remaining" min="0" placeholder="المبلغ المتبقي" required data-val="true" data-val-required="الرجاء إدخال المبلغ المتبقي" name="Remaining">
+                                @Html.ValidationMessageFor(m => m.Remaining, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group col">
+                                <label>المكسب<abbr class="req">*</abbr> </label>
+                                <input type="number" class="form-control sty form-control" id="Over" min="0" placeholder="المكسب" required data-val="true" data-val-required="الرجاء إدخال المكسب المطلوب" name="Over">
+                                @Html.ValidationMessageFor(m => m.Over, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group col">
+                                <label>عدد سنوات الأقساط </label>
+                                <input type="number" class="form-control sty form-control" id="YearOfInstallment" min="0" placeholder="عدد سنوات التقسيط" name="YearOfInstallment">
+                            </div>
+
+                            <div class="form-group col">
+                                <label class="preLabel">نظام الأقساط</label>
+                                <select id="BasisOfInstallmentDropdown" class="form-control">
+                                    <option> اختر نظام القسط </option>
+                                    <option value="1">سنوي</option>
+                                    <option value="2">نصف سنوي</option>
+                                    <option value="3">ربع سنوي</option>
+                                    <option value="4">شهري</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>رقم الفيلا <abbr class="req">*</abbr></label>
+                                    <input type="text" placeholder="رقم الفيلا" class="form-control sty form-control" id="VillaNumber" required data-val="true" data-val-required="الرجاء ادخال رقم الفيلا" name="VillaNumber">
+                                    @Html.ValidationMessageFor(m => m.VillaNumber, "", new { @class = "text-danger", required = "required" })
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>رقم المجموعه<abbr class="req">*</abbr> </label>
+                                    <input type="text" placeholder="المجموعه" class="form-control sty form-control" id="GroupNumber" required data-val="true" data-val-required="الرجاء ادخال المجموعه" name="GroupNumber">
+                                    @Html.ValidationMessageFor(m => m.GroupNumber, "", new { @class = "text-danger", required = "required" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-row">
+
+                                <div class="form-group col-md-6">
+                                    <label>وصف الوحدة<abbr class="req">*</abbr></label>
+                                    <textarea class="form-control sty" id="unitDescrip" rows="3" name="ShortDescription" data-val="true" data-val-required="الرجاء إدخال وصف الوحدة" style="border :1px solid #2b3553  ; border-radius:10px" required></textarea>
+                                    @Html.ValidationMessageFor(m => m.ShortDescription, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <h5>الملاحظـــات</h5>
+                                    <textarea class="form-control sty" id="notes" rows="3" style="border :1px solid #2b3553  ; border-radius:10px"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group ">
+
+                                <label> <u>الكماليات المتاحة : </u><abbr class="req">*</abbr></label>
+                                <br /> <br />
+                                @foreach (var item in Model.Accessories)
+                                {
+                                    if (item.Selected)
+                                    {
+                                        <div class="checkbox icheck form-check form-check-inline  ">
+                                            <label>
+                                                <input class="access " type="checkbox" checked value="true" data-id="@item.Value">@item.Text
+                                            </label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="checkbox icheck form-check form-check-inline ">
+                                            <label>
+                                                <input class="access " type="checkbox" value="false" data-id="@item.Value">@item.Text
+                                            </label>
+                                        </div>
+
+                                    }
+
+                                }
+
+                            </div>
+                        </div>
+                        <span class="text-danger" id="accesseriesError"></span>
+
+                        <label> <u> تفاصيل إضافية : </u></label>
+                        <br /> <br />
+                        <div class="row" style="float:right">
+
+
+                            <div class="checkbox icheck form-check form-check-inline">
+                                <label>
+                                    <input id="market" name="" type="checkbox" value="false"> بحث سوقي
+                                </label>
+                            </div>
+
+                            <div class="checkbox icheck form-check form-check-inline">
+                                <label>
+                                    <input id="negotiate" name="" type="checkbox" value="false"> قابل للنقاش
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <br /><br /><br />
+                        <!-- Notes Textarea -->
+
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-block btn-success" id="GetListOfDemands">الترشيحات</a>
+                            </div>
+                        </div>
+                        <div class="row" style="display:none;" id="demandDiv">
+                            <div class="col">
+                                <table class="table text-right table-hover " id="demandTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">اسم المشتــري </th>
+                                            <th> رقــم الطلب</th>
+                                            <th>تفاصيل الطلب</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="form-group col">
+                                <input type="text" class="form-control" id="clientSearchTxt" placeholder="بحث عن عميل معين بالاسم او الهاتف">
+
+                            </div>
+
+                            <div class="col">
+                                <a class="btn btn-success btn-block" id="saveClientInfo" data-id="">حفظ عميل جديد</a>
+                            </div>
+                        </div>
+
+
+                        @*save client*@
+                        <div class="row" id="hiddendivforsaveclient">
+                            <div class="card-body">
+
+                                <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                                <span class="text-danger" id="finishErr"></span>
+                                <span class="text-danger" id="accessError"></span>
+                                <div class="form-group">
+                                    @*<div class="show-img ">
+                        <input type="button" class="btn btn-block" data-toggle="modal" data-target="#IDModal" value=" صوره البطاقة " />
+                    </div>*@
+                                </div>
+
+                                <div class="form-group  ">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="first" class="text-right"> الاســـم  :<abbr class="req">*</abbr></label>
+                                            <input type="text" class="form-control " id="clientName" placeholder="الاســم" name="Name" required="required" data-val="true" data-val-required="الرجاء إدخال اسم العميل">
+                                            @Html.ValidationMessageFor(m => m.Name)
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+
+                                            <label for="mobile" class="text-right">الموبايل :<abbr class="req">*</abbr></label>
+                                            @Html.TextBoxFor(m => m.Mobile, new { type = "tel", id = "clientMobile", @class = "form-control", placeholder = "الموبايل" })
+
+                                            @Html.ValidationMessageFor(m => m.Mobile)
+                                            <span class="valid-msg hide text-danger"> </span>
+                                            <span class="error-msg hide text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="last" class="text-right"> الرقم القومي :</label>
+                                        @*@Html.TextBoxFor(m => m.IdNumber, new { @class = "form-control", id = "idNumber", placeholder = "الرقم القومي", name = "IdNumber" })*@
+                                        <input type="text" class="form-control" id="clientIdNumber" placeholder="الرقم القومي" name="IdNumber">
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label for="last" class="text-right"> الوظيفة :</label>
+                                        <input type="text" class="form-control" id="clientJob" placeholder="الوظيفة " name="Job">
+                                    </div>
+                                </div>
+
+                                <div class="form-group ">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="phone" class="text-right">التليفون :</label>
+                                            <input type="tel" class="form-control" id="clientPhone" placeholder="التليفون" name="Phone">
+                                            <span class="valid-msg3 hide text-danger"> </span>
+                                            <span class="error-msg3 hide text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="phone" class="text-right">2الموبايل :</label>
+                                            <input type="tel" class="form-control" id="clientMobile2" placeholder="الموبايل2" name="Mobile2">
+                                            <span class="valid-msg2 hide text-danger"> </span>
+                                            <span class="error-msg2 hide text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="last" class="text-right"> افضــل وقت للاتصــال :</label>
+                                            <input type="text" class="form-control" id="clientBestContactHour" placeholder="ميعاد الاتصــال" name="BestContactHour">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group  ">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="last" class="text-right"> العنــوان :</label>
+                                            <textarea class="form-control" rows="1" id="clientAddress" placeholder="العنوان" name="Address"></textarea>
+                                            @*@Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger text-right" })*@
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="last" class="text-right"> ملاحظات :</label>
+                                            <textarea class="form-control" rows="1" id="clientNotes" placeholder="ملاحظات" name="ClientNotes"></textarea>
+                                            @Html.ValidationMessageFor(m => m.ClientNotes, "", new { @class = "text-danger text-right" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*end save client*@
+
+                        <button type="submit" class="btn btn-default animation-on-hover" id="mybutton">حفــظ</button>
+                    </form>
+
+                    <!-- Image Modal -->
+                    <div id="myModal" class="modal fade " role="dialog">
+                        <div class="modal-dialog .modal-dialog-centered" role="document">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Choose image</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+
+                                        <div class="jumbotron">
+                                            <form action="/ClientSales/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                            <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                                        </div>
+                                        <span class="alert alert-primary">الصورة الاولى التي سيتم تحميلها هي الصورة الاساسيه لعنوان العرض</span><br /><br />
+                                        <span class="alert alert-warning">اقصى عدد للصور هو 9 صور فقط  </span>
+                                        <span class="alert alert-info">مساحة الصوره لا تزيد عن 3 ميجابايتس  </span>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1094px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        </div>
+    </div>  <!-- End of body-->
+
+    <div class="modal fade" id="matches" tabindex="-1" role="dialog" aria-labelledby="matches" aria-hidden="true">
+        <div class="modal-dialog  " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">
+                        changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--modal details-->
+    <div class="modal fade" id="detai" tabindex="-1" role="dialog" aria-labelledby="detai" aria-hidden="true">
+        <div class="modal-dialog  " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="My-details-Modal-Body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        function validateAvailableData() {
+            if ($("#space").val() === "" || $("#space").val() === null) {
+                $("#space").next("span.text-danger").html("الرجاء إدخال المساحه!");
+                $("#accessError").next("span.text-danger").html("الرجاء إدخال المساحه!");
+                return false;
+            }
+            else {
+                $("#space").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+            }
+
+            if ($("#price").val() === "" || $("#price").val() === null) {
+                $("#price").next("span.text-danger").html("لابد من إدخال السعر");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال السعر!");
+
+                return false;
+            }
+            else {
+                $("#price").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+            if ($("#view").val() === "" || $("#view").val() === null) {
+                $("#view").next("span.text-danger").html("لابد من إختبار الإطلالة!");
+                $("#accessError").next("span.text-danger").html("لابد من إختبار الإطلالة!");
+
+                return false;
+            }
+            else {
+                $("#view").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+            //if ($("#floor").val() === "" || $("#floor").val() === null) {
+            //    $("#floor").next("span.text-danger").html("لابد من إدخال الطابق!");
+            //    $("#accessError").next("span.text-danger").html("لابد من إدخال الطابق!");
+            //    return false;
+            //}
+            //else {
+            //    $("#floor").next("span.text-danger").html("");
+            //    $("#accessError").next("span.text-danger").html("");
+            //}
+            if ($("#GroupNumber").val() === "" || $("#GroupNumber").val() === null) {
+                $("#GroupNumber").next("span.text-danger").html("لابد من إدخال رقم المجموعه!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال رقم المجموعه!");
+
+                return false;
+            }
+            else {
+                $("#GroupNumber").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+             if ($("#VillaNumber").val() === "" || $("#VillaNumber").val() === null) {
+                $("#VillaNumber").next("span.text-danger").html("لابد من إدخال رقم الفيلا!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال رقم الفيلا!");
+
+                return false;
+            }
+            else {
+                $("#VillaNumber").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+            if ($("#rooms").val() === "" || $("#rooms").val() === null) {
+                $("#rooms").next("span.text-danger").html("لابد من إدخال عدد الغرف!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال عدد الغرف!");
+
+                return false;
+            }
+            else {
+                $("#rooms").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+             // for ragions
+            if ($("#Regions").val() === "" || $("#Regions").val() === null) {
+                $("#RegionsError").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+
+                return false;
+            }
+            else {
+                $("#RegionsError").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+            // for payment
+             if ($("#payment").val() === "" || $("#payment").val() === null) {
+                $("#paymentError").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+
+                return false;
+            }
+            else {
+                $("#paymentError").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+            // for finishing 
+
+         if ($("#finishing").val() === "" || $("#finishing").val() === null) {
+                $("#finishError").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+
+                return false;
+            }
+            else {
+                $("#finishError").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+            //************
+
+            if ($("#baths").val() === "" || $("#baths").val() === null) {
+                $("#baths").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال عدد الحمامات!");
+
+                return false;
+            }
+            else {
+                $("#baths").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+            //if ($("#DateOfBuild").val() === "" || $("#DateOfBuild").val() === null) {
+            //    $("#DateOfBuild").next("span.text-danger").html("لابد من إدخال سنه البناء!");
+            //    $("#accessError").next("span.text-danger").html("لابد من إدخال  سنه البناء!");
+
+            //    return false;
+            //}
+            //else {
+            //    $("#DateOfBuild").next("span.text-danger").html("");
+            //    $("#accessError").next("span.text-danger").html("");
+
+            //}
+
+            if ($("#NoOfElevators").val() === "" || $("#NoOfElevators").val() === null) {
+                $("#NoOfElevators").next("span.text-danger").html("لابد من إدخال عدد المصاعد!");
+                $("#accessError").next("span.text-danger").html("لابد من إدخال  عدد المصاعد!");
+
+                return false;
+            }
+            else {
+                $("#NoOfElevators").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+            if ($("#Residential").val() === "" || $("#Residential").val() === null) {
+                $("#Residential").next("span.text-danger").html("لابد من اختيار نوع العقار إدارى ام سكنى!");
+                $("#accessError").next("span.text-danger").html("لابد من اختيار نوع العقار إدارى ام سكنى!");
+                return false;
+            }
+            else {
+                $("#Residential").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("لابد من اختيار نوع العقار إدارى ام سكنى!");
+
+            }
+            if ($("#name").val() === "" || $("#name").val() === null) {
+                $("#name").next("span.text-danger").html("لابد من ادخال الاسم");
+                $("#accessError").next("span.text-danger").html("لابد من ادخال الاسم!");
+                return false;
+            }
+            else {
+                $("#name").next("span.text-danger").html("");
+                $("#accessError").next("span.text-danger").html("");
+
+            }
+
+            var accessArr = [];
+            $.each($(".access"), function (index, value) {
+
+                if ($(this).is(":checked")) {
+                    accessArr.push($(this).attr("data-id"));
+                };
+
+            });
+            if (accessArr.length < 1) {
+                accesseriesError
+                $("#accesseriesError").html("لابد من إختيار أي من الكماليات المتاحة !");
+                $("#accessError").html("لابد من إختيار أي من الكماليات المتاحة !");
+
+                return false;
+            }
+            else {
+                $("#accesseriesError").html("");
+                $("#accessError").html("");
+            }
+            
+            if (($("#finishing").val() === "1" || $("#finishing").val() === "2") && $("#Furniture").val() === "true") {
+
+                alertify.set('notifier', 'position', 'top-left');
+                alertify.notify("لايمكن لشقه بهذا النوع من التشطيب ان تكون مفروشه!", "error", function () { });
+                return false;
+            }
+            
+            if (($("#trans").val() === "2") && $("#payment").val() === "4") {
+
+                alertify.set('notifier', 'position', 'top-left');
+                alertify.notify("لايمكن تأجير عقار عليه أقساط!", "error", function () { });
+                return false;
+            }
+
+            return true;
+        };
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 3, // MB
+            maxFiles: 9,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 9,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+                })
+            },
+            successmultiple: function (file, response) {
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+
+    </script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var clientId = 0;
+         function collectClientData(obj) {
+            obj.PK_Client_Id = clientId;
+            obj.BestContactHour = $("#contact").val();
+            obj.Name = $("#name").val();
+            obj.Phone = $("#phone").val();
+            obj.Mobile = $("#mobile").val();
+            obj.Mobile2 = $("#mobile2").val();
+            obj.Job = $("#job").val();
+            obj.Address = $("#address").val();
+            obj.Notes = $("#clientNotes").val();
+            obj.IdNumber = $("#idNumber").val();
+            return obj;
+        };
+        $(document).ready(function () {
+        $("#payment option[value='6']").hide();
+            $(window).on("beforeunload", function () {
+                var shopSessionName = "VillasClientSalesImagePathList";
+                var shopPath = "/Assets/Img/ClientSalesImages";
+                $.ajax({
+                    url: "/home/DeleteImagesBeforUnloadPage/",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        sessionName: shopSessionName,
+                        path: shopPath
+                    }
+                });
+                alert("Goodbye!");
+            });
+            //*******
+             //client auto complete
+            $("#clientSearchTxt").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/ApartmentAvailables/ClientAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name, value: item.Name + "-" + item.PK_Client_Id };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                   // $("#hiddendivforsaveclient").toggle(1000);
+                    clientId = ui.item.value.split("-")[1];
+                    //********************************************************************************************
+                    ui.item.value = ui.item.value.split("-")[0];
+                    $.ajax({
+                        url: "/ApartmentAvailables/GetClientdetails",
+                        type: "POST",
+                        dataType: "json",
+                        data: { id: clientId },
+                        success: function (data) {
+                            $("#clientBestContactHour").val(data.clientList.BestContactHour);
+                            $("#clientName").val(data.clientList.Name);
+                            $("#phone").val(data.clientList.Phone);
+                            $("#clientMobile").val(data.clientList.Mobile);
+                            $("#mobile2").val(data.clientList.Mobile2);
+                            $("#clientJob").val(data.clientList.Job);
+                            $("#address").val(data.clientList.Address);
+                            $("#clientNotes").val(data.clientList.Notes);
+                            $("#clientIdNumber").val(data.clientList.IdNumber);
+                            $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").prop("readonly", true);
+
+                        },
+                    });
+
+
+                    //***********************************************************************************************
+                },
+
+            });
+
+            $("#saveClientInfo").click(function () {
+                clientId = 0;
+                $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").prop("readonly", false);
+                $("#hiddendivforsaveclient input , #hiddendivforsaveclient textarea").val("");
+               // $("#hiddendivforsaveclient").toggle(1000);
+
+            });
+            //******
+            
+            $("#hiddenDivForInstallment").hide();
+            $("#priceHedin").hide();
+        
+            $("#payment").on('change', function () {
+                if ($('#payment').val() == 4) {
+                    $("#hiddenDivForInstallment").show(1000);
+                    $("#priceHedin").show(1000);
+                    $("#priceName").html("ما تم دفعه <abbr class='req'>*</abbr>");
+
+                }
+                else if ($('#payment').val() == 3) {
+                    $("#hiddenDivForInstallment").hide(1000);
+                    $("#priceHedin").show(1000);
+                    $("#priceName").html("السعــر /الايجار المطــلوب<abbr class='req'>*</abbr>");
+                    $("#BasisOfInstallmentDropdown").val(null);
+                    $("#Over").val(0) ;
+                    $("#Remaining").val(0) ;
+                    $("#YearOfInstallment").val(0) ;
+                }
+                 else if ($('#payment').val() == null||$('#payment').val() == "") {
+                    $("#hiddenDivForInstallment").hide(1000);
+                    $("#priceHedin").hide(1000);
+
+                }
+            });
+            //******
+            var teleId = "";
+            $("#GetListOfDemands").click(function () {
+                var valid = true;
+                valid = validateAvailableData();
+                if (!valid) {
+
+                    return false;
+                }
+                var accessArr = [];
+                $.each($(".access"), function (index, value) {
+
+                    if ($(this).is(":checked")) {
+                        accessArr.push($(this).attr("data-id"));
+                    };
+
+                });
+
+               
+                var availableObj = {
+                    FK_VillasAvailables_Users_SalesId: teleId,
+                    FK_VillasAvailables_Transactions_Id: $("#trans").val(),
+                    FK_VillasAvailables_PaymentMethod_Id: $("#payment").val(),
+                    Notes: $("#notes").val(),
+                    Price: $("#price").val(),
+
+                    BasisOfInstallment:$("#BasisOfInstallmentDropdown").val(),
+                    Over:$("#Over").val(),
+                    Remaining:$("#Remaining").val(),
+                    YearOfInstallment:$("#YearOfInstallment").val(),
+
+                    IsNegotiable: $("#negotiate").is(":checked"),
+                    AccessoriesArr: accessArr,
+                    FK_VillasAvailables_View_Id: $("#view").val(),
+                    Space: $("#space").val(),
+                    Rooms: $("#rooms").val(),
+                    //FloorNumber: $("#floor").val(),
+                    VillaNumber: $("#VillaNumber").val(),
+                    GroupNumber: $("#GroupNumber").val(),
+                    AreaSpace: $("#AreaSpace").val(),
+                    BathRooms: $("#baths").val(),
+                    Address: $("#address").val(),
+                    ShortDescription: $("#unitDescrip").val(),
+                    FK_VillasAvailables_Regions_Id: $("#Regions").val(),
+                    FK_VillasAvailables_Finishings_Id: $("#finishing").val(),
+                    FK_VillasAvailables_Categories_Id: $("#catId").val(),
+                    IsFurnished: $("#Furniture").children("option:selected").val(),
+                    IsMarketResearch: $("#market").is(":checked"),
+                    FK_VillasAvailables_Usage_Id: $("#usages").children("option:selected").val(),
+                    NoOfElevators: $("#NoOfElevators").val(),
+                    DateOfBuild: $("#DateOfBuild").val(),
+
+                    FK_VillasAvailables_Clients_ClientId: clientId,
+                };
+
+                $.ajax({
+                    url: "/VillasAvailable/GetDemandsList/",
+                    type: "post",
+                    data: { availableViewModel: availableObj },
+                    success: function (response) {
+
+                        if (response.demanList.length > 0) {
+                            $.each(response.demanList, function (index, value) {
+                                var tbBody = '<tr><td>' + index + '</td><td>' + value.ClientName + '</td><td>' + value.PK_DemandUnits_Id + '</td><td><a class="btn btn-success detailsofdemand" data-id="' + value.PK_DemandUnits_Id + '">تفاصيل</a></td></tr >';
+                                $("#demandTable").append(tbBody);
+                            });
+                        }
+                        else {
+                            $("#demandTable").html("لا يوجد بيانات لعرضها");
+                        }
+                        $("#demandDiv").show(1000);
+                    },
+                    error: function () {
+                        $("#demandDiv").show(1000);
+                        $("#demandTable").html("لا يوجد بيانات لعرضها");
+                    }
+                });
+            });
+
+            $("#tele").autocomplete({
+                source: function (request, response) {
+
+                    $.ajax({
+                        url: "/dashboard/admin/EmpAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+
+                                teleId = item.PK_Users_Id;
+                                return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                            }))
+
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    teleId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0]
+
+                },
+            });
+
+            $("#matchTable").on("click", ".details", function () {
+                var id = $(this).attr("data-id");
+                $("#detai").modal("show");
+
+                $.ajax({
+                    url: "/VillasDemand/DemandDetails",
+                    type: "get",
+                    data: { 'id': id },
+                    success: function (response) {
+                        $("#My-details-Modal-Body").html(response);
+                    },
+                    error: function () {
+                    }
+                });
+            });
+            $("#saveClientInfo").click(function () {
+                //$("#hiddendivforsaveclient").toggle(1000);
+            });
+            $('#market').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $('#market').val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $('#market').val(false);
+                });
+
+            $('.access').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $(this).val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $(this).val(false);
+                });
+
+            $('#negotiate').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+                .on('ifChecked', function (event) {
+                    $('#negotiate').val(true);
+                })
+                .on('ifUnchecked', function (event) {
+                    $('#negotiate').val(false);
+                });
+
+            $("#AddClientsaleForm").submit(function (e) {
+                e.preventDefault();
+                var accessArr = [];
+                $.each($(".access"), function (index, value) {
+
+                    if ($(this).is(":checked")) {
+                        accessArr.push($(this).attr("data-id"));
+                    };
+
+                });
+                if (accessArr.length < 1) {
+                    $("#accessError").html("لابد من إختيار أي من الكماليات المتاحة !");
+                    return false;
+                }
+                else {
+                    $("#accessError").html("");
+                }
+
+                if (!$(this).valid()) {
+                    return false;
+                }
+                if (($("#finishing").val() === "1" || $("#finishing").val() === "2") && $("#Furniture").val() === "true") {
+
+                    alertify.set('notifier', 'position', 'top-left');
+                    alertify.notify("لايمكن لفيلا بهذا النوع من التشطيب ان تكون مفروشه!", "error", function () { });
+                    return false;
+                }
+                 
+            if (($("#trans").val() === "2") && $("#payment").val() === "4") {
+
+                alertify.set('notifier', 'position', 'top-left');
+                alertify.notify("لايمكن تأجير عقار عليه أقساط!", "error", function () { });
+                return false;
+            }
+                var obj = {
+                    //***
+                    FK_VillasAvailables_Clients_ClientId: clientId,
+                    //***
+                    FK_VillasAvailables_Users_SalesId: teleId,
+                    FK_VillasAvailables_Transactions_Id: $("#trans").val(),
+                    FK_VillasAvailables_PaymentMethod_Id: $("#payment").val(),
+                    VillNotes: $("#notes").val(),
+                    Price: $("#price").val(),
+
+                    BasisOfInstallment:$("#BasisOfInstallmentDropdown").val(),
+                    Over:$("#Over").val(),
+                    Remaining:$("#Remaining").val(),
+                    YearOfInstallment:$("#YearOfInstallment").val(),
+
+                    IsNegotiable: $("#negotiate").is(":checked"),
+                    AccessoriesArr: accessArr,
+                    FK_VillasAvailables_View_Id: $("#view").val(),
+                    Space: $("#space").val(),
+                    Rooms: $("#rooms").val(),
+                    //FloorNumber: $("#floor").val(),
+                    VillaNumber: $("#VillaNumber").val(),
+                    GroupNumber: $("#GroupNumber").val(),
+                    AreaSpace: $("#AreaSpace").val(),
+                    BathRooms: $("#baths").val(),
+                    Address: $("#address").val(),
+                    ShortDescription: $("#unitDescrip").val(),
+                    FK_VillasAvailables_Regions_Id: $("#Regions").val(),
+                    FK_VillasAvailables_Finishings_Id: $("#finishing").val(),
+                    FK_VillasAvailables_Categories_Id: $("#catId").val(),
+                    IsFurnished: $("#Furniture").children("option:selected").val(),
+                    IsMarketResearch: $("#market").is(":checked"),
+                    FK_VillasAvailables_Usage_Id: $("#usages").children("option:selected").val(),
+                    NoOfElevators: $("#NoOfElevators").val(),
+                    DateOfBuild: $("#DateOfBuild").val(),
+                    Name: $("#clientName").val(),
+                    //Mobile: $("#clientMobile").val(),
+                    Mobile :iti.getNumber(),
+                    IdNumber: $("#clientIdNumber").val(),
+                    //Phone: $("#clientPhone").val(),
+                    Phone:iti3.getNumber(),
+                    Job: $("#clientJob").val(),
+                    //Mobile2: $("#clientMobile2").val(),
+                    Mobile2:iti2.getNumber(),
+                    BestContactHour: $("#clientBestContactHour").val(),
+                    AddressClient: $("#clientAddress").val(),
+                    ClientNotes: $("#clientNotes").val(),
+                };
+
+
+                $.ajax({
+                    "url": "/VillasAvailable/SaveClientSale/",
+                    "type": "POST",
+                    accept: "application/json",
+                    dataType: "json",
+                    "data": {
+                        __RequestVerificationToken: token,
+                        availableClientVM: obj,
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+
+                            alertify.alert(response.message, function () {
+                                location.href = "/VillasAvailable/DemandMatchesAfterAdd/";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+
+                            });
+                        };
+
+                    },
+                    error: function (response) {
+
+                        alertify.alert("حدث خطا ما عند تسجيل البيانات", function () {
+
+                        })
+
+                    }
+                });
+
+
+            });
+
+        });
+    </script>
+     
+    <script src="/Theme/assets/Plugins/intl-tel-input-master/build/js/intlTelInput.js"></script>
+
+    <script>
+        var errorMsg = document.querySelector(".error-msg"),
+            validMsg = document.querySelector(".valid-msg");
+
+        // here, the index maps to the error code returned from getValidationError - see readme
+        var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input = document.querySelector("#clientMobile");
+        var iti = window.intlTelInput(input, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+        var reset = function () {
+            input.classList.remove("error");
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+        // on blur: validate
+        input.addEventListener('blur', function () {
+            reset();
+            if (input.value.trim()) {
+                if (iti.isValidNumber()) {
+                    validMsg.classList.remove("hide");
+                } else {
+                    input.classList.add("error");
+                    var errorCode = iti.getValidationError();
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    errorMsg.classList.remove("hide");
+                }
+            }
+        });
+        // on keyup / change flag: reset
+        input.addEventListener('change', reset);
+        input.addEventListener('keyup', reset);
+
+
+        //input 2
+        var errorMsg2 = document.querySelector(".error-msg2"),
+            validMsg2 = document.querySelector(".valid-msg2");
+        var errorMap2 = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input2 = document.querySelector("#clientMobile2");
+        var iti2 = window.intlTelInput(input2, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+        var reset2 = function () {
+            input2.classList.remove("error");
+            errorMsg2.innerHTML = "";
+            errorMsg2.classList.add("hide");
+            validMsg2.classList.add("hide");
+        };
+
+        // on blur: validate
+        input2.addEventListener('blur', function () {
+            reset2();
+            if (input2.value.trim()) {
+                if (iti2.isValidNumber()) {
+                    validMsg2.classList.remove("hide");
+                } else {
+                    input2.classList.add("error");
+                    var errorCode2 = iti2.getValidationError();
+                    errorMsg2.innerHTML = errorMap2[errorCode2];
+                    errorMsg2.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input2.addEventListener('change', reset2);
+        input2.addEventListener('keyup', reset2);
+
+
+
+        //input3
+        var errorMsg3 = document.querySelector(".error-msg3"),
+            validMsg3 = document.querySelector(".valid-msg3");
+        var errorMap3 = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+        var input3 = document.querySelector("#clientPhone");
+        var iti3 = window.intlTelInput(input3, {
+            utilsScript: "/theme/assets/plugins/intl-tel-input-master/build/js/utils.js",
+        });
+
+        var reset3 = function () {
+            input3.classList.remove("error");
+            errorMsg3.innerHTML = "";
+            errorMsg3.classList.add("hide");
+            validMsg3.classList.add("hide");
+        };
+
+        // on blur: validate
+        input3.addEventListener('blur', function () {
+            reset3();
+            if (input3.value.trim()) {
+                if (iti3.isValidNumber()) {
+                    validMsg3.classList.remove("hide");
+                } else {
+                    input3.classList.add("error");
+                    var errorCode3 = iti3.getValidationError();
+                    errorMsg3.innerHTML = errorMap3[errorCode3];
+                    errorMsg3.classList.remove("hide");
+                }
+            }
+        });
+
+        // on keyup / change flag: reset
+        input3.addEventListener('change', reset3);
+        input3.addEventListener('keyup', reset3);
+
+
+    </script>
+}

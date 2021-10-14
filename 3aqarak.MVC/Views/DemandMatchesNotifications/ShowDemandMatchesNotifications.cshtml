@@ -1,0 +1,105 @@
+﻿@model _3aqarak.MVC.ViewModels.AvailableViewModel
+@using _3aqarak.BLL.Helpers;
+@{
+    ViewBag.Title = "ShowDemandMatchesNotifications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var availables = ((List<int>)ViewBag.availables);
+    var categories=((List<int>)ViewBag.categories);
+    var demands = ((List<List<int>>)ViewBag.Demands);
+
+}
+@section styles{
+    <style>
+       p {
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    font-Family: 'Tajawal', sans-serif;   
+    width:100%;
+    text-align:right;
+    }
+       td p{
+           margin-left:5%;
+       }
+    </style>
+    
+}
+
+<div class="card">
+
+
+    <div class="card-header">
+        @if (availables != null &&availables.Any())
+        {
+            <h1 class="text-md-right">يرجى الإنتباه أن العروض الاتيه لها طلبات موافقه من حسابك انت كالاتي:-</h1>
+            for (int i = 0; i < availables.Count; i++)
+            {
+                <p>رقم العرض</p><p>@availables[i]</p>
+                if (categories[i] == Categories.Apartements)
+                {
+                <p>ونوعه: @Categories.ApartementName  </p>
+                }
+                if (categories[i] == Categories.Villas)
+                {
+                 <p>ونوعه @Categories.VillaName  </p>
+                }
+                if (categories[i] == Categories.Lands)
+                {
+                <p>ونوعه @Categories.LandName </p>
+                }
+                if (categories[i] == Categories.Shops)
+                {
+                <p>ونوعه @Categories.ShopName  </p>
+                }
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="text-md-right">موافق للطلبات الآتيه :- </h1>
+                        <table>
+                            <thead>
+                                <tr>
+                                    @foreach (var item in demands[i])
+                                    {
+                                    <th>
+                                        <p>رقم الطلب</p>
+                                    </th>
+                                    }
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    @foreach (var item in demands[i])
+                                    {
+                                        
+                                           <td ><p class="text-danger">@item</p></td>
+                                       
+                                    }
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            }
+
+        }
+        else
+        {
+            <p class="alert-danger text-right">لايوجد معلومات لعرضها!</p>
+        }
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+

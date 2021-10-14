@@ -1,0 +1,235 @@
+﻿@model List<_3aqarak.MVC.ViewModels.FellowupCallViewModel>
+@{
+    ViewBag.Title = "FellowupCallsIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        table {
+            direction: rtl;
+            text-align: center;
+        }
+
+        label {
+            float: right;
+        }
+
+        span p {
+            font-size: 16px;
+            text-align: right;
+        }
+    </style>
+}
+<div class="card">
+    <div class="card-header text-right">
+
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")" style="color:#0098f0">الصفحة الرئيسية </a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+
+        @if (Model.Any() && Model != null)
+        {
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>اسم العميـــل</th>
+                        <th>1رقم التليفون</th>
+                        <th>2رقم التليفون</th>
+                        <th>الوقــت</th>
+                        <th>التفاصــــيل</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+                    @foreach (var call in Model)
+                    {
+                    <tr>
+                        <td>@call.ClientName</td>
+                        <td>@call.PhoneNumber1</td>
+                        <td>@call.PhoneNumber2</td>
+                        <td>@call.DateTime.ToShortTimeString()</td>
+                        <td><button class="details btn btn-default" data-obj="@Newtonsoft.Json.JsonConvert.SerializeObject(call)">التفاصيل </button></td>
+                        <td><button type="button" title="حذف " rel="tooltip" data-step="7" data-intro="يمكن من هنا حذف أياً من  مكالمات العملاء" class="btn btn-danger btn-sm btn-icon delete" data-id="@call.PK_FellowupCalls_Id"><i class="tim-icons icon-simple-remove"></i></button></td>
+                    </tr>
+
+                    }
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+            <div class="alert alert-primary">
+
+                <span>
+                    <p>لا يوجد بيانات لاستعراضها</p>
+                </span>
+            </div>
+
+        }
+        <!-- Page Table -->
+        <!--   .Details .Call -->
+        <div class="call">
+            <form>
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="form-group  col">
+                        <label class="preLabel">  اسم العميل : </label>
+                        <input type="text" class="form-control" id="client" value="" placeholder="" disabled="">
+                    </div>
+
+                    <div class="form-group col">
+                        <label class="preLabel"> رقم التليفون1 :</label>
+                        <input type="text" class="form-control" id="phone1" value="" placeholder="" disabled="">
+                    </div>
+                    <div class="form-group col">
+                        <label class="preLabel"> 2رقم التليفون :</label>
+                        <input type="text" class="form-control" id="phone2" value="" placeholder="" disabled="">
+                    </div>
+
+                </div>            
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="subject" style="float:right ; margin-right:10px">الموضوع : </label>
+                        <textarea class="form-control TextArea" id="subject" value="" rows="10" col="100" style="border :1px solid  #27293d; border-radius:5px" disabled=""></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="description" style="float:right ; margin-right:10px"> الوصف : </label>
+                        <textarea class="form-control TextArea" id="description" value="" rows="10" col="100" style="border :1px solid  #27293d; border-radius:5px" disabled=""></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="notes" style="float:right ; margin-right:10px"> الملاحظات :  </label>
+                        <textarea class="form-control TextArea" id="notes" value="" rows="10" col="100" style="border :1px solid  #27293d; border-radius:5px"></textarea>
+                    </div>
+                </div>
+
+                <input type="submit" id="save" class="btn btn-default btn-lg" value="تــم الاتصـــال">
+            </form>
+
+        </div>
+
+
+
+
+    </div>  <!-- End of body-->
+
+</div>
+@section scripts{
+    <script>
+
+        $("document").ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var clientidId = "";
+            var callId = "";
+            $(".call").toggle();
+            $(".details").click(function () {
+                var callObj = JSON.parse($(this).attr("data-obj"));
+                clientidId = callObj.ClientId;
+                callId = callObj.PK_FellowupCalls_Id;
+                $("#client").val(callObj.ClientName);
+                $("#phone1").val(callObj.PhoneNumber1);
+                $("#phone2").val(callObj.PhoneNumber2);
+                $("#subject").val(callObj.Subject);
+                $("#description").val(callObj.Descreption)
+                $(".notes").val(callObj.Notes)  
+                $(".call").fadeToggle(200);
+            });
+
+            $("form").submit(function (e) {
+                e.preventDefault();                          
+                    PK_PostbonedCalls:callId,                 
+                                $.ajax({
+                    type: 'POST',
+                    url: '/FellowupCall/ConfirmCall',
+                    data: {
+                        __RequestVerificationToken: token,
+                       id: callId,
+                    },
+
+                    success: function (response) {
+                        if (response) {
+                            alertify.alert("تم الحفظ بنجاح", function () {
+
+                                location.href="@Url.Action("Index","Home")"
+                            });
+                        }
+                        else {
+                            alertify.alert("لم يتم الحفظ بنجاح", function () { });
+                        }
+                    },
+                    error: function () {
+                        alertify.alert(" حدث خطا ما في حفظ البيانات!", function () { });
+                    }
+                })
+            });
+                    $("table").on("click", ".delete", function () {
+
+                var clientId = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد حذف المكالمة؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/fellowupCall/CancellCall",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: clientId,
+                                 },
+
+                                 success: function (result) {
+                                     if (result) {
+                                         alertify.alert("تم حذف المكالمة بنجاح !", function () {
+                                             button.parents("tr").remove();
+                                             location.href = '@Url.Action("index", "home")'
+                                         });
+
+                                     }
+                                     else {
+                                         alertify.alert("لم يتم حذف المكالمة بنجاح!", function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+            })
+
+            $(".TextArea").mouseenter(function () {
+                $(this).css("border-color", "#344675");
+            });
+
+            $(".TextArea").mouseleave(function () {
+                $(this).css("border-color", " #27293d");
+            });
+
+            $("input").focus(function () {
+                $(this).css("border-color", "#e6f5ff")
+            });
+            $("input").blur(function () {
+                $(this).css("border-color", "#2b3553")
+            });
+
+        });
+
+    </script>
+
+
+}

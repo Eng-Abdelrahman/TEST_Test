@@ -1,0 +1,458 @@
+﻿@model _3aqarak.MVC.ViewModels.RentContractViewModel
+
+@{
+    ViewBag.Title = "EditContract";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section styles{
+    <style>
+        .preLabel {
+            float: right;
+            color: grey;
+        }
+
+        .cke_text_editor {
+            width: 100%;
+        }
+
+        input[type="date"] {
+            color: grey
+        }
+
+        span[class="text-danger"] {
+            float: right;
+        }
+        /*#cke_1_contents{
+            height :200px;
+        }*/
+    </style>
+}
+<div class="card">
+    <div class="card-header text-right">
+
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("index","RentContract")" style="color:#0098f0">عقود الايجار </a></li>
+                <li class="breadcrumb-item active" aria-current="page"> عقد إيجار  </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+
+        <form>
+            @Html.AntiForgeryToken()
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <!-- #empcode #empname -->
+                        <div class="form-group col">
+                            <label class="preLabel">كود الموظف</label>
+                            <input type="text" class="form-control" id="empcode" value="@Model.FK_RentAgreements_Users_EmpId" disabled="">
+                        </div>
+                        <div class="form-group col">
+                            <label class="preLabel">اسم الموظف</label>
+                            <input type="text" class="form-control" id="empname" value="@Model.EmpName" disabled="">
+                        </div>
+
+
+
+                    </div>  <!--row -->
+
+
+                    
+                        <!--    #dateStartContract #dateEndContract #dateNextContract -->
+                        <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="preLabel">تاريخ بداية الإيجار<abbr class="req">*</abbr></label>
+                                <input type="date" class="form-control" id="dateStartContract" value="@Model.RentalStartDate.ToString("yyyy-MM-dd")" required="">
+                                <span class="text-danger" id="dateStartContractErr"> </span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="preLabel">تاريخ إنتهاء الإيجار</label>
+                                <input type="date" class="form-control" id="dateEndContract" value="@Model.RentalEndDate.ToString("yyyy-MM-dd")" required="">
+                                <span class="text-danger" id="dateEndContractErr"> </span>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label class="preLabel">تاريخ الإيجار القادم </label>
+                                <input type="date" class="form-control" id="dateNextContract" value="@Model.DateNxtRent.ToString("yyyy-MM-dd")" required="">
+                                <span class="text-danger" id="dateNextContractErr"> </span>
+                            </div>
+
+                        </div>  <!-- row-->
+                    <!-- #paymentMethods  #dateNextContract -->
+                    <div class="row">
+                        <div class="form-group col">
+                            <label class="preLabel"> طريقة الدفع <abbr class="req">*</abbr></label>
+                            <select class="form-control " data-style="btn btn-link" id="paymentMethods">
+                                <option> </option>
+                                @foreach (var item in Model.Basis)
+                                {
+                                    if (Model.FK_RentAgreementHeader_PaymentBasis_Id.ToString() == item.Value)
+                                    {
+                                        <option value="@item.Value" selected>@item.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+
+                                }
+
+                            </select>
+                            <span class="text-danger" id="paymentMethodsErr"> </span>
+                        </div>
+
+                        <div class="form-group col">
+                            <label class="preLabel">قيمة إيجار الشهر القادم</label>
+                            <input type="number" min="0" class="form-control" id="valueNextContract" value="@Model.ValueOfRental" required="">
+                            <span class="text-danger" id="valueNextContractErr"> </span>
+                        </div>
+
+                    </div> <!--End of row -->
+                    <!-- hussainy-->
+                    <br />
+                    <div class="form-group">
+                        <div class="show-img ">
+                            <input type="button" class="btn btn-block" data-toggle="modal" data-target="#myModal" value=" تحميل صــور عقد الايجار " />
+                        </div>
+                    </div>
+                    <br /><br />
+                    @if (Model.ContractUrl != null)
+                    {
+                        <div class="container-fluid text-center">
+                            <iframe id="contractPDF" src="@Url.Action("GetPDF",new { id=Model.PK_RentAgreements_Id})" style="width:600px; height:500px;" frameborder="0"></iframe>
+                        </div>
+                    }
+                    <!--end hussainy-->
+                </div>
+            </div>
+
+            <!--  #day #date -->
+            <div class="row">
+                <div class="form-group col">
+                    <label class="preLabel"> إنه في يوم <abbr class="req">*</abbr></label>
+                    <input type="text" class="form-control" id="day" value="" disabled="">
+                </div>
+
+                <div class="form-group col">
+                    <label class="preLabel"> الموافق <abbr class="req">*</abbr></label>
+                    <input type="text" class="form-control" id="date" value="" disabled="">
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col">
+            <span style="font-size:20px; color:#D68910 ; float:right ;">  تحرر هذا العقد بين كلا من : <abbr class="req">*</abbr></span>
+            </div>
+            </div>
+            <!-- #name1 #national1 #address1 #idNum1 #from1 -->
+
+            <div class="row">
+                <div class="col">
+                    <span style="font-size:18px; color:#0098f0 ; float:right;  ">  مؤجر طرف أول </span> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group  ">
+                        <label class="preLabel"> السيد : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="name1" value="@Model.SellerName" disabled="">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> جنسيته : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="national1" value="@Model.SellerNationality" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> و مقيم في : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="address1" value="@Model.SellerAddress" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> و يحمل بطاقة رقم :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="idNum1" value="@Model.SellerIdNumber" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group  ">
+                        <label class="preLabel"> صادرة من : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="from1" value="@Model.SellerIdSource" required>
+                    </div>
+                </div>
+            </div> <!-- End of First col-->
+                <!-- #name2 #national2 #address2 #idNum2 #from2 -->
+                
+            <div class="row">
+                <div class="col">
+                    <span style="font-size:18px; color:#0098f0; float:right ;"> مستأجر طرف ثاني </span>  
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> السيد : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="" value="@Model.BuyerName" disabled="">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> جنسيته : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="national2" value="@Model.BuyerNationality" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> و مقيم في : <abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="address2" value="@Model.BuyerAddress" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> و يحمل بطاقة رقم :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="idNum2" value="@Model.BuyerIdNumber" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group ">
+                        <label class="preLabel"> صادرة من :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="from2" value="@Model.BuyerIdSource" required>
+                    </div>
+                 </div>
+            </div> <!--End of col -->
+
+         <!-- End of row-->
+            
+
+            <!-- #buyerCode #sellerCode #ArdCode -->
+            <div class="row">
+
+                <!-- <label> كود المشتري </label> -->
+                <input type="hidden" class="form-control" id="buyerCode" value="@Model.FK_RentAgreements_Clients_Buyer">
+
+                <!-- <label> كود البائع </label> -->
+                <input type="hidden" class="form-control" id="sellerCode" value="@Model.FK_RentAgreements_Clients_Seller">
+
+                <!-- <label> كود العرض </label> -->
+                <input type="hidden" class="form-control" id="ArdCode" value="@Model.AvailableUnits_Id">
+
+                <!-- <label> كود الطلب </label> -->
+                <input type="hidden" class="form-control" id="TalabCode" value="@Model.DemandUnits_Id">
+
+                <input type="hidden" class="form-control" id="TalabCat" value="@Model.DemandCat">
+                <input type="hidden" class="form-control" id="ArdCat" value="@Model.AvailableCat">
+
+            </div> <!-- End of row-->
+            <br>
+            <span style="font-size:20px; color:#D68910; float:right ;">  أقر الطرفان بكامل أهليتهما القانونية للتعاقد و التصرف و اتفقا علي ما يأتي :  </span> <br> <br> <br>
+            <textarea name="text_editor" id="editor1" style="visibility: hidden; display: none;">@Model.DetailContent </textarea>
+            <span class="text-danger" id="editor1Err"> </span>
+            <br>
+            <button class="btn btn-default" type="submit" id="Save"> حفظ </button>
+            @Html.HiddenFor(m => m.PK_RentAgreements_Id, new { id = "id" })
+        </form>
+
+        <!-- hussainy-->
+        <!-- Image Modal -->
+        <div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog .modal-dialog-centered" role="document">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">اختر الصور</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <div class="jumbotron">
+                                <form action="/RentContract/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                            </div>
+                            <span class="alert alert-warning">PDF لابد من رفع ملف</span>
+                            <span class="alert alert-info">مساحة الملف لا تزيد عن 15 ميجابايتس  </span>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end hussainy-->
+    </div>  <!-- End of body-->
+    <!--   <textarea name="text_editor"></textarea>   -->
+
+</div>
+@section scripts{
+    <script>
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 15, // MB
+            maxFiles: 2,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 2,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+
+                })
+            },
+            successmultiple: function (file, response) {
+                if (response.valid) {
+                    $("#myModal").modal("hide");
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+                        Dropzone.forElement('#dropzoneJsForm').removeAllFiles(true);
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    $("#myModal").modal("hide");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+        document.getElementById('dateStartContract').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        document.getElementById('dateEndContract').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        document.getElementById('dateNextContract').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+
+
+        CKEDITOR.replace('text_editor');
+        CKEDITOR.config.height = '350px';
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $("document").ready(function () {
+            
+            if("@ViewBag.Disable"==="True"){
+                $("input").prop("disabled", true);
+                $("select").prop("disabled", true);
+                $("textarea").prop("disabled", true);
+                $(".btn").hide();
+            }
+            var weekday = new Array(7);
+            weekday[0] = "الأحد";
+            weekday[1] = "الأثنين";
+            weekday[2] = "الثلاثاء";
+            weekday[3] = "الأربعاء";
+            weekday[4] = "الخميس";
+            weekday[5] = "الجمعة";
+            weekday[6] = "السبت";
+            var d = new Date();
+            var n = weekday[d.getDay()];
+            $("#day").attr("value", n);
+
+
+            var TodayDate = new Date();
+            var day = TodayDate.getDate();
+            var month = TodayDate.getMonth() + 1;
+            var year = TodayDate.getFullYear();
+            var today = year + "/" + month + "/" + day;
+            $("#date").attr("value", today);
+
+            var myForm = $("form");
+
+            myForm.on("submit", function (e) {
+                e.preventDefault();
+                if (CKEDITOR.instances.editor1.getData() === "" || CKEDITOR.instances.editor1.getData() === null) {
+                    $('#editor1Err').html('لابد من ملئ هذا الحقل ');
+                    return false;
+                }
+                else {
+                    $('#editor1Err').html('');
+                }
+                var value = $('#paymentMethods').val();
+                var selectedOptionText = $('#paymentMethods option[value]:selected').text();
+                if (selectedOptionText === ''||selectedOptionText===null) {
+                    $("#paymentMethodsErr").html("لابد من ملئ هذا الحقل");
+                    return false;
+                }
+                else {
+                    $("#paymentMethodsErr").html("");
+                }
+
+                var detailContent = CKEDITOR.instances.editor1.getData();
+                var algoForm = {
+                    PK_RentAgreements_Id:$("#id").val(),
+                    FK_RentAgreements_Users_EmpId: $("#empcode").val(),
+                    RentalStartDate: $("#dateStartContract").val(),
+                    RentalEndDate: $("#dateEndContract").val(),
+                    DateNxtRent: $("#dateNextContract").val(),
+                    FK_RentAgreementHeader_PaymentBasis_Id: $("#paymentMethods").val(),
+                    ValueOfRental: $("#valueNextContract").val(),
+                    FK_RentAgreements_Clients_Seller: $("#name1").val(),
+                    SellerNationality: $("#national1").val(),
+                    SellerAddress: $("#address1").val(),
+                    SellerIdNumber: $("#idNum1").val(),
+                    SellerIdSource: $("#from1").val(),
+                    FK_RentAgreements_Clients_Buyer: $("#name2").val(),
+                    BuyerNationality: $("#national2").val(),
+                    BuyerAddress: $("#address2").val(),
+                    BuyerIdNumber: $("#idNum2").val(),
+                    BuyerIdSource: $("#from2 ").val(),
+                    FK_RentAgreements_Clients_Buyer: $("#buyerCode").val(),
+                    FK_RentAgreements_Clients_Seller: $("#sellerCode").val(),
+                    AvailableUnits_Id: $("#ArdCode").val(),
+                    DemandUnits_Id: $("#TalabCode").val(),
+                    DetailContent: detailContent,
+                    AvailableCat: $("#ArdCat").val(),
+                    DemandCat: $("#TalabCat").val(),
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/rentcontract/updatecontract',
+                    data: {
+                        __RequestVerificationToken: token,
+                        contractVM: algoForm,
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+                            alertify.alert("تم الحفظ بنجاح!", function () {
+                                location.href = "@Url.Action("index","RentContract")";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () { });
+                        }
+                    },
+                    error: function () {
+                        alertify.alert(" خطا في ارسال البيانات!", function () { });
+                    },
+
+                });
+            });
+
+            $("input , select").focus(function () {
+                $(this).css("border-color", "grey");
+            });
+
+            $("input ,select").blur(function () {
+                $(this).css("border-color", "#2b3553")
+            });
+        });
+
+    </script>
+
+}
+
+
+
+

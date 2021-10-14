@@ -1,0 +1,308 @@
+﻿
+@model _3aqarak.MVC.ViewModels.VillaDemandViewModel
+
+<style>
+    label {
+        float: right;
+        font-size: 16px;
+        font-weight: bold;
+        clear: both;
+    }
+
+    h4 {
+        text-align: center;
+        font-size: 20px;
+        text-decoration: underline;
+    }
+
+    h5 {
+        text-align: right;
+        font-size: 16px;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+
+    .modal {
+        top: -307px;
+    }
+</style>
+
+
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>              
+                <li class="breadcrumb-item active" aria-current="page">تفاصيــل طلب لعميل </li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <form id="addDemand">
+
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.FK_VillasDemands_Clients_ClientId, new { id = "clientId" })
+                        @Html.HiddenFor(m => m.PK_VillasDemands_Id, new { id = "id" })
+                        @Html.HiddenFor(m => m.PK_VillasDemands_Id, new { id = "cat" })
+                        <div class="row">
+                            <div class="col">
+                                <label>من منـــطقة:</label>
+                                @Html.DropDownListFor(m => m.FK_VillasDemands_Regions_FromId, Model.RegionsFrom, "مــن", new { @class = "form-control", id = "regFrom", required = "required" })
+                            </div>
+                            <div class="col">
+                                <label>الى منـــطقة:</label>
+                                @Html.DropDownListFor(m => m.FK_VillasDemands_Regions_ToId, Model.RegionsTo, "الــى", new { @class = "form-control", id = "regTo", required = "required" })
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <label>نوع التعامل</label>
+                                @Html.DropDownListFor(m => m.FK_VillasDemands_Transactions_Id, Model.Transactions, "", new { @class = "form-control", id = "regTo", required = "required" })
+                            </div>
+                            <div class="col">
+                                <label>استخدام العقـــار:<abbr class="req">*</abbr></label>
+                                @Html.DropDownListFor(m => m.FK_VillasDemands_Usage_Id, Model.Usages, "اختر نوع العقار", new { @class = "form-control", id = "residence", required = "required" })
+                                @Html.ValidationMessageFor(m => m.FK_VillasDemands_Usage_Id, "", new { @class = "text-danger", id = "typeError" })
+                            </div>
+                        </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group ">
+                            <label>السعر/الايجار</label>
+                            <input id="minPrice" type="number" min="0" value="@Model.MinPrice" class="form-control" placeholder="من" name="MinPrice" readonly>
+
+                            <input id="maxPrice" type="number" min="0" value="@Model.MaxPrice" class="form-control" placeholder="إلي" readonly>
+
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group ">
+                            <label>المساحة</label>
+                            <input id="minSpace" type="number" min="0" value="@Model.MinSpace" class="form-control" placeholder="من" readonly />
+
+                            <input id="maxSpace" type="number" min="0" value="@Model.MaxSpace" class="form-control" placeholder="الى" readonly />
+
+                        </div>
+
+                    </div>
+                    <div class="col">
+                        <div class="form-group ">
+                            <label>المساحة غير المبنيه<abbr class="req">*</abbr></label>
+                            <input id="minAreaSpace" value="@Model.MinAreaSpace" min="0" type="number" class="form-control" placeholder="من" required />
+                            <span class="text-danger" id="minAreaSpaceErr"></span>
+                            <input id="maxAreaSpace" value="@Model.MaxAreaSpace" min="0" type="number" class="form-control" placeholder="الى" required />
+                            <span class="text-danger" id="maxAreaSpaceErr"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <br> <br>
+
+                <div class="from-group">
+                    <div class="advancedSearch">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label> عدد الحمامات</label>
+                                    <input id="minBath" type="number" min="0" value="@Model.MinBathRooms" class="form-control" placeholder="مــن" style="border :1px solid #DDD" readonly>
+
+                                    <input id="maxBath" type="number" min="0" value="@Model.MaxBathRooms" class="form-control" placeholder="الى" style="border :1px solid #DDD" readonly>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label> عدد الغــرف</label>
+                                    <input id="minRoom" type="number" min="0" value="@Model.MinRooms" class="form-control" style="border :1px solid #DDD" readonly>
+
+                                    <input id="maxRoom" type="number" min="0" value="@Model.MaxRooms" class="form-control" style="border :1px solid #DDD" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label> الطـــوابق</label>
+                                    <input id="minFloor" type="number" min="0" value="@Model.MinFloorNumber" class="form-control" placeholder="مــن" style="border :1px solid #DDD" readonly>
+
+                                    <input id="maxFloor" type="number" min="0" value="@Model.MaxFloorNumber" class="form-control" placeholder="الى" style="border :1px solid #DDD" readonly>
+
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group ">
+                                    <label>سنه البناء<abbr class="req">*</abbr></label>
+                                    <input id="minBuildYear" min="1900" max="@DateTime.Now.Year" type="number" value="@Model.DateOfBuildFrom" class="form-control" placeholder="من" />
+                                    <span class="text-danger" id="minBuildYearErr"></span>
+                                    <input id="maxBuildYear" min="1900" max="@DateTime.Now.Year" type="number" value="@Model.DateOfBuildTo" class="form-control" placeholder="الى" />
+                                    <span class="text-danger" id="maxBuildYearErr"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>التشــطيب:</label>
+                                <select class="form-control valid" data-val="true" data-val-required="لابد من ملا هذا الحقل" id="access" multiple="multiple" name="FinishArr" required="required">
+                                    @foreach (var item in Model.Finishings)
+                                    {
+                                        if (item.Selected)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label>طــريقة الدفع:</label>
+                                @Html.DropDownListFor(m => m.FK_VillasDemands_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label>:الكمـــاليات</label>
+                                <select class="form-control valid" data-val="true" data-val-required="لابد من ملا هذا الحقل" id="access" multiple="multiple" name="AccessoriesArr" required="required">
+                                    @foreach (var item in Model.Accessories)
+                                    {
+                                        if (item.Selected)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+
+                                        }
+
+                                    }
+                                </select>
+                                @Html.ValidationMessageFor(m => m.AccessoriesArr, "", new { @class = "text-danger", id = "accesshError" })
+                            </div>
+                            <div class="col">
+                                <label>الاطــلالة:</label>
+                                @*@Html.DropDownListFor(m => m.ViewsArr, Model.Views, "", new { @class = "form-control", id = "view", required = "required", multiple = "multiple" })*@
+                                <select class="form-control valid" data-val="true" data-val-required="لابد من ملا هذا الحقل" id="view" multiple="multiple" name="ViewsArr" required="required">
+                                    @foreach (var item in Model.Views)
+                                    {
+                                        if (item.Selected)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            @*<div class="col">
+                                    <label>عنوان العرض:</label>
+                                    <textarea class="form-control" id="title" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px" readonly>@Model.Title</textarea>
+
+                                </div>*@
+                            <div class="col">
+                                <label>الملاحظــات:</label>
+                                <textarea class="form-control" id="notes" rows="10" col="100" style="border :1px solid #DDD ; border-radius:5px" readonly>@Model.Notes</textarea>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @if (@Model.IsFurnished)
+                            {
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" id="furnished" checked readonly>مفــــروش
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" id="furnished" readonly>مفــــروش
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            }
+
+                        </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!--</div>-->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        //CKEDITOR.replace('notes');
+        //CKEDITOR.replace('title');
+        $("document").ready(function () {
+            $("select").attr("disabled","diasabled");
+        });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

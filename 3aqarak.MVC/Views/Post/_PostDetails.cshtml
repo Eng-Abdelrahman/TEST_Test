@@ -1,0 +1,116 @@
+﻿
+@model _3aqarak.MVC.ViewModels.PostsViewModel
+
+
+
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item active" aria-current="page">تفاصيل رسالة العميل </li>
+
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="card-body">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <label class="form-label">نوع الوحدة</label>
+                @if (Model.FK_Posts_Categories_Id == 1)
+                {
+                    <input type="text" value="شقق" readonly class="form-control">
+
+                }
+                @if (Model.FK_Posts_Categories_Id == 2)
+                {
+                    <input type="text" value="محلات" readonly>
+
+                }
+                @if (Model.FK_Posts_Categories_Id == 3)
+                {
+                    <input type="text" value="فيللات" readonly>
+
+                }
+                @if (Model.FK_Posts_Categories_Id == 4)
+                {
+                    <input type="text" value="اراض فضاء" readonly>
+
+                }
+            </div>
+            <div class="col">
+                <label class="form-label">رقم الوحدة</label>
+                <input type="text" value="@Model.Unit_Id" readonly class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">الاسم</label>
+                <input type="text" value="@Model.Name" readonly class="form-control">
+            </div>
+            <div class="col">
+                <label>الموبايل1</label>
+                <input type="text" value="@Model.Mobile" readonly class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">الموبايل2</label>
+                <input type="text" value="@Model.Mobile2" readonly class="form-control">
+            </div>
+            <div class="col">
+                <label class="form-label">التليفون</label>
+                <input type="text" value="@Model.Phone" readonly class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">وقت الاتصال</label>
+                <input type="text" value="@Model.ContactHour" readonly class="form-control">
+            </div>
+            <div class="col">
+                <label class="form-label">ملاحظات</label>
+                <textarea readonly class="form-control">@Model.Notes</textarea>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+   
+
+

@@ -1,0 +1,496 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.UserViewModel
+@{
+    ViewBag.Title = "اضافة مستخدم";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/Theme/assets/Plugins/icheck-1.x/icheck-1.x/skins/flat/pink.css" rel="stylesheet" />
+
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        img {
+            border-radius: 50%;
+            margin-left: 43%;
+        }
+
+        #passbtn {
+            height: 45px;
+            width: 166px;
+            margin-top: 30px;
+            float: right
+        }
+
+        #user1 {
+            margin-top: 30px;
+        }
+
+        input[type="text"], input[type="email"] {
+            font-size: 1.4em;
+        }
+
+       
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item  " aria-current="page"><a href="@Url.Action("users","admin")">المستخدمين</a></li>
+        <li class="breadcrumb-item active " aria-current="page">اضافة مستخدم</li>
+
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">أضافة مستخدم جديد</h4>
+    </div>
+    <div class="card-body">
+
+
+        <form id="addUser-form">
+            @Html.AntiForgeryToken()
+            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+            @Html.ValidationSummary()
+            <div class="form-group">
+                <div class="show-img ">
+                    <img id="photo" src="~/@Model.PhotoUrl" width="100px" height="100px" alt="your image" style="border-radius:50%">
+                    <input type="button" class="btn btn-block" data-toggle="modal" data-target="#myModal" value=" صوره جديدة " />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group  ">
+                        <label for="first" class="text-right"> الاسم الاول :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="first" placeholder="الاسم الاول" name="FirstName" required data-val="true" data-val-required="الرجاء إدخال الإسم الأول ">
+                        @Html.ValidationMessageFor(m => m.FirstName)
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group  ">
+                        <label for="last" class="text-right"> الاسم الاخير :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="last" placeholder="الاسم الاخير" name="LastName" required data-val="true" data-val-required="الرجاء إدخال الإسم الأخير ">
+                        @Html.ValidationMessageFor(m => m.LastName)
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group  ">
+                        <label for="user" class="text-right">اسم المستخدم :<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="user" placeholder="اسم المستخدم" name="UserName" required data-val="true" data-val-required="الرجاء إدخال إسم المستخدم ">
+                        @Html.ValidationMessageFor(m => m.UserName, "", new { id = "userError" })
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group ">
+                        <label for="phone" class="text-right">الموبايل :<abbr class="req">*</abbr></label>
+                        @* <input type="text" class="form-control" id="phone" placeholder="الموبايل" name="PhoneNumber" required ">*@
+                        @Html.TextBoxFor(n => n.PhoneNumber, new { @class = "form-control", id = "phone", placeholder = "الموبايل", name = "PhoneNumber", @required = "required" })
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { })
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="email">الإيميل :<abbr class="req">*</abbr></label>
+                        <input type="email" class="form-control" id="email" placeholder="الإيميل" name="Email" required data-val="true" data-val-required="الرجاء إدخال الإيميل ">
+                        @Html.ValidationMessageFor(m => m.Email, "", new { id = "mailError" })
+                    </div>
+                </div>
+            </div>
+
+                   
+
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="gender">الجنس/النوع:<abbr class="req">*</abbr></label>
+                    @Html.DropDownListFor(m => m.FK_Users_Genders_Id, Model.GenderList, "اختر النوع", new { id = "gender", @class = "form-control", @required = "required" })
+
+                    @Html.ValidationMessageFor(m => m.FK_Users_Genders_Id, "", new { @class = "text-danger text-right", id = "genderError" })
+                </div>
+                <div class="form-group col-md-3">
+
+                    <!-- <label>Choose DOB</label> -->
+                    <label>تاريخ الميلاد</label>
+
+                    @*<input type="date" id="user1" class="form-control " name="event_date" placeholder="اضغط هنا لاختيار التاريخ " autocomplete="off" required data-val="true" data-val-required="الرجاء إدخال تاريخ الميلاد ">*@
+                    <input type="date" id="user1" class="form-control " name="event_date" placeholder="اضغط هنا لاختيار التاريخ " autocomplete="off" >
+                    @*@Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger text-right", id = "birthError" })*@
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="gender">القســم:<abbr class="req">*</abbr></label>
+                    @Html.DropDownListFor(m => m.FK_Users_Departement_Id, Model.DeptList, "اختر قسم الموظف", new { id = "dept", @class = "form-control", @required = "required" })
+
+                    @Html.ValidationMessageFor(m => m.FK_Users_Departement_Id, "", new { @class = "text-danger text-right", id = "deptError" })
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="gender">التخصص:</label>
+                    @Html.DropDownListFor(m => m.Specialization_Id, Model.SpecialList, "اختر تخصص الموظف", new { id = "special", @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Specialization_Id, "", new { @class = "text-danger text-right", id = "specialError" })
+                </div>
+            </div>
+
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+
+                            <label for="gender">الفــرع:<abbr class="req">*</abbr></label>
+                            @Html.DropDownListFor(m => m.FK_Users_Branches_Id, Model.BranchList, "اختر فرع الموظف", new { id = "branch", @class = "form-control", @required = "required" })
+
+                            @Html.ValidationMessageFor(m => m.FK_Users_Branches_Id, "", new { @class = "text-danger text-right", id = "branchError" })
+                        </div>
+                        <div class="form-group col-md-2">
+                            <input id="passbtn" type="button" class="btn btn-default " value="كلمة السر" data-toggle="modal" data-target="#passModal" />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="form-group col-md-6">
+                                <div class="checkbox icheck">
+                                    <label id="check">
+                                        <input id="admin" name="IsAdmin" type="checkbox" value="false">  صلاحيات ادارية
+                                    </label>
+                                </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="checkbox icheck">
+                                        <label id="check">
+                                            <input id="owner" name="IsOwner" type="checkbox" value="false"> مالك الشركه
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                    <div class="form-group" style="margin-top:5%">
+                        <button id="save" type="submit" class="btn btn-default animation-on-hover " style="float:right">حفظ المستخدم </button>
+                    </div>
+        </form>
+
+        <!-- Image Modal -->
+        <div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog .modal-dialog-centered" role="document">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Choose image</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <div class="jumbotron">
+                                <form action="/Dashboard/Admin/UploadImage" class="dropzone" id="dropzoneJsForm"></form>
+
+                            </div>
+                            <span class="alert alert-primary">Best dimensions: 555 px * 370 px</span><br /><br />
+                            <span class="alert alert-info">Only JPG/JPEG files &amp; Size Not More than 3MB</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--Password Modal -->
+        <div class="modal fade" id="passModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">New Password <span class="extra-title muted"></span></h4>
+                    </div>
+                    <div class="modal-body form-horizontal">
+                        <div class="form-group">
+                            <label for="pwd">كلمة السر :<abbr class="req">*</abbr></label>
+                            <input type="password" class="form-control" id="newPassword" placeholder="كلمة السر " name="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters" required="">
+                            <small id="passhelp" class="form-text text-muted text-lg-right"> password must contain lowercase letters , uppercase  letters and 6 letters and numbers </small>
+                            <span class="text-danger" id="Newerror"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="confpwd">تاكيد كلمة السر :<abbr class="req">*</abbr></label>
+                            <input type="password" class="form-control" id="confPassword" placeholder="تاكيد كلمة السر " name="confpwd" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters" required="">
+                            <span class="text-danger" id="Unknownerror"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                        <button class="btn btn-default" id="password_modal_save">Save changes</button>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    <script src="~/Theme/assets/Plugins/icheck-1.x/icheck-1.x/icheck.min.js"></script>
+    <script>
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 3, // MB
+            maxFiles: 1,
+            addRemoveLinks: true,
+            success: function (file, response) {
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $(document).ready(function () {
+            var dateObject = "";
+            $(function () {
+                //$('#user1').datepicker({
+                //    'format': 'mm-dd-yyyy',
+                //    'autoclose': true,
+
+                //});
+            });
+
+            $("#dept").on("change", function () {
+             
+                if ($(this).val() !== null && $(this).val() !== "") {                   
+                    $.ajax({
+                        url: "/dashboard/admin/GetSpecializations",
+                        type: "post",
+                        data: {                         
+                            deptId: $("#dept").val(),
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                          
+                            if (data.length > 0) {
+                                $("#special").html('');
+                                $.each(data,function (index,value) {
+                                    $("#special").append('<option value="' + value.PK_Specialization_Id + '">' + value.Name + '</option>')
+                                });
+                            }
+                            else {
+                                $("#special").html('<option value="">لايوجد تخصصات في هذا القسم </option>');
+                            }                         
+                            
+                        }
+                    });
+                }
+                else {
+                    $("#special").html('<option value="">اختر تخصص الموظف</option>');
+                }
+            });
+
+            $('#admin').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+            .on('ifChecked', function (event) {
+                $('#admin').val(true);
+            })
+            .on('ifUnchecked', function (event) {
+                $('#admin').val(false);
+            });
+
+            $('#owner').iCheck({
+                checkboxClass: 'icheckbox_flat-pink',
+                radioClass: 'iradio_square-pink',
+                increaseArea: '20%' /* optional */
+            })
+         .on('ifChecked', function (event) {
+             $('#owner').val(true);
+         })
+         .on('ifUnchecked', function (event) {
+             $('#owner').val(false);
+         });
+
+            
+            $("#user").blur(function (e) {
+                var input = $(this);
+                
+                $.ajax({
+                    url: "/dashboard/admin/CheckUserName",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        userName: $("#user").val(),
+                    },
+                    dataType: "json",
+                    success: function (exists) {
+                        if (!exists) {
+                            $("#userError").html("");
+                            $("#save").removeClass("disabled");
+                        }
+                        else {
+                            $("#userError").html("this user already exists");
+                            $(input).focus();
+                            $("#save").addClass("disabled");
+                        };
+                    }
+                });
+            });
+
+            $("#email ").blur(function (e) {
+                var input = $(this);
+                $.ajax({
+                    url: "/dashboard/Admin/CheckEmail",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        email: $("#email").val(),
+                    },
+                    dataType: "json",
+                    success: function (exists) {
+                        if (!exists) {
+                            $("#mailError").html("");
+                            $("#save").removeClass("disabled");
+                        }
+                        else {
+                            $("#mailError").html("this email already exists");
+                            $(input).focus();
+                            $("#save").addClass("disabled");
+                        };
+                    }
+                });
+            });
+
+            function validPassword(password) {
+
+                // at least one number, one lowercase and one uppercase letter
+                // at least eight characters that are letters, numbers or the underscore
+                var pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{6,}$/;
+                return pattern.test(password);
+            };
+
+            $("#password_modal_save").on("click", function () {
+
+                var confirm = $("#confPassword").val();
+                var newPass = $("#newPassword").val();
+                if (newPass === "") {
+                    $("#Unknownerror").css("visibility", "visible").html("Must Enter Password");
+                }
+                else if (confirm !== newPass) {
+                    $("#Unknownerror").css("visibility", "visible").html("Password No Match");
+                }
+                else if (!validPassword($("#newPassword").val())) {
+                    $("#Unknownerror").css("visibility", "visible").html("Password must contain at least 8 characters, including UPPER/lowercase and numbers.");
+                }
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/dashboard/Admin/ChangePassword",
+                        data: {
+                            __RequestVerificationToken: token,
+                            password: newPass,
+                            confirmation: confirm
+                        },
+                        dataType: "json",
+                        success: function (response) {
+
+                            if (response.result) {
+                                $("#NewError").css("visibility", "hidden");
+                                $("#Unknownerror").css("visibility", "hidden");
+                                $("#passModal").modal("toggle");
+                                alertify.alert(response.message, function () { })
+                            }
+                            else {
+                                $("#Unknownerror").css("visibility", "visible").html(response.message);
+                            };
+                        },
+                        error: function () {
+
+                        }
+                    });
+                };
+            });
+
+            $("#addUser-form").submit(function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return false;
+                }
+                //var inputPlaceHolder = $("#user1").attr("placeholder");
+                //if ($("#user1").val() === "" || $("#user1").val() === null || $("#user1").val() === inputPlaceHolder) {
+                //    $("#birthError").innerHtml("لابد من اختيار تاريخ الميلاد!");
+                //    return false;
+                //}
+                var userParam = {
+                    Specialization_Id: $("#special").val(),
+                    FirstName: $("#first").val(),
+                    LastName: $("#last").val(),
+                    UserName: $("#user").val(),
+                    PhoneNumber: $("#phone").val(),
+                    Email: $("#email").val(),
+                    IsAdmin: $("#admin").is(':checked'),
+                    IsOwner: $("#owner").is(':checked'),
+                    DateOfBirth: $("#user1").val(),
+                    FK_Users_Genders_Id: $("#gender").val(),
+                    FK_Users_Branches_Id: $("#branch").val(),
+                    FK_Users_Departement_Id: $("#dept").val(),
+                };
+
+                $.ajax({
+                    url: "/dashboard/Admin/SaveUser",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        userVM: userParam,
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.Valid) {
+                            $("#NoPassError").html("");
+                            alertify.alert("Profile saved successefully", function () {
+                                location.href = "@Url.Action("Users", "admin", new { area = "dashboard" })";
+                            });
+                        }
+                        else {
+                            alertify.alert("profile Couldn't be saved successefully", function () {
+                            });
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+
+

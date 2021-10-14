@@ -1,0 +1,144 @@
+﻿@model List<_3aqarak.MVC.Areas.Dashboard.ViewModels.SpecialViewModel>
+@{
+    ViewBag.Title = "Specials";
+     Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item active " aria-current="page">التخصصات</li>
+    </ol>
+</nav>
+<div class="card">
+    @Html.AntiForgeryToken()
+    <div class="card-header">
+        <h4 class="title text-right">أستعراض</h4>
+    </div>
+    <div class="card-body">
+        <div class="form-group" data-step="2" data-intro="يمكن من هنا إختيار نوع القسم الوظيفي الذي تريد إضافة تخصص له والبحث عنه">
+            <label class="text-right"> القســم:</label>
+            @Html.DropDownList("Depts", (SelectList)ViewBag.Depts, new { id = "deptId", @class = "form-control" })
+            <input type="button" value="بحث عن تخصصات" id="search" class="btn btn-default" />
+        </div>
+
+      
+            <table class="table text-right table-hover" data-step="1" data-intro="هذة الصفحه مسؤوله عن عرض جميع التحصصات الوظيفية المدخله وإضافة تخصص جديد لكل قسم أو تعديله أو حذفه">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th>  الاســم </th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+              
+            </table>
+            <button id="add" class="btn btn-default animation-on-hover" type="button" data-step="5" data-intro="يمكن من هنا إضافة تخصص وظيفي جديد">اضافة </button>
+      
+
+    </div>
+</div>
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+
+            var table = $('table').DataTable({
+                
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+                "bFilter": false,
+                "ajax": {
+                    "url": "/dashboard/special/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {                       
+                        d.deptId = $("#deptId").find(':selected').val();
+
+                    }
+                },
+
+                "columns": [
+                    { "data": "PK_Specialization_Id", "name": "PK_Specialization_Id", "autoWidth": true },
+                    { "data": "Name", "name": "Name", "autoWidth": true },
+                    {
+                        "render": function (data, type, full, meta) { return ' <button type="button" data-step="6" data-intro="يمكن من هنا تعديل أياً من التخصصات" title="تعديل" rel="tooltip" class="btn btn-success btn-sm btn-icon edit"data-id="' + full.PK_Specialization_Id + '"><i class="tim-icons icon-notes"></i></button>'; }
+                    },
+                    {
+                        "render": function (data, type, full, meta) {
+                            return '<button type="button" title="حذف " rel="tooltip" data-step="7" data-intro="يمكن من هنا تعديل أياً من التخصصات" class="btn btn-danger btn-sm btn-icon delete" data-id="' + full.PK_Specialization_Id + '"><i class="tim-icons icon-simple-remove"></i></button>';
+                        }
+
+                    },
+
+                ]
+            });
+           $("#search").click(function () {
+           
+                table.draw();
+            });
+            $("#add").click(function () {
+                location.href = "@Url.Action("AddSpecial","Special",new {area="dashboard"})";
+            });
+            $("table").on("click",".edit", function () {
+                debugger;
+                Id = $(this).attr("data-id");
+                location.href = "/dashboard/Special/EditSpecial/" + Id;
+            });
+
+            $("table").on("click", ".delete", function () {
+
+                var Id = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد حذف ذلك السجل؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/dashboard/Special/DeleteSpecial",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: Id,
+                                 },
+
+                                 success: function (result) {
+                                     if (result) {
+                                         alertify.alert("تم حذف السجل بنجاح !", function () {
+                                             button.parents("tr").remove();
+                                         });
+                                     }
+                                     else {
+                                         alertify.alert("لم يتم حذف السجل بنجاح!", function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+            })
+
+        });
+         $(document).ajaxComplete(function () {   
+            $("input[aria-controls='DataTables_Table_0']").attr({ "data-step": "3", "data-intro": "يمكن من هنا البحث عن تخصص معين" });
+             $("select[aria-controls='DataTables_Table_0']").attr({ "data-step": "4", "data-intro": "يمكن من هنا تحديد عدد السجلات المعروضه" });
+              $("#DataTables_Table_0_paginate").attr({ "data-step": "8", "data-intro": "تستخدم هذه للتنقل بين الصفحات إن كانة كثيرة" });
+        });
+    </script>
+}
+
+
+
+
+
+
+

@@ -1,0 +1,516 @@
+﻿@model IEnumerable<_3aqarak.MVC.ViewModels.ImportVillaAvailableViewModel>
+@{
+    ViewBag.Title = "VillaImportView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var lists = ViewBag.Lists;
+}
+
+
+@section styles{
+    <style>
+        .table-responsive {
+            width: 100%;
+            overflow: auto;
+            overflow-y: hidden;
+            overflow-x: scroll !important;
+        
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header text-right">
+        <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">الصفحة الرئيسية </a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","AvailablesIndex")">عروض العملاء </a></li>
+                <li class="breadcrumb-item active" aria-current="page">عرض العروض المستورده </li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- Body-->
+    <div class="card-body">
+        <div class="table-responsive ps">
+            <div class="card">
+                <div class="card-body">
+                    <span class="text-danger" id="finishErr"></span>
+                    <span class="text-danger" id="accessError"></span>
+
+                    <div id="errorMsg">@*<ul class="list-group-item list-group-item-danger"></ul>*@</div>
+
+                    <div class="form-group  ">
+                        <label for="first" class="text-right"> بحث عن موظف السيلز:<abbr class="req">*</abbr></label>
+                        <input type="text" class="form-control" id="tele" placeholder="السيلز" name="FK_VillasAvailables_Users_SalesId" required data-val="true" data-val-required="الرجاء إختيار إسم موظف السيلز">
+                    </div>
+
+                    <div class="ex1">
+                        <table class="table" id="availableImportTable">
+
+                            <tr>
+                                <th rowspan="1">
+                                    @Html.DisplayNameFor(model => model.ClientName)
+                                </th>
+                                <th rowspan="1">
+                                    @Html.DisplayNameFor(model => model.ClientMobile)
+                                </th>
+                                <th>
+                                    السعر
+                                </th>
+                                <th>
+                                    مساحة الفيلا
+                                </th>
+                                <th>
+                                    الحمامات
+                                </th>
+                                <th>
+                                    الغرف
+                                </th>
+                                <th>
+                                    مساحة الأرض
+                                </th>
+                                <th>
+                                    المصاعد
+                                </th>
+                                <th>
+                                    رقم الفيلا
+                                </th>
+                                <th>
+                                    رقم المجموعه
+                                </th>
+                                <th>
+                                    الإطلاله
+                                </th>
+                                <th>
+                                    المنطقه
+                                </th>
+                                <th>
+                                    طريقة الدفع
+                                </th>
+                                <th>
+                                    الأقسام العقارية
+                                </th>
+                                <th>
+                                    إستخدام العقار
+                                </th>
+                                <th>
+                                    التشطيب
+                                </th>
+                                <th>
+                                    نوع الفرش
+                                </th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th>
+                                    <select id="AllViews" required class="form-control Master" data-attr="Views">
+                                        @{
+                                            <option value="0" selected="selected">إختر الإطلاله</option>
+                                            foreach (var item2 in lists.Views)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="AllRegions" required class="form-control Master" data-attr="RegionsFrom">
+                                        @{
+                                            <option value="0" selected="selected">إختر المنطقه</option>
+                                            foreach (var item2 in lists.RegionsFrom)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="AllPayments" required class="form-control Master" data-attr="Payments">
+                                        @{
+                                            <option value="0" selected="selected">إختر الدفع</option>
+                                            foreach (var item2 in lists.Payments)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="AllTransactions" required class="form-control Master" data-attr="Transactions">
+                                        @{
+                                            <option value="0" selected="selected">إختر القسم</option>
+                                            foreach (var item2 in lists.Transactions)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="AllUsages" required class="form-control Master" data-attr="Usages">
+                                        @{
+                                            <option value="0" selected="selected">إختر الإستخدام</option>
+                                            foreach (var item2 in lists.Usages)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+
+                                <th>
+                                    <select id="AllFinishings" required class="form-control Master" data-attr="Finishings">
+                                        @{
+                                            <option value="0" selected="selected"> تشطيب الوحدة</option>
+                                            foreach (var item2 in lists.Finishings)
+                                            {
+                                                <option value="@item2.Value">@item2.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </th>
+
+                                <th>
+                                    @Html.DropDownList("IsFurnished", new SelectList(new[] { new { value = true, text = "مفروش" }, new { value = false, text = "غير مفروش" } }.ToList(), "value", "text"), "نوع الفرش", new { @class = "form-control Master", id = "furnished", required = "required" })
+
+                                </th>
+
+                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ClientName">
+                                        @Html.DisplayFor(model => item.ClientName)
+                                    </td>
+                                    <td class="ClientMobile">
+                                        @Html.DisplayFor(modelItem => item.ClientMobile)
+                                    </td>
+                                    <td class="Price">
+                                        @Html.DisplayFor(modelItem => item.Price)
+                                    </td>
+
+                                    <td class="Space">
+                                        @Html.DisplayFor(modelItem => item.Space)
+                                    </td>
+
+                                    <td class="BathRooms">
+                                        @Html.DisplayFor(modelItem => item.BathRooms)
+                                    </td>
+
+                                    <td class="Rooms">
+                                        @Html.DisplayFor(modelItem => item.Rooms)
+                                    </td>
+                                    <td class="AreaSpace">
+                                        @Html.DisplayFor(modelItem => item.AreaSpace)
+                                    </td>
+
+                                    <td class="NoElevators">
+                                        @Html.DisplayFor(modelItem => item.NoOfElevators)
+                                    </td>
+                                    <td class="VillaNumber">
+                                        @Html.DisplayFor(modelItem => item.VillaNumber)
+                                    </td>
+
+                                    <td class="GroupNumber">
+                                        @Html.DisplayFor(modelItem => item.GroupNumber)
+                                    </td>
+                                    <td class="Views">
+                                        <select id="Views" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر الدفع</option>*@
+                                                foreach (var item2 in lists.Views)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </td>
+                                    <td class="RegionsFrom">
+                                        <select id="RegionsFrom" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر الأقسام</option>*@
+                                                foreach (var item2 in lists.RegionsFrom)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </td>
+                                    <td class="Payments">
+                                        <select id="Payments" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر الدفع</option>*@
+                                                foreach (var item2 in lists.Payments)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </td>
+                                    <td class="Transactions">
+                                        <select id="Transactions" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر الأقسام</option>*@
+                                                foreach (var item2 in lists.Transactions)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </td>
+                                    <td class="Usages">
+                                        <select id="Usages" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر الإستخدام</option>*@
+                                                foreach (var item2 in lists.Usages)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </td>
+
+                                    <td class="Finishings">
+                                        <select id="Finishings" required class="form-control">
+                                            @{
+                                                @*<option selected="selected">إختر التشطيبات</option>*@
+                                                foreach (var item2 in lists.Finishings)
+                                                {
+                                                    <option value="@item2.Value">@item2.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+
+                                    <td class="IsFurnished">
+                                        @Html.DropDownList("IsFurnished", new SelectList(new[] { new { value = true, text = "مفروش" }, new { value = false, text = "غير مفروش" } }.ToList(), "value", "text"), "نوع الفرش", new { @class = "form-control", id = "furnished", required = "required" })
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <input id="btnInsert" type="button" value="Insert" />
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        $("#btnInsert").click(function () {
+
+            debugger;
+            var errorlist = [];
+            var itemlist = [];
+            var viewArr = ["1", "2"];
+            var accessArr = ["1", "2"];
+            var finishArr = ["1", "2"];
+
+            if (teleId === "" || teleId === null) {
+                var errorMessage = "لا بد من إدخال موظف السيلز";
+                errorlist.push(errorMessage);
+            }
+            //***
+
+            if ($("#furnished").children("option:selected").val() == "" || $("#furnished").children("option:selected").val() == null) {
+                var errorMessage = "لا بد من إختيار نوع الفرش";
+                errorlist.push(errorMessage);
+            }
+            if ($("#Finishings").children("option:selected").val() == "0" || $("#Finishings").children("option:selected").val() == null) {
+                var errorMessage = "لا بد من إختيار نوع التشطيب";
+                errorlist.push(errorMessage);
+            }
+
+            if ($("#Usages").children("option:selected").val() == "0" || $("#Usages").children("option:selected").val() == null) {
+                var errorMessage = "لا بد من إختيار نوع الإستخدام";
+                errorlist.push(errorMessage);
+            }
+            if ($("#Payments").children("option:selected").val() == "0" || $("#Payments").children("option:selected").val() == null) {
+                var errorMessage = "لا بد من إختيار طريقة الدفع";
+                errorlist.push(errorMessage);
+            }
+            if ($("#Transactions").children("option:selected").val() == "0" || $("#Transactions").children("option:selected").val() == null) {
+                var errorMessage = "لا بد من إختيار نوع العمليه";
+                errorlist.push(errorMessage);
+            }
+            if ($("#Views").children("option:selected").val() == "0" || $("#Views").children("option:selected").val() == null) {
+                var errorMessage = "لا بد من إختيار الإطلاله";
+                errorlist.push(errorMessage);
+            }
+            if ($("#RegionsFrom").children("option:selected").val() == "0" || $("#RegionsFrom").children("option:selected").val() == null) {
+                var errorMessage = "لا بد من إختيار المنطقه";
+                errorlist.push(errorMessage);
+            }
+
+              //***
+
+            if (errorlist == null || errorlist.length == 0) {
+                //get cell values, instead of the header text.
+                //$("table tr:not(:first)").each(function () {
+                $("table tr:nth-child(n+3)").each(function () {
+                    var tdlist = $(this).find("td");
+
+                    var Item = {
+
+                        ClientName: $(tdlist[0]).html(),
+                        ClientMobile: $(tdlist[1]).html(),
+                        Price: $(tdlist[2]).html(),
+                        Space: $(tdlist[3]).html(),
+                        BathRooms: $(tdlist[4]).html(),
+                        Rooms: $(tdlist[5]).html(),
+                        AreaSpace: $(tdlist[6]).html(),
+                        NoOfElevators: $(tdlist[7]).html(),
+                        VillaNumber: $(tdlist[8]).html(),
+                        GroupNumber: $(tdlist[9]).html(),
+
+                        FK_Units_Views_Id: $(tdlist[10]).find("option:selected").val(),
+                        FK_AvaliableUnits_Regions_Id: $(tdlist[11]).find("option:selected").val(),
+                        FK_AvailableUnits_PaymentMethod_Id: $(tdlist[12]).find("option:selected").val(),
+                        FK_AvailableUnits_Transactions_Id: $(tdlist[13]).find("option:selected").val(),
+                        FK_AvailableUnits_Usage_Id: $(tdlist[14]).find("option:selected").val(),
+                        FK_Units_Finishing_Id: $(tdlist[15]).find("option:selected").val(),
+                        IsFurnished: $(tdlist[16]).find("option:selected").val(),
+                        FK_VillasAvailables_Users_SalesId: teleId,
+
+                       DateOfBuild: 1900,
+                       Descreption: "Test Descreption !!!",
+
+                        FinishArr: finishArr,
+                        AccessoriesArr: accessArr,
+                        ViewsArr: viewArr,
+                    };
+                    itemlist.push(Item);
+                })
+
+                $.ajax({
+                    url: '@Url.Action("SaveImportVillaAvailable", "AvailableImportExport")', //
+                    dataType: "json",
+                    data: JSON.stringify({ itemlist: itemlist }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        alertify.alert("تم حفظ البيانات بنجاح", function () {
+                               location.href = "/Home/Index/";
+                        });
+
+                        if (response.valid) {
+
+                            alertify.alert(response.message, function () {
+                                location.href = "/Home/Index/";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+                                location.href = "/Home/Index/";
+                            });
+                            alert("success");
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("error");
+                    }
+                });
+            }//end of validation
+            //print validation here
+             $("#errorMsg").empty();
+            for (var I = 0; I < errorlist.length; I++) {
+                ErrorList = "<li>" + errorlist[I] + "</li>";
+               // $("#errorMsg").innerHTML += ErrorList;
+                $("#errorMsg").append('<ul class="list-group-item list-group-item-danger">' + ErrorList + '</ul>')
+            }
+            errorlist = [];
+        });
+
+        $(document).ready(function () {
+            //var col=2;
+            //var row=2;
+            //var element1 = $("#demandImportTable").children("tbody").children("tr:eq(2)").children("td:eq(2)").text();
+            //var getValFromList = $(".RegionsFrom").children("select").children("option").val();
+            //$("#demandImportTable").parent().css("overflow-x", "inherit");
+            //$(".table-responsive").removeClass();
+            //$("#availableImportTable").parent().css("overflow-x", "scroll");
+        });
+
+
+        var teleId = "";
+        $("#tele").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/dashboard/admin/EmpAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { text: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                        }));
+                    }
+                });
+            },
+            select: function (event, ui) {
+                teleId = ui.item.value.split("-")[1];
+                ui.item.value = ui.item.value.split("-")[0]
+            },
+        });
+
+//*********Validation *********************************************************************************************************************
+
+         var errorlist = [];
+
+
+         $("#furnished").change(function () {
+            $("table tr:nth-child(n+3)").each(function () {
+                var tdlist = $(this).find("td");
+
+                var ItemValidation = {
+                    ClientName: $(tdlist[0]).html(),
+                    IsFurnished: $(tdlist[17]).children("select").children("option").val(),
+                     Finishing: $(tdlist[14]).html(),
+                };
+                var furnishedVal = $("#furnished").children("option:selected").val();
+                var finishingVal=$("#Finishings").children("option:selected").val();
+
+
+                if ((Number(finishingVal)===1 || Number(finishingVal)===2) && furnishedVal == "True") {
+
+               var clientName = ItemValidation.ClientName.trim();
+                    var errorMessage = "لايمكن لفيلا غير مشطبه ان تكون مفروشه! للعميل" + clientName + "";
+                    errorlist.push(errorMessage);
+
+                }
+
+
+
+            });
+           });
+
+
+
+
+        $(".Master").change(function () {
+            var className = $(this).attr("data-attr");
+            var selector = '.' + className;
+            var valueSelector = $(this).children("option:selected").val();
+            $(selector).children("select").children("option[value=" + valueSelector + "]").attr('selected', 'selected');
+        });
+    </script>
+}
+
+

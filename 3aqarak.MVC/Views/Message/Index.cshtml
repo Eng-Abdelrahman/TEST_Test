@@ -1,0 +1,202 @@
+﻿@model _3aqarak.MVC.ViewModels.MessageViewModel
+@{
+    ViewBag.Title = "Index";
+   Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card">
+    <div class="container-fluid">
+        @Html.AntiForgeryToken()
+        <div class="card-header text-right">
+            <!-- <h4 class="card-title">شاشة التسجيل</h4> <br>  -->
+            <!-- <span class="card-title"> كود : 12212</span> -->
+            <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("index","Home")" style="color:#0098f0"> الصفحة الرئيسية </a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#">Library</a></li> -->
+                    <li class="breadcrumb-item active" aria-current="page"> عرض الرسائل المرسله إلى الموظفين  </li>
+                </ol>
+            </nav>
+        </div>
+        <!-- Body-->
+        <div class="card-body">
+
+            <div class="row" data-step="2" data-intro="يمكن من هنا البحث عن المهمات المرسلة بالتاريخ في فتره زمنية معينه وإختار إسم الموظف">
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class=" col">
+                    <label class="prelabel" for="from">من تاريخ</label>
+                    <input type="date" id="from" class="form-control" />
+                </div>
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+                <div class="col">
+                    <label class="prelabel" for="to">الى تاريخ</label>
+                    <input type="date" id="to" class="form-control" />
+
+                </div>
+                <div class="col" style="margin-top:3%">
+                    @Html.DropDownList("Users", Model.User, "اختر الموظف", new { id = "ReceverId", @class = "form-control" })
+                </div>
+                @*<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 ">*@
+            <div class="col" style="margin-top:3%">
+                @*<input id="getContracts" type="button" value="عرض العقود" class="btn btn-default " />*@
+                <button class="btn btn-default" id="getContracts" data-step="3" data-intro="بدء البحث من خلال المعطيات المدخلة"> عرض الرسائل</button>  <a class="btn btn-default" data-step="7" data-intro="من هنا يمكن إرسال رساله أو مهمه جديده للموظف معين" href="@Url.Action("AddMessage","Message")"id="sendMessage">  إرسال رساله</a>
+            </div>
+            </div>
+            <div class="table-responsive ps">
+                <!-- Page Table -->
+                <table class="table table-hover table-striped" data-step="1" data-intro="هذة الصفحه مسؤوله عن عرض جميع المهمات المرسلة للموظفين مع متابعة كل مهمه أو تعديلها أو حذفها">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>إسم الموظف</th>
+                            <th>عنوان الرساله</th>
+                            <th> تاريخ الإرسال</th>
+                            <th>الحاله</th>
+                            <th>هل تمت</th>
+                            <th class="text-center"></th>
+                            <th>الرساله</th>
+
+                        </tr>
+                    </thead>
+                </table>
+                <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                    <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+                </div>
+                <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                    <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+                </div>
+                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1022px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+            </div>
+        </div>  <!-- End of body-->
+    </div>
+</div> <!-- card-->
+@section scripts{
+    <script>
+        //document.getElementById('from').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        //document.getElementById('to').min = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+
+        $(document).ready(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            table = $("table").DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pageLength": 5,
+                "bFilter": false,
+
+                "ajax": {
+                    "url": "/Message/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.ReceverId = $("#ReceverId").val();
+                        d.fromDate = $("#from").val();
+                        d.toDate = $("#to").val();
+                    },
+
+                },
+
+                "columns": [
+                    { "data": "PK_Messages_Id", "name": "PK_Messages_Id", "autoWidth": true },
+                    { "data": "UserName", "name": "UserName", "autoWidth": true },
+                    { "data": "Title", "name": "Title", "autoWidth": true },
+                    { "data": "DateString", "name": "DateString", "autoWidth": true },
+                     {
+                            "render": function (data, type, full, meta) {
+                                var checkIsRead =!full.IsRead;
+                                if (checkIsRead == false) {
+                                    return '<h4 color="green" style=" color: #0ea731;">مقروءة</h4>';
+                                }
+                                else { return '<h4 color="green" style=" color: #f30909;">لم تقرأ</h4>'; }
+                            },
+                    },
+                    {
+                             "render": function (data, type, full, meta) {
+                                var checkIsDone = !full.IsDone;
+                                if (checkIsDone == false) {
+                                    return '<h4 color="green" style=" color: #0ea731;">تمت</h4>';
+                                }
+                                else { return '<h4 color="green" style=" color: #f30909;">لم تتم</h4>'; }
+                            },
+                    },
+                    //{ "data": "IsRead", "name": "IsRead", "autoWidth": true },
+                    //{ "data": "IsDone", "name": "IsDone", "autoWidth": true },
+                    {
+                        "render": function (data, type, full, meta) {
+                            if (full.DateTimeEndString >= "@DateTime.UtcNow.AddDays(-1)"){
+                                return ' <button type="button" title="تعديل " data-step="8" data-intro="يمكن من هنا تعديل مهمه قبل الوقت المحدد لإنتهائها"  rel="tooltip" class="btn btn-success btn-sm btn-icon edit"data-id="' + full.PK_Messages_Id + '"><i class="tim-icons icon-notes"></i></button>';
+                            }
+                            else { return '<h4 color="green" style=" color: #f30909;">END</h4>';}
+                            }
+                    },
+                     {
+                            "render": function (data, type, full, meta) {
+                                 return "<a class='btn btn-success btn-sm' style='margin-left:5px' onclick='Read("+full.PK_Messages_Id+")'><i class='fa fa-check'></i> قرأه</a>"; 
+
+                            },
+                        },
+                    
+                ]
+            });
+            $("#getContracts").click(function () {
+                table.draw();
+            });
+
+            $("table").on("click", ".edit", function () {
+                Id = $(this).attr("data-id");
+                location.href = "/Message/EditMessage/" + Id;
+            });
+
+            $("table").on("click", ".delete", function () {
+                var Id = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                    "هل تريد حذف ذلك السجل؟", function (confirm) {
+                        if (confirm) {
+                            $.ajax({
+                                url: "/SaleContract/DeleteContract",
+                                type: "post",
+                                data: {
+                                    __RequestVerificationToken: token,
+                                    id: Id,
+                                },
+
+                                success: function (result) {
+                                    debugger;
+                                    if (result) {
+                                        alertify.alert("تم حذف السجل بنجاح !", function () {
+                                            button.parents("tr").remove();
+                                        });
+                                    }
+                                    else {
+                                        alertify.alert("لم يتم حذف السجل بنجاح!", function () { });
+                                    }
+
+                                }
+                            })
+                        }
+
+                    }
+
+                )
+            });
+
+        });
+         function Read(Id) {
+                location.href = "/Message/DetailMessage/" + Id;
+        }
+         $(document).ajaxComplete(function () {   
+             $("select[aria-controls='DataTables_Table_0']").attr({ "data-step": "5", "data-intro": "يمكن من هنا تحديد عدد السجلات المعروضه" });
+              $("#DataTables_Table_0_paginate").attr({ "data-step": "6", "data-intro": "تستخدم هذه للتنقل بين الصفحات إن كانة كثيرة" });
+        });
+    </script>
+
+}
+
+
+

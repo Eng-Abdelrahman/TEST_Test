@@ -1,0 +1,402 @@
+﻿@model _3aqarak.MVC.ViewModels.LandAvailableForUpdateViewModel
+@{
+    ViewBag.Title = "EditAvailableLand";
+}
+@section styles{
+    <style>
+        label {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            clear: both;
+        }
+
+        h4 {
+            text-align: center;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+
+        h5 {
+            text-align: right;
+            font-size: 16px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .form-check-inline {
+            float: right;
+        }
+
+        .ui-menu-item-wrapper {
+            font-size: 20px;
+            text-align: right;
+        }
+    </style>
+}
+<div class="card">
+    <div class="card-header">
+        <div class="card-header text-right">
+            <nav aria-label="breadcrumb" role="navigation" style="direction :rtl">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">الصفحة الرئيسية </a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "AvailableLands")">عروض بيع العملاء </a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("EditAvailableLand", "AvailableLands", new { id = Model.FK_AvaliableLands_Clients_ClientId })">عروض بيع عميل </a></li>
+                    <li class="breadcrumb-item active" aria-current="page">تعديل عرض بيع لعميل </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive ps">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="AddClientsaleForm">
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.PK_AvailableLands_Id, new { id = "id" })
+                            @Html.HiddenFor(m => m.FK_AvailableLands_Categories_CategoryId, new { id = "cats" })
+                            @Html.HiddenFor(m => m.FK_AvaliableLands_Clients_ClientId, new { id = "clientId" })
+                            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+                            <div class="form-group  ">
+                                <label for="first" class="text-right"> موظف السيلز:<abbr class="req">*</abbr></label>
+                                <input type="text" value="@ViewBag.salesName" class="form-control" id="tele" placeholder="السيلز" name="FK_AvaliableUnits_Users_SalesId" required>
+                                @Html.ValidationMessageFor(m => m.FK_AvaliableLands_Users_SalesId, "", new { @class = "text-danger " })
+                            </div>
+                            <div class="form-group">
+                                <div class="show-img ">
+                                    <input type="button" class="btn btn-block" data-toggle="modal" data-target="#myModal" value=" تحميل صــور العــرض " />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label>القسم الحالي للعقار<abbr class="req">*</abbr></label>
+                                    <input type="text" class="form-control" id="transValue" value="@Model.TransType" data-id="@Model.FK_AvaliableLands_Transactions_TransactionId" readonly>
+                                </div>
+                                <div class="col">
+                                    <label>الاقسام العقارية</label>
+                                    <select class="form-control" id="trans">
+                                        <option value="">يرجى اختيار قسم عقاري جديد لو احتجت</option>
+                                        @foreach (var item in Model.Transactions)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+
+                                    @Html.ValidationMessageFor(m => m.FK_AvaliableLands_Transactions_TransactionId, "", new { @class = "text-danger", id = "transError" })
+                                </div>
+                                <div class="col">
+                                    <label>منطقة العقار<abbr class="req">*</abbr></label>
+                                    @Html.DropDownListFor(m => m.FK_AvailabeLands_Regions_RegionId, Model.Regions, "اختر المنطقة", new { @class = "form-control", id = "region", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_AvailabeLands_Regions_RegionId, "", new { @class = "text-danger", id = "regError" })
+                                </div>
+                                <div class="col">
+                                    <div class="form-group ">
+                                        <label>طــريقة الدفع:<abbr class="req">*</abbr></label>
+                                        @Html.DropDownListFor(m => m.FK_AvailableLands_PaymentMethod_Id, Model.Payments, "", new { @class = "form-control", id = "payment", required = "required" })
+                                        @Html.ValidationMessageFor(m => m.FK_AvailableLands_PaymentMethod_Id, "", new { @class = "text-danger", id = "paymentError" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>المساحة<abbr class="req">*</abbr></label>
+                                        <input type="number" class="form-control" placeholder="المساحة" min="0" value="@Model.Space" id="space" required>
+                                        @Html.ValidationMessageFor(m => m.Space, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label>الاطــــلاله</label>
+                                    @Html.DropDownListFor(m => m.FK_AvailableLands_Views_ViewId, Model.Views, new { @class = "form-control", id = "view", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.FK_AvailableLands_Views_ViewId, "", new { @class = "text-danger", id = "viewError" })
+                                </div>
+                                <div class="col">
+                                    <div class="form-group ">
+                                        <label>السعــر /الايجار المطــلوب<abbr class="req">*</abbr></label>
+                                        <input type="number" class="form-control sty form-control" id="price" min="0" placeholder="السعر المطلوب" value="@Model.Price" required>
+                                        @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
+                                    </div>
+                                    </div>
+                                    <div class="col">
+                                        <label class="preLabel">النوع<abbr class="text-danger">*</abbr></label>
+                                        <select id="LandType-dropdown" required class="form-control">
+                                            <option> اختر نوع الارض </option>
+                                            <option value="true" @(Model.Type == true ? "selected" : "")>كارديون مبانى</option>
+                                            <option value="false" @(Model.Type == false ? "selected" : "")>زراعى</option>
+                                        </select>
+                                        <span class="text-danger"></span>
+                                    </div>
+                             
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="control-label" for="address">العنوان<abbr class="req">*</abbr></label>
+                                        <textarea class="form-control sty" id="address" rows="3" required style="border :1px solid #2b3553  ; border-radius:10px">@Model.Address</textarea>
+                                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group ">
+                                        <h5>وصف الوحدة</h5>
+                                        <textarea class="form-control sty" id="unitDescrip" rows="3" style="border :1px solid #2b3553  ; border-radius:10px" required>@Model.Description</textarea>
+                                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group ">
+                                        <h5>الملاحظـــات</h5>
+                                        <textarea class="form-control sty" id="notes" rows="3" cols="300" style="border :1px solid #2b3553  ; border-radius:10px">@Model.Notes</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-default animation-on-hover" id="mybutton">حفــظ</button>
+                        </form>
+                    </div>
+                    <!-- Image Modal -->
+                    @*<div id="myModal" class="modal fade " role="dialog">
+                            <div class="modal-dialog .modal-dialog-centered modal-lg" role="document">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Choose image</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            @if (Model.Images.Any())
+                                            {
+                                                var counter = 0;
+                                                var index = 0;
+                                                int elementsInloop = 0;
+                                                var loops = (Model.Images.Length % 4 > 0) ? ((Model.Images.Length / 4) + 1) : ((Model.Images.Length / 4));
+                                                for (int i = 0; i < loops; i++)
+                                                {
+                                                    <div>
+                                                        @{
+                                                            index = counter;
+                                                            elementsInloop = (Model.Images.Length - counter) > 4 ? 4 : Model.Images.Length - counter;
+
+                                                        }
+
+                                                        @for (int j = index; j < index + elementsInloop; j++)
+                                                        {
+
+                                                            <img src="~/@Model.Images[j]" width="100" height="100" style="border:1px thin grey;margin-right:5px;" alt="">
+
+                                                            counter = counter + 1;
+                                                        }
+
+                                                    </div>
+                                                }
+                                            }
+                                            <div class="jumbotron">
+                                                <form action="/ClientSales/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                                <button id="act-on-upload" class="btn btn-block">حمل الصور</button>
+                                            </div>
+                                            <span class="alert alert-primary">الصورة الاولى التي سيتم تحميلها هي الصورة الاساسيه لعنوان العرض</span><br /><br />
+                                            <span class="alert alert-warning">اقصى عدد للصور هو 9 صور فقط  </span>
+                                            <span class="alert alert-info">مساحة الصوره لا تزيد عن 3 ميجابايتس  </span>
+
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+
+                </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"> </div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; left: 594px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"> </div>
+            </div>
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; left: 1094px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        Dropzone.options.dropzoneJsForm = {
+
+            maxFilesize: 3, // MB
+            maxFiles: 9,
+            addRemoveLinks: true,
+            uploadMultiple: true,
+            parallelUploads: 9,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+                })
+            },
+            successmultiple: function (file, response) {
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(function () {
+            if("@ViewBag.Disable"==="True"){
+                $("input").prop("disabled", true);
+                $("select").prop("disabled", true);
+                $("textarea").prop("disabled", true);
+                $(".breadcrumb").hide();
+                $("input[type='checkbox']").prop("disabled", false);
+                $(".req").hide();
+                $(".btn").hide();
+            }
+            var teleId = "@Model.FK_AvaliableLands_Users_SalesId";
+            $("#tele").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/dashboard/admin/EmpAutoComplete",
+                        type: "POST",
+                        dataType: "json",
+                        data: { text: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                teleId = item.PK_Users_Id;
+                                return { label: item.FirstName + " " + item.LastName, value: item.FirstName + " " + item.LastName + "-" + item.PK_Users_Id };
+                            }))
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    mgrId = ui.item.value.split("-")[1];
+                    ui.item.value = ui.item.value.split("-")[0]
+                },
+            });
+
+            $("#AddClientsaleForm").submit(function (e) {
+                e.preventDefault();
+                if ($("#tele").val() === "" || $("#tele").val() === null) {
+                    $("#tele").next("span.text-danger").html("لابد من ادخال اسم الموظف");
+                    return false;
+                }
+                else {
+                    $("#tele").next("span.text-danger").html("");
+                }
+                if ($("#region").val() === "" || $("#region").val() === null) {
+                    $("#region").next("span.text-danger").html("لابد من اختيار  القسم المنطقة");
+                    return false;
+                }
+                else {
+                    $("#transValue").next("span.text-danger").html("");
+                }
+                //if ($("#trans").val() === "" || $("#trans").val() === null) {
+                //    $("#trans").next("span.text-danger").html("لابد من اختيار  القسم العقارى");
+                //    return false;
+                //}
+                //else {
+                //    $("#trans").next("span.text-danger").html("");
+                //}
+                if ($("#space").val() === "" || $("#space").val() === null) {
+                    $("#space").next("span.text-danger").html("لابد من ملئ هذا الحقل");
+                    return false;
+                }
+                else {
+                    $("#space").next("span.text-danger").html("");
+                }
+                if ($("#view").val() === "" || $("#view").val() === null) {
+                    $("#view").next("span.text-danger").html("لابد من اختيار الاطلالة");
+                    return false;
+                }
+                else {
+                    $("#view").next("span.text-danger").html("");
+                }
+                if ($("#price").val() === "" || $("#price").val() === null) {
+                    $("#price").next("span.text-danger").html("لابد من ملئ هذا الحقل");
+                    return false;
+                }
+                else {
+                    $("#price").next("span.text-danger").html("");
+                }
+                if ($("#payment").val() === "" || $("#payment").val() === null) {
+                    $("#payment").next("span.text-danger").html("لابد من اختيار طريقة الدفع");
+                    return false;
+                }
+                else {
+                    $("#payment").next("span.text-danger").html("");
+                }
+                if ($("#LandType-dropdown").val() === "" || $("#LandType-dropdown").val() === null) {
+                    $("#LandType-dropdown").next("span.text-danger").html("لابد من اختيار نوع الارض");
+                    return false;
+                }
+                else {
+                    $("#LandType-dropdown").next("span.text-danger").html("");
+                }
+                debugger;
+                var availableLandJsonObj = {
+                    FK_AvaliableLands_Users_SalesId: teleId,
+                    PK_AvailableLands_Id: $("#id").val(),
+                    FK_AvaliableLands_Clients_ClientId: $("#clientId").val(),
+                    Notes: $("#notes").val(),
+                    Price: $("#price").val(),
+                    FK_AvailableLands_PaymentMethod_Id: $("#payment").val(),
+                    Space: $("#space").val(),
+                    FK_AvailabeLands_Regions_RegionId: $("#region").val(),
+
+                    Description: $("#unitDescrip").val(),
+                    Address: $("#address").val(),
+
+                    Type: $("#LandType-dropdown").val(),
+                };
+                if ($("#trans").val() !== "" && $("#trans").val() !== null) {
+                    availableLandJsonObj.FK_AvaliableLands_Transactions_TransactionId = $("#trans").val();
+                }
+                else {
+                    availableLandJsonObj.FK_AvaliableLands_Transactions_TransactionId = $("#transValue").attr("data-id");
+                };
+                $.ajax({
+                    url: "/AvailableLands/UpdateAvailableLand/",
+                    type: "post",
+                    accept: "application/json",
+                    dataType: "json",
+                    data: {
+                        __RequestVerificationToken: token,
+                        availableLandVM: availableLandJsonObj
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+                            alertify.alert(response.message, function () {
+                                location.href = "/AvailableLands/LandDemandMatchesAfterUpdate/";
+                            });
+                        }
+                        else {
+                            alertify.alert(response.message, function () {
+                            });
+                        };
+
+                    },
+                    error: function (response) {
+                        alertify.alert("حدث خطا ما عند تسجيل البيانات", function () {
+
+                        })
+
+                    }
+                });
+            });
+        });
+    </script>
+}

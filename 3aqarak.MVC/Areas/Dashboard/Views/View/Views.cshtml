@@ -1,0 +1,127 @@
+﻿@model List<_3aqarak.MVC.Areas.Dashboard.ViewModels.ViewsViewModel>
+
+@{
+    ViewBag.Title = "Views";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+}
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item active " aria-current="page">الاطــلالات</li>
+    </ol>
+</nav>
+<div class="card">
+    @Html.AntiForgeryToken()
+    <div class="card-header">
+        <h4 class="title text-right">أستعراض</h4>
+    </div>
+    <div class="card-body">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-danger text-right" role="alert">
+                لايوجد بيانات لاستعراضهم !
+            </div>
+            <button id="add" class="btn btn-default animation-on-hover"  type="button">اضافة </button>
+        }
+        else
+        {
+            <table class="table text-right table-hover"  data-step="1" data-intro="هذة الصفحه مسؤوله عن عرض جميع الإطلالات المدخله وإضافة إطلاله جديده أو تعديلها أو حذفها">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th>الاسم </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th class="text-center">@item.PK_Views_Id</th>
+                            <td>@item.Name</td>
+                            <td class="td-actions text-right">
+                                <button type="button" title="تعديل "  data-step="5" data-intro="يمكن من هنا تعديل أياً من الإطلالات" rel="tooltip" class="btn btn-success btn-sm btn-icon edit" data-id="@item.PK_Views_Id">
+                                    <i class="tim-icons icon-notes"></i>
+                                </button>
+                                <button type="button" title="حذف "  data-step="6" data-intro="يمكن من هنا حذف أياً من الإطلالات" rel="tooltip" class="btn btn-danger btn-sm btn-icon delete" data-id="@item.PK_Views_Id">
+                                    <i class="tim-icons icon-simple-remove"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button id="add" class="btn btn-default animation-on-hover" type="button" data-step="4" data-intro="يمكن من هنا إضافة إطلاله جديدة">اضافة </button>
+        }
+
+    </div>
+</div>
+@section scripts{
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $(document).ready(function () {
+
+            $('table').DataTable({
+                "language": {
+                    "url": "/Theme/assets/Plugins/DataTables/arabic.lang.json"
+                },
+            });
+            $("#add").click(function () {
+                location.href="@Url.Action("AddView","View",new {area="dashboard"})";
+            });
+            $(".edit").click(function () {
+                Id = $(this).attr("data-id");
+                location.href = "/dashboard/View/EditView/"+Id;
+            });
+
+            $("table").on("click", ".delete", function () {
+
+                var viewId = $(this).attr("data-id");
+                var button = $(this);
+                alertify.confirm(
+                     "هل تريد حذف ذلك السجل؟", function (confirm) {
+                         if (confirm) {
+                             $.ajax({
+                                 url: "/dashboard/View/DeleteView",
+                                 type: "post",
+                                 data: {
+                                     __RequestVerificationToken: token,
+                                     id: viewId,
+                                 },
+
+                                 success: function (result) {
+                                     if (result) {
+                                         alertify.alert("تم حذف السجل بنجاح !", function () {
+                                             button.parents("tr").remove();
+                                         });
+                                     }
+                                     else {
+                                         alertify.alert("لم يتم حذف السجل بنجاح!", function () { });
+                                     }
+
+                                 }
+                             })
+                         }
+
+                     }
+
+                )
+            })
+
+        });
+         $(document).ajaxComplete(function () {
+           
+            $("input[aria-controls='DataTables_Table_0']").attr({ "data-step": "2", "data-intro": "يمكن من هنا البحث عن إطلاله معينه" });
+             $("select[aria-controls='DataTables_Table_0']").attr({ "data-step": "3", "data-intro": "يمكن من هنا تحديد عدد السجلات المعروضه" });
+              $("#DataTables_Table_0_paginate").attr({ "data-step": "7", "data-intro": "تستخدم هذه للتنقل بين الصفحات إن كانة كثيرة" });
+        });
+    </script>
+}
+
+
+
+
+
+
+

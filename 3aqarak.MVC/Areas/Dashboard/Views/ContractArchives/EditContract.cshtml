@@ -1,0 +1,229 @@
+﻿@model _3aqarak.MVC.Areas.Dashboard.ViewModels.ContractArchiveViewModel
+@{
+    ViewBag.Title = "EditContract";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+ }
+@section styles{
+    <style>
+        label:not(#check), label:not(.modal-title) {
+            direction: rtl;
+            float: right;
+        }
+
+        .card label {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        img {
+            border-radius: 50%;
+            margin-left: 43%;
+        }
+
+
+        input[type="text"], input[type="email"], textarea {
+            font-size: 1.4em;
+        }
+    </style>
+}
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item "><a href="@Url.Action("index","dashboard")">الرئيسية</a></li>
+        <li class="breadcrumb-item " aria-current="page"><a href="@Url.Action("Index","ContractArchives")">العقود المؤرشفة</a></li>
+        <li class="breadcrumb-item active " aria-current="page">تعديل عقد</li>
+
+    </ol>
+</nav>
+<div class="card">
+    <div class="card-header">
+        <h4 class="title text-right">تعديل عقد </h4>
+    </div>
+    <div class="card-body">
+
+
+        <form id="addContract-form">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.PK_ContractArchives_Id, new { id = "id" })
+            @if (!string.IsNullOrEmpty(Model.ImageURL))
+            {
+                <div class="container-fluid text-center form-group">
+                    <iframe id="contractPDF" src="@Url.Action("GetPDF",new { id=Model.PK_ContractArchives_Id})" style="width:600px; height:500px;" frameborder="0"></iframe>
+                </div>
+                <br /><br />
+            }
+
+            <div class="form-group">
+                <div class="show-img ">
+                    <input type="button" class="btn btn-block" data-toggle="modal" data-target="#myModal" value=" ملف العقد " />
+                </div>
+            </div>
+            <h6 class="reqAlignment ">الرجاء إدخال البيانت التي تحتوي علامة<abbr class="req">*</abbr> </h6>
+            <div class="form-group  ">
+                <label for="first" class="text-right"> رقم العقد  :<abbr class="req">*</abbr> </label>
+                <input type="text" class="form-control" id="ContractID" placeholder="رقم العقد" name="ContractID" value="@Model.ContractID" required>
+                @Html.ValidationMessageFor(m => m.ContractID, "", new { @class = "text-danger text-right", id = "ContractError" })
+            </div>
+
+
+            <div class="form-group" style="margin-top:5%">
+                <button id="save" type="submit" class="btn btn-default animation-on-hover " style="float:right">حفظ العقد </button>
+            </div>
+
+        </form>
+
+        <!-- Image Modal -->
+        <div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog .modal-dialog-centered" role="document">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="float:left">حمل ملف العقد</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <div class="jumbotron">
+                                <form action="/Dashboard/ContractArchives/UploadImages" class="dropzone" id="dropzoneJsForm"></form>
+                                <button id="act-on-upload" class="btn btn-block">حمل الملف</button>
+                            </div>
+                            <span class="alert alert-primary">أرفق ملفاً واحدا يحتوي جميع صور العقد</span><br /><br />
+                            <span class="alert alert-default">مساحة الملف لا تزيد عن 15 ميجا</span><br /><br />
+                            <span class="alert alert-default">يسمح فقط ب .pdf</span><br /><br />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        Dropzone.options.dropzoneJsForm = {
+            autoProcessQueue: false,
+            maxFilesize: 15, // MB
+            maxFiles: 1,
+            parallelUploads: 1,
+            uploadMultiple: true,
+            autoProcessQueue: false,
+            init: function () {
+                var submitButton = document.querySelector("#act-on-upload")
+                dropzoneJsForm = this;
+                submitButton.addEventListener("click", function () {
+                    dropzoneJsForm.processQueue();
+                })
+            },
+            //acceptedFiles: '.jpg,.jpeg,.JPEG,.JPG,.png,.PNG',
+            success: function (file, response) {
+
+                if (response.valid) {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "success", 3, function () {
+
+                    });
+                }
+                else {
+                    alertify.set('notifier', "position", "top-right");
+                    alertify.notify(response.message, "error", 3, function () { });
+                }
+            },
+        };
+    </script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $(document).ready(function () {
+
+            // i add new ajax here to check Contract id 
+            $("#ContractID").change(function (e) {
+                var input = $(this);
+                $.ajax({
+                    url: "/dashboard/ContractArchives/CheckContractId",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        contract: $("#ContractID").val(),
+                        id: $("#id").val(),
+                    },
+                    dataType: "json",
+                    success: function (exists) {
+                        if (!exists) {
+                            $("#ContractError").html("");
+                            $("#save").removeClass("disabled");
+                        }
+                        else {
+                            alertify.alert("هذا العقد موجود مسبقاً", function () {
+                                });
+                            $("#ContractError").html("this Contract Id already exists");
+                            $(input).focus();
+                            $("#save").addClass("disabled");
+                        };
+                    }
+                });
+          });
+
+            $("#addContract-form").submit(function (e) {
+                
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return false;
+                }
+                var contractParam = {
+                    ContractID: $("#ContractID").val(),
+                    PK_ContractArchives_Id: $("#id").val(),
+                };
+            
+                 
+
+                $.ajax({
+                    url: "/dashboard/ContractArchives/UpdateContract",
+                    type: "post",
+                    data: {
+                        __RequestVerificationToken: token,
+                        contractVM: contractParam,
+                    },
+                    dataType: "json",
+                    success: function (result) {
+
+                        if (result.Valid) {
+                            //debugger;
+                            alertify.alert("Profile saved successefully", function () {
+                                if ("@ViewBag.RedirectTo" !== null || "@ViewBag.RedirectTo" !== "") {
+                                    location.href = "@ViewBag.RedirectTo";
+                                }
+                                else {
+                                    location.href = "@Url.Action("Index", "ContractArchives", new { area = "dashboard" })";
+                                }
+
+                            });
+                        }
+                        else {
+                            if (result.Message == null || result.Message == "") {
+                                alertify.alert("profile Couldn't be saved successefully", function () {
+                                });
+                            }
+                            else {
+                                alertify.alert(result.Message, function () {
+                                });
+                            }
+
+                        }
+                    },
+                    error: function (result) {
+                        alertify.alert("profile Couldn't be saved successefully", function () {
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
